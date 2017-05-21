@@ -1,0 +1,892 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3C529BD04307FB8AEE50BBBD /* Pods_FeralMessengerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC04006C827BFC56EA402FA /* Pods_FeralMessengerTests.framework */; };
+		86AA0CE399E870ED1A13EDEE /* Pods_FeralMessenger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BD907D41C88F95D883A784D /* Pods_FeralMessenger.framework */; };
+		C525BC341ED02C77006BEEA3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC331ED02C77006BEEA3 /* AppDelegate.swift */; };
+		C525BC391ED02C77006BEEA3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C525BC371ED02C77006BEEA3 /* Main.storyboard */; };
+		C525BC3C1ED02C77006BEEA3 /* FeralMessenger.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C525BC3A1ED02C77006BEEA3 /* FeralMessenger.xcdatamodeld */; };
+		C525BC3E1ED02C77006BEEA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C525BC3D1ED02C77006BEEA3 /* Assets.xcassets */; };
+		C525BC411ED02C77006BEEA3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C525BC3F1ED02C77006BEEA3 /* LaunchScreen.storyboard */; };
+		C525BC4C1ED02C77006BEEA3 /* FeralMessengerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC4B1ED02C77006BEEA3 /* FeralMessengerTests.swift */; };
+		C525BC571ED02C77006BEEA3 /* FeralMessengerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC561ED02C77006BEEA3 /* FeralMessengerUITests.swift */; };
+		C525BC6B1ED0C5E5006BEEA3 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC6A1ED0C5E5006BEEA3 /* HomeViewController.swift */; };
+		C525BC6D1ED0D2F3006BEEA3 /* ParseServerConfigs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC6C1ED0D2F3006BEEA3 /* ParseServerConfigs.swift */; };
+		C525BC711ED0D488006BEEA3 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC701ED0D488006BEEA3 /* Reachability.swift */; };
+		C525BC751ED0DC47006BEEA3 /* HomeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC741ED0DC47006BEEA3 /* HomeCell.swift */; };
+		C525BC771ED0DC8E006BEEA3 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC761ED0DC8E006BEEA3 /* DetailViewController.swift */; };
+		C525BC791ED0DCD9006BEEA3 /* DetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC781ED0DCD9006BEEA3 /* DetailCell.swift */; };
+		C525BC7E1ED0FF25006BEEA3 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC7D1ED0FF25006BEEA3 /* UIColor.swift */; };
+		C525BC801ED134D9006BEEA3 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC7F1ED134D9006BEEA3 /* UIView.swift */; };
+		C5439B681ED13B2700FBD7D3 /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B641ED13B2700FBD7D3 /* Message+CoreDataClass.swift */; };
+		C5439B691ED13B2700FBD7D3 /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B651ED13B2700FBD7D3 /* Message+CoreDataProperties.swift */; };
+		C5439B6A1ED13B2700FBD7D3 /* Friend+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B661ED13B2700FBD7D3 /* Friend+CoreDataClass.swift */; };
+		C5439B6B1ED13B2700FBD7D3 /* Friend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B671ED13B2700FBD7D3 /* Friend+CoreDataProperties.swift */; };
+		C5439B6F1ED14D4D00FBD7D3 /* KeychainItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B6E1ED14D4D00FBD7D3 /* KeychainItem.swift */; };
+		C5439B711ED14D7C00FBD7D3 /* KeychainConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B701ED14D7C00FBD7D3 /* KeychainConfiguration.swift */; };
+		C5439B731ED14DB600FBD7D3 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B721ED14DB600FBD7D3 /* UIViewController.swift */; };
+		C5439B751ED2094500FBD7D3 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B741ED2094500FBD7D3 /* AuthViewController.swift */; };
+		F60F367CA4D4A485FB6CA97E /* Pods_FeralMessengerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F49CECBB20EBDFECDB16144 /* Pods_FeralMessengerUITests.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C525BC481ED02C77006BEEA3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C525BC281ED02C77006BEEA3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C525BC2F1ED02C77006BEEA3;
+			remoteInfo = FeralMessenger;
+		};
+		C525BC531ED02C77006BEEA3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C525BC281ED02C77006BEEA3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C525BC2F1ED02C77006BEEA3;
+			remoteInfo = FeralMessenger;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		48A3E24C8951A9721EEFB1E3 /* Pods-FeralMessengerUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeralMessengerUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FeralMessengerUITests/Pods-FeralMessengerUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		4BD907D41C88F95D883A784D /* Pods_FeralMessenger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FeralMessenger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		67925B23A2C5D2F4FC6967F8 /* Pods-FeralMessenger.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeralMessenger.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FeralMessenger/Pods-FeralMessenger.debug.xcconfig"; sourceTree = "<group>"; };
+		79A233BBF437C435A7BFFEAB /* Pods-FeralMessengerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeralMessengerTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FeralMessengerTests/Pods-FeralMessengerTests.debug.xcconfig"; sourceTree = "<group>"; };
+		7A494FA67A0C77F53EA4C3DC /* Pods-FeralMessengerUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeralMessengerUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-FeralMessengerUITests/Pods-FeralMessengerUITests.release.xcconfig"; sourceTree = "<group>"; };
+		7F49CECBB20EBDFECDB16144 /* Pods_FeralMessengerUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FeralMessengerUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A02F9F65A8E59CB2A68E8920 /* Pods-FeralMessengerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeralMessengerTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-FeralMessengerTests/Pods-FeralMessengerTests.release.xcconfig"; sourceTree = "<group>"; };
+		BC10FAB8FECDA137C6373323 /* Pods-FeralMessenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeralMessenger.release.xcconfig"; path = "Pods/Target Support Files/Pods-FeralMessenger/Pods-FeralMessenger.release.xcconfig"; sourceTree = "<group>"; };
+		BCC04006C827BFC56EA402FA /* Pods_FeralMessengerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FeralMessengerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C525BC301ED02C77006BEEA3 /* FeralMessenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeralMessenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C525BC331ED02C77006BEEA3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		C525BC381ED02C77006BEEA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		C525BC3B1ED02C77006BEEA3 /* FeralMessenger.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FeralMessenger.xcdatamodel; sourceTree = "<group>"; };
+		C525BC3D1ED02C77006BEEA3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C525BC401ED02C77006BEEA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		C525BC421ED02C77006BEEA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C525BC471ED02C77006BEEA3 /* FeralMessengerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FeralMessengerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C525BC4B1ED02C77006BEEA3 /* FeralMessengerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeralMessengerTests.swift; sourceTree = "<group>"; };
+		C525BC4D1ED02C77006BEEA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C525BC521ED02C77006BEEA3 /* FeralMessengerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FeralMessengerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C525BC561ED02C77006BEEA3 /* FeralMessengerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeralMessengerUITests.swift; sourceTree = "<group>"; };
+		C525BC581ED02C77006BEEA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C525BC6A1ED0C5E5006BEEA3 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		C525BC6C1ED0D2F3006BEEA3 /* ParseServerConfigs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseServerConfigs.swift; sourceTree = "<group>"; };
+		C525BC701ED0D488006BEEA3 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
+		C525BC741ED0DC47006BEEA3 /* HomeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeCell.swift; sourceTree = "<group>"; };
+		C525BC761ED0DC8E006BEEA3 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		C525BC781ED0DCD9006BEEA3 /* DetailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailCell.swift; sourceTree = "<group>"; };
+		C525BC7D1ED0FF25006BEEA3 /* UIColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
+		C525BC7F1ED134D9006BEEA3 /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
+		C5439B641ED13B2700FBD7D3 /* Message+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataClass.swift"; sourceTree = "<group>"; };
+		C5439B651ED13B2700FBD7D3 /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		C5439B661ED13B2700FBD7D3 /* Friend+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Friend+CoreDataClass.swift"; sourceTree = "<group>"; };
+		C5439B671ED13B2700FBD7D3 /* Friend+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Friend+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		C5439B6E1ED14D4D00FBD7D3 /* KeychainItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainItem.swift; sourceTree = "<group>"; };
+		C5439B701ED14D7C00FBD7D3 /* KeychainConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainConfiguration.swift; sourceTree = "<group>"; };
+		C5439B721ED14DB600FBD7D3 /* UIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
+		C5439B741ED2094500FBD7D3 /* AuthViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C525BC2D1ED02C77006BEEA3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				86AA0CE399E870ED1A13EDEE /* Pods_FeralMessenger.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C525BC441ED02C77006BEEA3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3C529BD04307FB8AEE50BBBD /* Pods_FeralMessengerTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C525BC4F1ED02C77006BEEA3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F60F367CA4D4A485FB6CA97E /* Pods_FeralMessengerUITests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		227795A6A3EB947063E88DAE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4BD907D41C88F95D883A784D /* Pods_FeralMessenger.framework */,
+				BCC04006C827BFC56EA402FA /* Pods_FeralMessengerTests.framework */,
+				7F49CECBB20EBDFECDB16144 /* Pods_FeralMessengerUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		62A49C0C73B7F985C7F65B37 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				67925B23A2C5D2F4FC6967F8 /* Pods-FeralMessenger.debug.xcconfig */,
+				BC10FAB8FECDA137C6373323 /* Pods-FeralMessenger.release.xcconfig */,
+				79A233BBF437C435A7BFFEAB /* Pods-FeralMessengerTests.debug.xcconfig */,
+				A02F9F65A8E59CB2A68E8920 /* Pods-FeralMessengerTests.release.xcconfig */,
+				48A3E24C8951A9721EEFB1E3 /* Pods-FeralMessengerUITests.debug.xcconfig */,
+				7A494FA67A0C77F53EA4C3DC /* Pods-FeralMessengerUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		C525BC271ED02C77006BEEA3 = {
+			isa = PBXGroup;
+			children = (
+				C525BC321ED02C77006BEEA3 /* FeralMessenger */,
+				C525BC4A1ED02C77006BEEA3 /* FeralMessengerTests */,
+				C525BC551ED02C77006BEEA3 /* FeralMessengerUITests */,
+				C525BC311ED02C77006BEEA3 /* Products */,
+				62A49C0C73B7F985C7F65B37 /* Pods */,
+				227795A6A3EB947063E88DAE /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		C525BC311ED02C77006BEEA3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C525BC301ED02C77006BEEA3 /* FeralMessenger.app */,
+				C525BC471ED02C77006BEEA3 /* FeralMessengerTests.xctest */,
+				C525BC521ED02C77006BEEA3 /* FeralMessengerUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C525BC321ED02C77006BEEA3 /* FeralMessenger */ = {
+			isa = PBXGroup;
+			children = (
+				C525BC681ED02CC0006BEEA3 /* Helpers */,
+				C525BC671ED02CB7006BEEA3 /* Controllers */,
+				C525BC661ED02CB1006BEEA3 /* Views */,
+				C525BC651ED02CA8006BEEA3 /* Models */,
+				C525BC641ED02C94006BEEA3 /* Supporting Files */,
+			);
+			path = FeralMessenger;
+			sourceTree = "<group>";
+		};
+		C525BC4A1ED02C77006BEEA3 /* FeralMessengerTests */ = {
+			isa = PBXGroup;
+			children = (
+				C525BC4B1ED02C77006BEEA3 /* FeralMessengerTests.swift */,
+				C525BC4D1ED02C77006BEEA3 /* Info.plist */,
+			);
+			path = FeralMessengerTests;
+			sourceTree = "<group>";
+		};
+		C525BC551ED02C77006BEEA3 /* FeralMessengerUITests */ = {
+			isa = PBXGroup;
+			children = (
+				C525BC561ED02C77006BEEA3 /* FeralMessengerUITests.swift */,
+				C525BC581ED02C77006BEEA3 /* Info.plist */,
+			);
+			path = FeralMessengerUITests;
+			sourceTree = "<group>";
+		};
+		C525BC641ED02C94006BEEA3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C525BC331ED02C77006BEEA3 /* AppDelegate.swift */,
+				C525BC371ED02C77006BEEA3 /* Main.storyboard */,
+				C525BC3D1ED02C77006BEEA3 /* Assets.xcassets */,
+				C525BC3F1ED02C77006BEEA3 /* LaunchScreen.storyboard */,
+				C525BC421ED02C77006BEEA3 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C525BC651ED02CA8006BEEA3 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C5439B641ED13B2700FBD7D3 /* Message+CoreDataClass.swift */,
+				C5439B651ED13B2700FBD7D3 /* Message+CoreDataProperties.swift */,
+				C5439B661ED13B2700FBD7D3 /* Friend+CoreDataClass.swift */,
+				C5439B671ED13B2700FBD7D3 /* Friend+CoreDataProperties.swift */,
+				C525BC3A1ED02C77006BEEA3 /* FeralMessenger.xcdatamodeld */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		C525BC661ED02CB1006BEEA3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C525BC6A1ED0C5E5006BEEA3 /* HomeViewController.swift */,
+				C525BC741ED0DC47006BEEA3 /* HomeCell.swift */,
+				C525BC761ED0DC8E006BEEA3 /* DetailViewController.swift */,
+				C525BC781ED0DCD9006BEEA3 /* DetailCell.swift */,
+				C5439B741ED2094500FBD7D3 /* AuthViewController.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		C525BC671ED02CB7006BEEA3 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		C525BC681ED02CC0006BEEA3 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				C5439B6D1ED14D1700FBD7D3 /* CoreData */,
+				C5439B6C1ED14D0C00FBD7D3 /* Keychain */,
+				C525BC7C1ED0FF15006BEEA3 /* UIKit */,
+				C525BC6F1ED0D442006BEEA3 /* ParseServer */,
+				C525BC6E1ED0D433006BEEA3 /* Network */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
+		C525BC6E1ED0D433006BEEA3 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				C525BC701ED0D488006BEEA3 /* Reachability.swift */,
+			);
+			name = Network;
+			sourceTree = "<group>";
+		};
+		C525BC6F1ED0D442006BEEA3 /* ParseServer */ = {
+			isa = PBXGroup;
+			children = (
+				C525BC6C1ED0D2F3006BEEA3 /* ParseServerConfigs.swift */,
+			);
+			name = ParseServer;
+			sourceTree = "<group>";
+		};
+		C525BC7C1ED0FF15006BEEA3 /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+				C525BC7D1ED0FF25006BEEA3 /* UIColor.swift */,
+				C525BC7F1ED134D9006BEEA3 /* UIView.swift */,
+			);
+			name = UIKit;
+			sourceTree = "<group>";
+		};
+		C5439B6C1ED14D0C00FBD7D3 /* Keychain */ = {
+			isa = PBXGroup;
+			children = (
+				C5439B6E1ED14D4D00FBD7D3 /* KeychainItem.swift */,
+				C5439B701ED14D7C00FBD7D3 /* KeychainConfiguration.swift */,
+				C5439B721ED14DB600FBD7D3 /* UIViewController.swift */,
+			);
+			name = Keychain;
+			sourceTree = "<group>";
+		};
+		C5439B6D1ED14D1700FBD7D3 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = CoreData;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C525BC2F1ED02C77006BEEA3 /* FeralMessenger */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C525BC5B1ED02C77006BEEA3 /* Build configuration list for PBXNativeTarget "FeralMessenger" */;
+			buildPhases = (
+				5D26BD40B4487B5D3F2BFE4E /* [CP] Check Pods Manifest.lock */,
+				C525BC2C1ED02C77006BEEA3 /* Sources */,
+				C525BC2D1ED02C77006BEEA3 /* Frameworks */,
+				C525BC2E1ED02C77006BEEA3 /* Resources */,
+				945C76129A55D2F3F0041C04 /* [CP] Embed Pods Frameworks */,
+				44E5E43356DCDDB37CA9C9AE /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FeralMessenger;
+			productName = FeralMessenger;
+			productReference = C525BC301ED02C77006BEEA3 /* FeralMessenger.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C525BC461ED02C77006BEEA3 /* FeralMessengerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C525BC5E1ED02C77006BEEA3 /* Build configuration list for PBXNativeTarget "FeralMessengerTests" */;
+			buildPhases = (
+				5C1A847FEB83C6E0C7CC8140 /* [CP] Check Pods Manifest.lock */,
+				C525BC431ED02C77006BEEA3 /* Sources */,
+				C525BC441ED02C77006BEEA3 /* Frameworks */,
+				C525BC451ED02C77006BEEA3 /* Resources */,
+				D96E048EFA878BE6829FD366 /* [CP] Embed Pods Frameworks */,
+				5EEAB28020743EA7AE49C95E /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C525BC491ED02C77006BEEA3 /* PBXTargetDependency */,
+			);
+			name = FeralMessengerTests;
+			productName = FeralMessengerTests;
+			productReference = C525BC471ED02C77006BEEA3 /* FeralMessengerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C525BC511ED02C77006BEEA3 /* FeralMessengerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C525BC611ED02C77006BEEA3 /* Build configuration list for PBXNativeTarget "FeralMessengerUITests" */;
+			buildPhases = (
+				E4864A607766D2B8AED28D19 /* [CP] Check Pods Manifest.lock */,
+				C525BC4E1ED02C77006BEEA3 /* Sources */,
+				C525BC4F1ED02C77006BEEA3 /* Frameworks */,
+				C525BC501ED02C77006BEEA3 /* Resources */,
+				8013832F79036BEF6B18FE44 /* [CP] Embed Pods Frameworks */,
+				B2C02F804882793F74C04FA6 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C525BC541ED02C77006BEEA3 /* PBXTargetDependency */,
+			);
+			name = FeralMessengerUITests;
+			productName = FeralMessengerUITests;
+			productReference = C525BC521ED02C77006BEEA3 /* FeralMessengerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C525BC281ED02C77006BEEA3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0830;
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = Duckisburg;
+				TargetAttributes = {
+					C525BC2F1ED02C77006BEEA3 = {
+						CreatedOnToolsVersion = 8.3.2;
+						DevelopmentTeam = ZLUJC28Y9H;
+						ProvisioningStyle = Automatic;
+					};
+					C525BC461ED02C77006BEEA3 = {
+						CreatedOnToolsVersion = 8.3.2;
+						DevelopmentTeam = LUU7Q496SS;
+						ProvisioningStyle = Automatic;
+						TestTargetID = C525BC2F1ED02C77006BEEA3;
+					};
+					C525BC511ED02C77006BEEA3 = {
+						CreatedOnToolsVersion = 8.3.2;
+						DevelopmentTeam = LUU7Q496SS;
+						ProvisioningStyle = Automatic;
+						TestTargetID = C525BC2F1ED02C77006BEEA3;
+					};
+				};
+			};
+			buildConfigurationList = C525BC2B1ED02C77006BEEA3 /* Build configuration list for PBXProject "FeralMessenger" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C525BC271ED02C77006BEEA3;
+			productRefGroup = C525BC311ED02C77006BEEA3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C525BC2F1ED02C77006BEEA3 /* FeralMessenger */,
+				C525BC461ED02C77006BEEA3 /* FeralMessengerTests */,
+				C525BC511ED02C77006BEEA3 /* FeralMessengerUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C525BC2E1ED02C77006BEEA3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C525BC411ED02C77006BEEA3 /* LaunchScreen.storyboard in Resources */,
+				C525BC3E1ED02C77006BEEA3 /* Assets.xcassets in Resources */,
+				C525BC391ED02C77006BEEA3 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C525BC451ED02C77006BEEA3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C525BC501ED02C77006BEEA3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		44E5E43356DCDDB37CA9C9AE /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FeralMessenger/Pods-FeralMessenger-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5C1A847FEB83C6E0C7CC8140 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		5D26BD40B4487B5D3F2BFE4E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		5EEAB28020743EA7AE49C95E /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FeralMessengerTests/Pods-FeralMessengerTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8013832F79036BEF6B18FE44 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FeralMessengerUITests/Pods-FeralMessengerUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		945C76129A55D2F3F0041C04 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FeralMessenger/Pods-FeralMessenger-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B2C02F804882793F74C04FA6 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FeralMessengerUITests/Pods-FeralMessengerUITests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D96E048EFA878BE6829FD366 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FeralMessengerTests/Pods-FeralMessengerTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E4864A607766D2B8AED28D19 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C525BC2C1ED02C77006BEEA3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C525BC801ED134D9006BEEA3 /* UIView.swift in Sources */,
+				C525BC3C1ED02C77006BEEA3 /* FeralMessenger.xcdatamodeld in Sources */,
+				C5439B6F1ED14D4D00FBD7D3 /* KeychainItem.swift in Sources */,
+				C5439B691ED13B2700FBD7D3 /* Message+CoreDataProperties.swift in Sources */,
+				C525BC341ED02C77006BEEA3 /* AppDelegate.swift in Sources */,
+				C525BC6D1ED0D2F3006BEEA3 /* ParseServerConfigs.swift in Sources */,
+				C525BC711ED0D488006BEEA3 /* Reachability.swift in Sources */,
+				C525BC7E1ED0FF25006BEEA3 /* UIColor.swift in Sources */,
+				C5439B731ED14DB600FBD7D3 /* UIViewController.swift in Sources */,
+				C525BC751ED0DC47006BEEA3 /* HomeCell.swift in Sources */,
+				C525BC6B1ED0C5E5006BEEA3 /* HomeViewController.swift in Sources */,
+				C5439B711ED14D7C00FBD7D3 /* KeychainConfiguration.swift in Sources */,
+				C525BC791ED0DCD9006BEEA3 /* DetailCell.swift in Sources */,
+				C5439B681ED13B2700FBD7D3 /* Message+CoreDataClass.swift in Sources */,
+				C5439B6A1ED13B2700FBD7D3 /* Friend+CoreDataClass.swift in Sources */,
+				C525BC771ED0DC8E006BEEA3 /* DetailViewController.swift in Sources */,
+				C5439B751ED2094500FBD7D3 /* AuthViewController.swift in Sources */,
+				C5439B6B1ED13B2700FBD7D3 /* Friend+CoreDataProperties.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C525BC431ED02C77006BEEA3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C525BC4C1ED02C77006BEEA3 /* FeralMessengerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C525BC4E1ED02C77006BEEA3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C525BC571ED02C77006BEEA3 /* FeralMessengerUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C525BC491ED02C77006BEEA3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C525BC2F1ED02C77006BEEA3 /* FeralMessenger */;
+			targetProxy = C525BC481ED02C77006BEEA3 /* PBXContainerItemProxy */;
+		};
+		C525BC541ED02C77006BEEA3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C525BC2F1ED02C77006BEEA3 /* FeralMessenger */;
+			targetProxy = C525BC531ED02C77006BEEA3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		C525BC371ED02C77006BEEA3 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C525BC381ED02C77006BEEA3 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		C525BC3F1ED02C77006BEEA3 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C525BC401ED02C77006BEEA3 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C525BC591ED02C77006BEEA3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C525BC5A1ED02C77006BEEA3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C525BC5C1ED02C77006BEEA3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 67925B23A2C5D2F4FC6967F8 /* Pods-FeralMessenger.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = ZLUJC28Y9H;
+				INFOPLIST_FILE = FeralMessenger/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Duckisburg.FeralMessenger;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		C525BC5D1ED02C77006BEEA3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BC10FAB8FECDA137C6373323 /* Pods-FeralMessenger.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = ZLUJC28Y9H;
+				INFOPLIST_FILE = FeralMessenger/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Duckisburg.FeralMessenger;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		C525BC5F1ED02C77006BEEA3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 79A233BBF437C435A7BFFEAB /* Pods-FeralMessengerTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = LUU7Q496SS;
+				INFOPLIST_FILE = FeralMessengerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Duckisburg.FeralMessengerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FeralMessenger.app/FeralMessenger";
+			};
+			name = Debug;
+		};
+		C525BC601ED02C77006BEEA3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A02F9F65A8E59CB2A68E8920 /* Pods-FeralMessengerTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = LUU7Q496SS;
+				INFOPLIST_FILE = FeralMessengerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Duckisburg.FeralMessengerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FeralMessenger.app/FeralMessenger";
+			};
+			name = Release;
+		};
+		C525BC621ED02C77006BEEA3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 48A3E24C8951A9721EEFB1E3 /* Pods-FeralMessengerUITests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = LUU7Q496SS;
+				INFOPLIST_FILE = FeralMessengerUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Duckisburg.FeralMessengerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = FeralMessenger;
+			};
+			name = Debug;
+		};
+		C525BC631ED02C77006BEEA3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7A494FA67A0C77F53EA4C3DC /* Pods-FeralMessengerUITests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = LUU7Q496SS;
+				INFOPLIST_FILE = FeralMessengerUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Duckisburg.FeralMessengerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = FeralMessenger;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C525BC2B1ED02C77006BEEA3 /* Build configuration list for PBXProject "FeralMessenger" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C525BC591ED02C77006BEEA3 /* Debug */,
+				C525BC5A1ED02C77006BEEA3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C525BC5B1ED02C77006BEEA3 /* Build configuration list for PBXNativeTarget "FeralMessenger" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C525BC5C1ED02C77006BEEA3 /* Debug */,
+				C525BC5D1ED02C77006BEEA3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C525BC5E1ED02C77006BEEA3 /* Build configuration list for PBXNativeTarget "FeralMessengerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C525BC5F1ED02C77006BEEA3 /* Debug */,
+				C525BC601ED02C77006BEEA3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C525BC611ED02C77006BEEA3 /* Build configuration list for PBXNativeTarget "FeralMessengerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C525BC621ED02C77006BEEA3 /* Debug */,
+				C525BC631ED02C77006BEEA3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		C525BC3A1ED02C77006BEEA3 /* FeralMessenger.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				C525BC3B1ED02C77006BEEA3 /* FeralMessenger.xcdatamodel */,
+			);
+			currentVersion = C525BC3B1ED02C77006BEEA3 /* FeralMessenger.xcdatamodel */;
+			path = FeralMessenger.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = C525BC281ED02C77006BEEA3 /* Project object */;
+}
