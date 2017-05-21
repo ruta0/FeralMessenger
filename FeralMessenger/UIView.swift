@@ -20,4 +20,14 @@ extension UIView {
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: format, options: NSLayoutFormatOptions(), metrics: nil, views: viewsDictionary))
     }
     
+    func jitter(repeatCount: Float) {
+        let animation = CABasicAnimation(keyPath: "position")
+        animation.duration = 0.03
+        animation.repeatCount = repeatCount
+        animation.autoreverses = true
+        animation.fromValue = NSValue(cgPoint: CGPoint.init(x: self.center.x - 5.0, y: self.center.y))
+        animation.toValue = NSValue(cgPoint: CGPoint.init(x: self.center.x + 5.0, y: self.center.y))
+        layer.add(animation, forKey: "position")
+    }
+    
 }
