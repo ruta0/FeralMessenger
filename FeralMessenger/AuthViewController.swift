@@ -11,7 +11,7 @@ import UIKit
 
 class AuthViewController: UIViewController {
     
-    enum AuthButtonType: String {
+    fileprivate enum AuthButtonType: String {
         case login = "Login"
         case signup = "Sign Up"
     }
@@ -22,6 +22,8 @@ class AuthViewController: UIViewController {
     @IBOutlet weak var buttonStackView: UIStackView!
     
     @IBOutlet weak var dividerViewOne: UIView!
+    
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     @IBOutlet weak var logoImageView: UIImageView!
     @IBOutlet weak var errorLabel: UILabel!
@@ -102,6 +104,12 @@ class AuthViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.toggleScrollViewScrolling), name: Notification.Name.UIKeyboardWillHide, object: nil)
     }
     
+    private func setupTextFieldDelegates() {
+        nameTextField.delegate = self
+        emailTextField.delegate = self
+        passTextField.delegate = self
+    }
+    
     private func setupViews() {
         // scrollView
         scrollView.isScrollEnabled = false
@@ -139,16 +147,26 @@ class AuthViewController: UIViewController {
         super.viewDidLoad()
         setupViews()
         setupKeyboardNotifications()
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // implement this
+        setupTextFieldDelegates()
     }
     
 }
 
 
-
+extension AuthViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == nameTextField {
+            emailTextField.becomeFirstResponder()
+        } else if textField == emailTextField {
+            passTextField.becomeFirstResponder()
+        } else if textField == passTextField {
+            passTextField.resignFirstResponder()
+        }
+        return true
+    }
+    
+}
 
 
 

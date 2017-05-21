@@ -62,7 +62,7 @@
                                             <rect key="frame" x="118" y="45" width="248" height="57"/>
                                             <color key="backgroundColor" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                            <nil key="textColor"/>
+                                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
@@ -98,6 +98,11 @@
                         </connections>
                     </collectionView>
                     <navigationItem key="navigationItem" id="Fj4-h3-drh">
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="dCF-Qr-iMJ">
+                            <connections>
+                                <action selector="logoutButton_tapped:" destination="64d-Yl-Fg7" id="6rl-UG-hxy"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="m1o-hq-eCb">
                             <connections>
                                 <action selector="addButton_tapped:" destination="64d-Yl-Fg7" id="lkW-Tz-Xhf"/>
@@ -107,6 +112,7 @@
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <connections>
                         <outlet property="addButton" destination="m1o-hq-eCb" id="FzM-XD-jFE"/>
+                        <outlet property="logoutButton" destination="dCF-Qr-iMJ" id="ryQ-SK-v58"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QU0-6r-S5j" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -317,16 +323,26 @@
                                                     <constraint firstAttribute="width" constant="128" id="730-rn-ZNL"/>
                                                 </constraints>
                                             </imageView>
+                                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="UE3-Ru-9Xm">
+                                                <rect key="frame" x="179" y="453" width="16" height="16"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="UE3-Ru-9Xm" secondAttribute="height" multiplier="1:1" id="1eG-OY-exa"/>
+                                                </constraints>
+                                                <color key="color" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </activityIndicatorView>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="XDK-hf-8JW" secondAttribute="trailing" constant="64" id="1y6-rO-nIb"/>
                                             <constraint firstItem="6h1-1C-kVP" firstAttribute="leading" secondItem="8de-pX-FQT" secondAttribute="leading" constant="32" id="32M-Qy-9sl"/>
                                             <constraint firstAttribute="bottom" secondItem="XDK-hf-8JW" secondAttribute="bottom" constant="256" id="5WV-RH-3r1"/>
+                                            <constraint firstItem="XDK-hf-8JW" firstAttribute="top" secondItem="UE3-Ru-9Xm" secondAttribute="bottom" constant="8" id="MiO-ss-RfC"/>
                                             <constraint firstItem="UCg-AI-ZqB" firstAttribute="centerX" secondItem="8de-pX-FQT" secondAttribute="centerX" id="Nvj-RU-I4s"/>
                                             <constraint firstItem="XDK-hf-8JW" firstAttribute="top" secondItem="6h1-1C-kVP" secondAttribute="bottom" constant="32" id="adD-Jj-SUn"/>
+                                            <constraint firstItem="UE3-Ru-9Xm" firstAttribute="top" secondItem="6h1-1C-kVP" secondAttribute="bottom" constant="8" id="cwr-v6-mWo"/>
                                             <constraint firstItem="6h1-1C-kVP" firstAttribute="top" secondItem="UCg-AI-ZqB" secondAttribute="bottom" constant="20" id="gyu-C7-VRB"/>
                                             <constraint firstItem="XDK-hf-8JW" firstAttribute="leading" secondItem="8de-pX-FQT" secondAttribute="leading" constant="64" id="q1u-NI-MKO"/>
+                                            <constraint firstItem="UE3-Ru-9Xm" firstAttribute="centerX" secondItem="8de-pX-FQT" secondAttribute="centerX" id="yIV-Fx-L73"/>
                                             <constraint firstAttribute="trailing" secondItem="6h1-1C-kVP" secondAttribute="trailing" constant="32" id="ylp-2O-28Z"/>
                                         </constraints>
                                     </view>
@@ -351,6 +367,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="UE3-Ru-9Xm" id="Ga1-Bd-26Y"/>
                         <outlet property="authButton" destination="L7X-aO-d13" id="yhu-bq-PMC"/>
                         <outlet property="buttonStackView" destination="XDK-hf-8JW" id="64f-j3-Lw3"/>
                         <outlet property="contentView" destination="8de-pX-FQT" id="9dD-aO-kNs"/>
@@ -364,7 +381,7 @@
                         <outlet property="scrollView" destination="KiB-aZ-2iw" id="SBv-1h-eGk"/>
                         <outlet property="termsButton" destination="4vZ-vp-BVN" id="h0F-LG-eyU"/>
                         <outlet property="toggleButton" destination="hXp-MJ-i5h" id="sdK-pR-7SN"/>
-                        <segue destination="stg-7x-c5V" kind="presentation" id="YkA-uc-LQg"/>
+                        <segue destination="stg-7x-c5V" kind="presentation" identifier="HomeViewControllerSegue" modalTransitionStyle="flipHorizontal" id="YkA-uc-LQg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yoW-lY-Jam" userLabel="First Responder" sceneMemberID="firstResponder"/>

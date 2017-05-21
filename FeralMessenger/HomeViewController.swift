@@ -15,9 +15,14 @@ class HomeViewController: UICollectionViewController {
     fileprivate let cellID = "HomeCell"
     
     @IBOutlet weak var addButton: UIBarButtonItem!
-    
+    @IBOutlet weak var logoutButton: UIBarButtonItem!
+
     @IBAction func addButton_tapped(_ sender: UIBarButtonItem) {
         print(123)
+    }
+    
+    @IBAction func logoutButton_tapped(_ sender: UIBarButtonItem) {
+        self.dismiss(animated: true, completion: nil)
     }
     
     lazy var titleButton: UIButton = {

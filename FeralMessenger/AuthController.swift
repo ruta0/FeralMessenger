@@ -8,6 +8,7 @@
 
 import UIKit
 import AudioToolbox
+import Parse
 
 
 extension AuthViewController {
@@ -15,8 +16,17 @@ extension AuthViewController {
     func performLogin(email: String, pass: String) {
         guard let email = emailTextField.text?.lowercased(), let pass = passTextField.text else { return }
         if Reachability.isConnectedToNetwork() == true {
+            self.activityIndicator.startAnimating()
             passTextField.text = ""
-            print(email, pass)
+            PFUser.logInWithUsername(inBackground: email, password: pass, block: { (pfUser: PFUser?, error: Error?) in
+                self.activityIndicator.stopAnimating()
+                if error != nil {
+                    self.handleErrorResponse(message: error!.localizedDescription)
+                } else {
+                    // success
+                    self.performSegue(withIdentifier: "HomeViewControllerSegue", sender: self)
+                }
+            })
         } else {
             handleErrorResponse(message: "Failed to connect to Internet")
         }
@@ -25,6 +35,7 @@ extension AuthViewController {
     func performSignup(name: String, email: String, pass: String) {
         guard let name = nameTextField.text?.lowercased(), let email = emailTextField.text?.lowercased(), let pass = passTextField.text else { return }
         if Reachability.isConnectedToNetwork() == true {
+            self.activityIndicator.startAnimating()
             passTextField.text = ""
             print(name, email, pass)
         } else {
@@ -41,4 +52,41 @@ extension AuthViewController {
         errorLabel.flash(delay: 4, message: message)
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "HomeViewControllerSegue" {
+            print(123)
+        }
+    }
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

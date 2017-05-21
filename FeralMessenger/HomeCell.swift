@@ -26,9 +26,11 @@ class HomeCell: UICollectionViewCell {
         profileImageView.layer.borderWidth = 2
         // usernameLabel
         usernameLabel.textColor = UIColor.deepSeaBlue()
+        usernameLabel.backgroundColor = UIColor.clear
         usernameLabel.text = "username"
         // messageLabel
         messageLabel.textColor = UIColor.darkGray
+        messageLabel.backgroundColor = UIColor.clear
         messageLabel.text = "message"
     }
     
