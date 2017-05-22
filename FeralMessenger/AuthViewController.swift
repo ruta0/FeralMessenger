@@ -59,6 +59,7 @@ class AuthViewController: UIViewController {
     }
     
     @IBAction func termsButton_tapped(_ sender: UIButton) {
+        // use a webview to display the terms
         print(123)
     }
     
@@ -112,12 +113,6 @@ class AuthViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.toggleScrollViewScrolling), name: Notification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    private func setupTextFieldDelegates() {
-        nameTextField.delegate = self
-        emailTextField.delegate = self
-        passTextField.delegate = self
-    }
-    
     private func setupViews() {
         // scrollView
         scrollView.isScrollEnabled = false
@@ -141,7 +136,7 @@ class AuthViewController: UIViewController {
         passTextField.borderStyle = UITextBorderStyle.none
         passTextField.attributedPlaceholder = NSAttributedString(string: "pass", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
         // authButton
-        authButton.layer.cornerRadius = 25 // height is set to 40 in storyboard
+        authButton.layer.cornerRadius = 25 // height is set to 50 in storyboard
         authButton.backgroundColor = UIColor.mandarinOrange()
         authButton.setTitle("Login", for: UIControlState.normal)
         // termsButton
@@ -156,17 +151,50 @@ class AuthViewController: UIViewController {
         setupViews()
         setupKeyboardNotifications()
         setupTextFieldDelegates()
-        
+        setupScrollViewDelegate()
+        setupScrollViewGesture()
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        scrollView.endEditing(true)
     }
     
 }
 
 
+// MARK: - UITextFieldDelegate
+
 extension AuthViewController: UITextFieldDelegate {
+    
+    func setupTextFieldDelegates() {
+        nameTextField.delegate = self
+        emailTextField.delegate = self
+        passTextField.delegate = self
+    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+    
+}
+
+
+// MARK: - UIScrollViewDelegate
+
+extension AuthViewController: UIScrollViewDelegate {
+    
+    func setupScrollViewDelegate() {
+        scrollView.delegate = self
+    }
+    
+    func setupScrollViewGesture() {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(scrollViewTapped(recognizer:)))
+        scrollView.addGestureRecognizer(gesture)
+    }
+    
+    func scrollViewTapped(recognizer: UIGestureRecognizer) {
+        scrollView.endEditing(true)
     }
     
 }
