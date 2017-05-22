@@ -54,6 +54,7 @@ extension AuthViewController {
         }
     }
     
+    // Very tricky to handle. PFUser is not persistent to the device and it cannot be subclass like CoreData mode objects...Unless I use another subclass an Managed object and call it something like DeviceUser or Owner or something else...
     func performSignup(name: String, email: String, pass: String) {
         guard let name = nameTextField.text?.lowercased(), let email = emailTextField.text?.lowercased(), let pass = passTextField.text else { return }
         if Reachability.isConnectedToNetwork() == true {

@@ -37,7 +37,6 @@ extension HomeViewController {
                 guard let pfobjects = pfobjects else { return }
                 for pfObject in pfobjects {
                     let user = User()
-                    user.profile_image = pfObject["profile_image"] as! String
                     user.username = pfObject["username"] as? String
                     user.timezone = pfObject["timezone"] as! String
                     self.users.append(user)

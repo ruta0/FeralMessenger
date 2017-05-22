@@ -2,14 +2,17 @@ PODS:
   - Bolts/Tasks (1.8.4)
   - Parse (1.14.4):
     - Bolts/Tasks (~> 1.8)
+  - SlackTextViewController (1.9.5)
 
 DEPENDENCIES:
   - Parse
+  - SlackTextViewController
 
 SPEC CHECKSUMS:
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
   Parse: b0aa91d2c435e53d4a9af26e741e014c9b35c42e
+  SlackTextViewController: fbcdadbb8090673f604484ff5b6eb8d77baed42a
 
-PODFILE CHECKSUM: a50e351b563f6b5672f85bb3bcfa2d0adf85b938
+PODFILE CHECKSUM: 548b2d9f1b7cd2c63413c5ba44cc9da29852a01b
 
 COCOAPODS: 1.2.1

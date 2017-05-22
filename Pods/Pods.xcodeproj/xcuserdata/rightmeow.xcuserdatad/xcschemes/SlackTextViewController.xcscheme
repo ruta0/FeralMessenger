@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '2F451A2020C4A72D19032359BF4EE5A3'
-               BlueprintName = 'Pods-FeralMessenger'
+               BlueprintIdentifier = '9EF22A3D137704D93F3105ABE248F089'
+               BlueprintName = 'SlackTextViewController'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'Pods-FeralMessenger.framework'>
+               BuildableName = 'SlackTextViewController.framework'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

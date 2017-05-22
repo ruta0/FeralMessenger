@@ -100,8 +100,8 @@ class DetailViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
-//        setupMessageInputContainerView()
-//        setupKeyboardNotifications()
+        setupMessageInputContainerView()
+        setupKeyboardNotifications()
     
         let customView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 64))
         customView.backgroundColor = .red
