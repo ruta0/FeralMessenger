@@ -17,6 +17,11 @@ class AuthViewController: UIViewController {
         case signup = "Sign Up"
     }
     
+    fileprivate enum ToggleButtonType: String {
+        case returnToLogin = "Return to Login"
+        case createAnAccount = "Create an Account"
+    }
+    
     enum ResponseType {
         case success
         case failure
@@ -93,18 +98,18 @@ class AuthViewController: UIViewController {
     }
     
     private func changeAuthButtonTitle(sender: UIButton) {
-        if sender.titleLabel?.text == "Login" {
-            sender.setTitle("Sign Up", for: UIControlState.normal)
+        if sender.titleLabel?.text == AuthButtonType.login.rawValue {
+            sender.setTitle(AuthButtonType.signup.rawValue, for: UIControlState.normal)
         } else {
-            sender.setTitle("Login", for: UIControlState.normal)
+            sender.setTitle(AuthButtonType.login.rawValue, for: UIControlState.normal)
         }
     }
     
     private func changeToggleButtonTitle(sender: UIButton) {
-        if sender.titleLabel?.text == "Create an Account" {
-            sender.setTitle("Return to Login", for: UIControlState.normal)
+        if sender.titleLabel?.text == ToggleButtonType.createAnAccount.rawValue {
+            sender.setTitle(ToggleButtonType.returnToLogin.rawValue, for: UIControlState.normal)
         } else {
-            sender.setTitle("Create an Account", for: UIControlState.normal)
+            sender.setTitle(ToggleButtonType.createAnAccount.rawValue, for: UIControlState.normal)
         }
     }
     
@@ -138,12 +143,12 @@ class AuthViewController: UIViewController {
         // authButton
         authButton.layer.cornerRadius = 25 // height is set to 50 in storyboard
         authButton.backgroundColor = UIColor.mandarinOrange()
-        authButton.setTitle("Login", for: UIControlState.normal)
+        authButton.setTitle(AuthButtonType.login.rawValue, for: UIControlState.normal)
         // termsButton
         termsButton.backgroundColor = UIColor.clear
         // toggleButton
         toggleButton.backgroundColor = UIColor.clear
-        toggleButton.setTitle("Create an Account", for: UIControlState.normal)
+        toggleButton.setTitle(ToggleButtonType.createAnAccount.rawValue, for: UIControlState.normal)
     }
     
     override func viewDidLoad() {

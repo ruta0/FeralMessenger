@@ -6,23 +6,18 @@
 //  Copyright © 2017 Duckisburg. All rights reserved.
 //
 
-import Foundation
 import UIKit
+import Parse
 
 
 class HomeViewController: UICollectionViewController {
     
     fileprivate let cellID = "HomeCell"
     
-    @IBOutlet weak var addButton: UIBarButtonItem!
     @IBOutlet weak var logoutButton: UIBarButtonItem!
-
-    @IBAction func addButton_tapped(_ sender: UIBarButtonItem) {
-        print(123)
-    }
     
     @IBAction func logoutButton_tapped(_ sender: UIBarButtonItem) {
-        self.dismiss(animated: true, completion: nil)
+        performLogout()
     }
     
     lazy var titleButton: UIButton = {
@@ -58,6 +53,7 @@ class HomeViewController: UICollectionViewController {
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
     }
     
 }

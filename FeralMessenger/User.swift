@@ -6,21 +6,29 @@
 //  Copyright © 2017 Duckisburg. All rights reserved.
 //
 
-import Foundation
 import Parse
+import UIKit
 
 
 final class User: PFUser {
     
-    @NSManaged var name: String
-    @NSManaged var profile_image: String?
-    @NSManaged var messages: [Message]?
+    @NSManaged var profile_image: String
+    @NSManaged var uuid: String
+    @NSManaged var sysName: String
+    @NSManaged var sysVersion: String
+    @NSManaged var timezone: String
+    @NSManaged var model: String
     
-    init(name: String, profile_image: String?, messages: [Message]?) {
-        super.init()
-        self.name = name
-        self.profile_image = profile_image
-        self.messages = messages
+    func constructUserInfo(name: String, email: String, pass: String) {
+        self.username = name
+        self.email = email
+        self.password = pass
+        self.profile_image = ""
+        self.uuid = UIDevice.current.identifierForVendor!.uuidString
+        self.sysVersion = UIDevice.current.systemVersion
+        self.sysName = UIDevice.current.systemName
+        self.timezone = NSTimeZone.system.identifier
+        self.model = UIDevice.current.model
     }
     
     override init() {

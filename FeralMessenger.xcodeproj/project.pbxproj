@@ -21,16 +21,17 @@
 		C525BC751ED0DC47006BEEA3 /* HomeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC741ED0DC47006BEEA3 /* HomeCell.swift */; };
 		C525BC771ED0DC8E006BEEA3 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC761ED0DC8E006BEEA3 /* DetailViewController.swift */; };
 		C525BC791ED0DCD9006BEEA3 /* DetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC781ED0DCD9006BEEA3 /* DetailCell.swift */; };
-		C525BC7E1ED0FF25006BEEA3 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC7D1ED0FF25006BEEA3 /* UIColor.swift */; };
-		C525BC801ED134D9006BEEA3 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC7F1ED134D9006BEEA3 /* UIView.swift */; };
+		C525BC7E1ED0FF25006BEEA3 /* UIKit+UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC7D1ED0FF25006BEEA3 /* UIKit+UIColor.swift */; };
+		C525BC801ED134D9006BEEA3 /* UIKit+UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC7F1ED134D9006BEEA3 /* UIKit+UIView.swift */; };
 		C5439B6F1ED14D4D00FBD7D3 /* KeychainItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B6E1ED14D4D00FBD7D3 /* KeychainItem.swift */; };
 		C5439B711ED14D7C00FBD7D3 /* KeychainConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B701ED14D7C00FBD7D3 /* KeychainConfiguration.swift */; };
-		C5439B731ED14DB600FBD7D3 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B721ED14DB600FBD7D3 /* UIViewController.swift */; };
+		C5439B731ED14DB600FBD7D3 /* Keychain+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B721ED14DB600FBD7D3 /* Keychain+UIViewController.swift */; };
 		C5439B751ED2094500FBD7D3 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B741ED2094500FBD7D3 /* AuthViewController.swift */; };
 		C5439B771ED248F400FBD7D3 /* AuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B761ED248F400FBD7D3 /* AuthController.swift */; };
-		C5439B791ED24AA700FBD7D3 /* UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B781ED24AA700FBD7D3 /* UILabel.swift */; };
+		C5439B791ED24AA700FBD7D3 /* UIKit+UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B781ED24AA700FBD7D3 /* UIKit+UILabel.swift */; };
 		C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7A1ED28B3400FBD7D3 /* User.swift */; };
 		C5439B7D1ED28B5700FBD7D3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7C1ED28B5700FBD7D3 /* Message.swift */; };
+		C5439B7F1ED2CA4400FBD7D3 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7E1ED2CA4400FBD7D3 /* HomeController.swift */; };
 		F60F367CA4D4A485FB6CA97E /* Pods_FeralMessengerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F49CECBB20EBDFECDB16144 /* Pods_FeralMessengerUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -79,16 +80,17 @@
 		C525BC741ED0DC47006BEEA3 /* HomeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeCell.swift; sourceTree = "<group>"; };
 		C525BC761ED0DC8E006BEEA3 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		C525BC781ED0DCD9006BEEA3 /* DetailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailCell.swift; sourceTree = "<group>"; };
-		C525BC7D1ED0FF25006BEEA3 /* UIColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
-		C525BC7F1ED134D9006BEEA3 /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
+		C525BC7D1ED0FF25006BEEA3 /* UIKit+UIColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+UIColor.swift"; sourceTree = "<group>"; };
+		C525BC7F1ED134D9006BEEA3 /* UIKit+UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+UIView.swift"; sourceTree = "<group>"; };
 		C5439B6E1ED14D4D00FBD7D3 /* KeychainItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainItem.swift; sourceTree = "<group>"; };
 		C5439B701ED14D7C00FBD7D3 /* KeychainConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainConfiguration.swift; sourceTree = "<group>"; };
-		C5439B721ED14DB600FBD7D3 /* UIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
+		C5439B721ED14DB600FBD7D3 /* Keychain+UIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Keychain+UIViewController.swift"; sourceTree = "<group>"; };
 		C5439B741ED2094500FBD7D3 /* AuthViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		C5439B761ED248F400FBD7D3 /* AuthController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthController.swift; sourceTree = "<group>"; };
-		C5439B781ED24AA700FBD7D3 /* UILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UILabel.swift; sourceTree = "<group>"; };
+		C5439B781ED24AA700FBD7D3 /* UIKit+UILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+UILabel.swift"; sourceTree = "<group>"; };
 		C5439B7A1ED28B3400FBD7D3 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		C5439B7C1ED28B5700FBD7D3 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		C5439B7E1ED2CA4400FBD7D3 /* HomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -231,6 +233,7 @@
 			isa = PBXGroup;
 			children = (
 				C5439B761ED248F400FBD7D3 /* AuthController.swift */,
+				C5439B7E1ED2CA4400FBD7D3 /* HomeController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -265,9 +268,9 @@
 		C525BC7C1ED0FF15006BEEA3 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
-				C525BC7D1ED0FF25006BEEA3 /* UIColor.swift */,
-				C525BC7F1ED134D9006BEEA3 /* UIView.swift */,
-				C5439B781ED24AA700FBD7D3 /* UILabel.swift */,
+				C525BC7D1ED0FF25006BEEA3 /* UIKit+UIColor.swift */,
+				C525BC7F1ED134D9006BEEA3 /* UIKit+UIView.swift */,
+				C5439B781ED24AA700FBD7D3 /* UIKit+UILabel.swift */,
 			);
 			name = UIKit;
 			sourceTree = "<group>";
@@ -277,7 +280,7 @@
 			children = (
 				C5439B6E1ED14D4D00FBD7D3 /* KeychainItem.swift */,
 				C5439B701ED14D7C00FBD7D3 /* KeychainConfiguration.swift */,
-				C5439B721ED14DB600FBD7D3 /* UIViewController.swift */,
+				C5439B721ED14DB600FBD7D3 /* Keychain+UIViewController.swift */,
 			);
 			name = Keychain;
 			sourceTree = "<group>";
@@ -566,7 +569,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C525BC801ED134D9006BEEA3 /* UIView.swift in Sources */,
+				C525BC801ED134D9006BEEA3 /* UIKit+UIView.swift in Sources */,
 				C5439B6F1ED14D4D00FBD7D3 /* KeychainItem.swift in Sources */,
 				C5439B771ED248F400FBD7D3 /* AuthController.swift in Sources */,
 				C5439B7D1ED28B5700FBD7D3 /* Message.swift in Sources */,
@@ -574,12 +577,13 @@
 				C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */,
 				C525BC6D1ED0D2F3006BEEA3 /* ParseServerConfigs.swift in Sources */,
 				C525BC711ED0D488006BEEA3 /* Reachability.swift in Sources */,
-				C525BC7E1ED0FF25006BEEA3 /* UIColor.swift in Sources */,
-				C5439B731ED14DB600FBD7D3 /* UIViewController.swift in Sources */,
-				C5439B791ED24AA700FBD7D3 /* UILabel.swift in Sources */,
+				C525BC7E1ED0FF25006BEEA3 /* UIKit+UIColor.swift in Sources */,
+				C5439B731ED14DB600FBD7D3 /* Keychain+UIViewController.swift in Sources */,
+				C5439B791ED24AA700FBD7D3 /* UIKit+UILabel.swift in Sources */,
 				C525BC751ED0DC47006BEEA3 /* HomeCell.swift in Sources */,
 				C525BC6B1ED0C5E5006BEEA3 /* HomeViewController.swift in Sources */,
 				C5439B711ED14D7C00FBD7D3 /* KeychainConfiguration.swift in Sources */,
+				C5439B7F1ED2CA4400FBD7D3 /* HomeController.swift in Sources */,
 				C525BC791ED0DCD9006BEEA3 /* DetailCell.swift in Sources */,
 				C525BC771ED0DC8E006BEEA3 /* DetailViewController.swift in Sources */,
 				C5439B751ED2094500FBD7D3 /* AuthViewController.swift in Sources */,

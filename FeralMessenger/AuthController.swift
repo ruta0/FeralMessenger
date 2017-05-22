@@ -44,10 +44,8 @@ extension AuthViewController {
         guard let name = nameTextField.text?.lowercased(), let email = emailTextField.text?.lowercased(), let pass = passTextField.text else { return }
         if Reachability.isConnectedToNetwork() == true {
             self.activityIndicator.startAnimating()
-            let newUser = PFUser()
-            newUser.username = name
-            newUser.email = email
-            newUser.password = pass
+            let newUser = User()
+            newUser.constructUserInfo(name: name, email: email, pass: pass)
             newUser.signUpInBackground(block: { (completed: Bool, error: Error?) in
                 self.activityIndicator.stopAnimating()
                 self.passTextField.text = ""

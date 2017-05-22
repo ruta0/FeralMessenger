@@ -15,8 +15,8 @@
         <!--Home View Controller-->
         <scene sceneID="VRs-u7-eFW">
             <objects>
-                <collectionViewController storyboardIdentifier="HomeViewController" id="64d-Yl-Fg7" customClass="HomeViewController" customModule="FeralMessenger" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" id="PO1-Vs-jIc" customClass="HomeViewController">
+                <collectionViewController restorationIdentifier="HomeViewController" storyboardIdentifier="HomeViewController" id="64d-Yl-Fg7" customClass="HomeViewController" customModule="FeralMessenger" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" id="PO1-Vs-jIc" customClass="HomeViewController">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -31,7 +31,7 @@
                                 <rect key="frame" x="0.5" y="0.0" width="374" height="119"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="119"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="119"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k7d-or-Nv9">
@@ -103,15 +103,9 @@
                                 <action selector="logoutButton_tapped:" destination="64d-Yl-Fg7" id="6rl-UG-hxy"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="m1o-hq-eCb">
-                            <connections>
-                                <action selector="addButton_tapped:" destination="64d-Yl-Fg7" id="lkW-Tz-Xhf"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <connections>
-                        <outlet property="addButton" destination="m1o-hq-eCb" id="FzM-XD-jFE"/>
                         <outlet property="logoutButton" destination="dCF-Qr-iMJ" id="ryQ-SK-v58"/>
                     </connections>
                 </collectionViewController>
