@@ -28,4 +28,49 @@ extension HomeViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
+    func fetchUsers() {
+        guard let query = User.query() else { return }
+        query.findObjectsInBackground { (pfobjects: [PFObject]?, error: Error?) in
+            if error != nil {
+                print(error!.localizedDescription)
+            } else {
+                guard let pfobjects = pfobjects else { return }
+                for pfObject in pfobjects {
+                    let user = User()
+                    user.profile_image = pfObject["profile_image"] as! String
+                    user.username = pfObject["username"] as? String
+                    user.timezone = pfObject["timezone"] as! String
+                    self.users.append(user)
+                }
+                self.handleRefresh()
+            }
+        }
+    }
+    
+    func handleRefresh() {
+        collectionView?.reloadData()
+        refreshController.endRefreshing()
+    }
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

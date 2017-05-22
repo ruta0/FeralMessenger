@@ -13,10 +13,24 @@ import Parse
 
 extension AuthViewController {
     
-    private func persistUserData(pfUser: PFUser?, completion: () -> ()) {
-        guard let user = pfUser, let auth_token = user.sessionToken else { return }
-        storeSecretInKeychain(secret: auth_token, account: "auth_token") // this method almost always don't fail
-        completion()
+    func checkUserLoginSession() {
+        fetchTokenFromKeychain(accountName: "auth_token") { (token: String) in
+            self.performLogin(token: token)
+        }
+    }
+    
+    // synchronize call is on the not being handled correctly - fix this
+    func performLogin(token: String) {
+        if Reachability.isConnectedToNetwork() == true {
+            self.activityIndicator.startAnimating()
+            PFUser.become(inBackground: token, block: { (pfUser: PFUser?, error: Error?) in
+                self.activityIndicator.stopAnimating()
+                self.storeSecretInKeychain(secret: token, account: "auth_token")
+                self.presentHomeView()
+            })
+        } else {
+            handleResponse(type: AuthViewController.ResponseType.failure, message: "Failed to connect to Internet")
+        }
     }
     
     func performLogin(name: String, pass: String) {
@@ -31,7 +45,7 @@ extension AuthViewController {
                     self.handleResponse(type: AuthViewController.ResponseType.failure, message: error!.localizedDescription)
                 } else {
                     self.persistUserData(pfUser: pfUser, completion: {
-                        self.performSegue(withIdentifier: "HomeViewControllerSegue", sender: self)
+                        self.presentHomeView()
                     })
                 }
             })
@@ -75,6 +89,10 @@ extension AuthViewController {
         }
     }
     
+    func presentHomeView() {
+        self.performSegue(withIdentifier: "HomeViewControllerSegue", sender: self)
+    }
+    
     // optional: I want to refactor this method into the /keychain/UIViewController extension, the AuthViewController shouldn't be handling this.
     private func storeSecretInKeychain(secret: String, account: String) {
         do {
@@ -93,10 +111,10 @@ extension AuthViewController {
         }
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "HomeViewControllerSegue" {
-            print(123)
-        }
+    private func persistUserData(pfUser: PFUser?, completion: () -> ()) {
+        guard let user = pfUser, let auth_token = user.sessionToken else { return }
+        storeSecretInKeychain(secret: auth_token, account: "auth_token")
+        completion()
     }
     
 }

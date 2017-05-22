@@ -16,11 +16,11 @@
         <scene sceneID="VRs-u7-eFW">
             <objects>
                 <collectionViewController restorationIdentifier="HomeViewController" storyboardIdentifier="HomeViewController" id="64d-Yl-Fg7" customClass="HomeViewController" customModule="FeralMessenger" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" id="PO1-Vs-jIc" customClass="HomeViewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" indicatorStyle="black" delaysContentTouches="NO" bouncesZoom="NO" dataMode="prototypes" id="PO1-Vs-jIc" customClass="HomeViewController">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="tuh-4n-PEI">
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="tuh-4n-PEI">
                             <size key="itemSize" width="374" height="119"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -88,7 +88,7 @@
                                     <outlet property="messageLabel" destination="uf1-ok-Xh9" id="a0l-wQ-Ewx"/>
                                     <outlet property="profileImageView" destination="5yJ-eE-eCW" id="2ER-ef-pKJ"/>
                                     <outlet property="usernameLabel" destination="Kfh-QB-jCh" id="liX-iK-qKW"/>
-                                    <segue destination="Z3t-To-DmP" kind="show" identifier="DetailViewController" id="8GV-DL-qzr"/>
+                                    <segue destination="Z3t-To-DmP" kind="show" identifier="DetailViewControllerSegue" id="8GV-DL-qzr"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
@@ -117,7 +117,7 @@
         <scene sceneID="5PN-Fh-lL4">
             <objects>
                 <collectionViewController storyboardIdentifier="DetailViewController" id="Z3t-To-DmP" customClass="DetailViewController" customModule="FeralMessenger" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" id="dY2-Nu-Bwh">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" indicatorStyle="black" delaysContentTouches="NO" dataMode="prototypes" id="dY2-Nu-Bwh">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -309,7 +309,7 @@
                                                     </button>
                                                 </subviews>
                                             </stackView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="UCg-AI-ZqB">
+                                            <imageView multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="UCg-AI-ZqB">
                                                 <rect key="frame" x="123" y="105" width="128" height="128"/>
                                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <constraints>

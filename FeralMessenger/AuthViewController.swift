@@ -28,6 +28,7 @@ class AuthViewController: UIViewController {
     }
     
     var accountName: String?
+    var blockOperations = [BlockOperation]()
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
@@ -86,6 +87,10 @@ class AuthViewController: UIViewController {
         }
     }
     
+    func handleTapOnLogo(logo: UIImageView) {
+        print(123)
+    }
+    
     // I should've use stackView to do this instead.
     private func changeEmailTextFieldAlpha(sender: UITextField) {
         if sender.alpha == 0.0 {
@@ -126,6 +131,7 @@ class AuthViewController: UIViewController {
         let tinitedImage = originalImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         logoImageView.image = tinitedImage
         logoImageView.tintColor = UIColor.white
+        logoImageView.addGestureRecognizer(UIGestureRecognizer(target: self, action: #selector(handleTapOnLogo(logo:))))
         // errorLabel
         errorLabel.alpha = 0.0
         // nameTF
@@ -158,6 +164,12 @@ class AuthViewController: UIViewController {
         setupTextFieldDelegates()
         setupScrollViewDelegate()
         setupScrollViewGesture()
+        checkUserLoginSession()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+//        checkUserLoginSession()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

@@ -19,11 +19,17 @@ final class User: PFUser {
     @NSManaged var timezone: String
     @NSManaged var model: String
     
+    func query() -> PFQuery<PFObject>? {
+        let query = PFQuery(className: User.parseClassName())
+        query.includeKey("User")
+        query.order(byAscending: "created_at")
+        return query
+    }
+    
     func constructUserInfo(name: String, email: String, pass: String) {
         self.username = name
         self.email = email
         self.password = pass
-        self.profile_image = ""
         self.uuid = UIDevice.current.identifierForVendor!.uuidString
         self.sysVersion = UIDevice.current.systemVersion
         self.sysName = UIDevice.current.systemName

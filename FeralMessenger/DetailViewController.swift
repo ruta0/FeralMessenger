@@ -14,6 +14,7 @@ class DetailViewController: UICollectionViewController {
     fileprivate let cellID = "DetailCell"
     
     var bottomConstraint: NSLayoutConstraint?
+    var selectedUser: User?
     var messages: [Message]?
     
     let messageInputContainerView: UIView = {
@@ -92,19 +93,20 @@ class DetailViewController: UICollectionViewController {
     }
     
     private func setupTabBar() {
-        guard let tabBarController = tabBarController else { return }
-        tabBarController.tabBar.isHidden = true
+        guard let tabBar = tabBarController?.tabBar else { return }
+        tabBar.isHidden = true
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupMessageInputContainerView()
-        setupKeyboardNotifications()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
         setupTabBar()
+//        setupMessageInputContainerView()
+//        setupKeyboardNotifications()
+    
+        let customView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 64))
+        customView.backgroundColor = .red
+        inputTextField.inputAccessoryView = customView
+        
     }
     
 }
@@ -113,8 +115,7 @@ class DetailViewController: UICollectionViewController {
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension DetailViewController: UICollectionViewDelegateFlowLayout {
-    
-    
+
     
 }
 
@@ -140,3 +141,29 @@ extension DetailViewController {
     }
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
