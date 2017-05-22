@@ -23,6 +23,7 @@ extension AuthViewController {
     func performLogin(token: String) {
         if Reachability.isConnectedToNetwork() == true {
             self.activityIndicator.startAnimating()
+            self.handleResponse(type: AuthViewController.ResponseType.success, message: "Loading...")
             PFUser.become(inBackground: token, block: { (pfUser: PFUser?, error: Error?) in
                 self.activityIndicator.stopAnimating()
                 self.storeSecretInKeychain(secret: token, account: "auth_token")

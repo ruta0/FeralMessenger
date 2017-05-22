@@ -7,7 +7,6 @@ target 'FeralMessenger' do
 
   # Pods for FeralMessenger
     pod 'Parse'
-    pod 'SlackTextViewController'
 
   target 'FeralMessengerTests' do
     inherit! :search_paths

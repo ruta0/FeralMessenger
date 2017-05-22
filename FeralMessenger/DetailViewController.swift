@@ -102,11 +102,6 @@ class DetailViewController: UICollectionViewController {
         setupTabBar()
         setupMessageInputContainerView()
         setupKeyboardNotifications()
-    
-        let customView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 64))
-        customView.backgroundColor = .red
-        inputTextField.inputAccessoryView = customView
-        
     }
     
 }
@@ -116,7 +111,7 @@ class DetailViewController: UICollectionViewController {
 
 extension DetailViewController: UICollectionViewDelegateFlowLayout {
 
-    
+    // the default size is fine. I am digging it.
 }
 
 
