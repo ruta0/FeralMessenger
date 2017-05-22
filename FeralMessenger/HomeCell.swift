@@ -24,6 +24,7 @@ class HomeCell: UICollectionViewCell {
         profileImageView.layer.cornerRadius = 10
         profileImageView.layer.borderColor = UIColor.white.cgColor
         profileImageView.layer.borderWidth = 2
+        profileImageView.image = UIImage(named: "ProfileImage")
         // usernameLabel
         usernameLabel.textColor = UIColor.deepSeaBlue()
         usernameLabel.backgroundColor = UIColor.clear

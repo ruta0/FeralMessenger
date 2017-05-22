@@ -6,9 +6,7 @@ target 'FeralMessenger' do
   use_frameworks!
 
   # Pods for FeralMessenger
-    pod 'Alamofire', '4.4.0'
     pod 'Parse'
-
 
   target 'FeralMessengerTests' do
     inherit! :search_paths

@@ -13,22 +13,30 @@ import Parse
 
 extension AuthViewController {
     
-    func performLogin(email: String, pass: String) {
-        guard let email = emailTextField.text?.lowercased(), let pass = passTextField.text else { return }
+    private func persistUserData(pfUser: PFUser?, completion: () -> ()) {
+        guard let user = pfUser, let auth_token = user.sessionToken else { return }
+        storeSecretInKeychain(secret: auth_token, account: "auth_token") // this method almost always don't fail
+        completion()
+    }
+    
+    func performLogin(name: String, pass: String) {
+        guard let name = nameTextField.text?.lowercased(), let pass = passTextField.text else { return }
         if Reachability.isConnectedToNetwork() == true {
             self.activityIndicator.startAnimating()
-            passTextField.text = ""
-            PFUser.logInWithUsername(inBackground: email, password: pass, block: { (pfUser: PFUser?, error: Error?) in
+            // I am using email as username
+            PFUser.logInWithUsername(inBackground: name, password: pass, block: { (pfUser: PFUser?, error: Error?) in
                 self.activityIndicator.stopAnimating()
+                self.passTextField.text = ""
                 if error != nil {
-                    self.handleErrorResponse(message: error!.localizedDescription)
+                    self.handleResponse(type: AuthViewController.ResponseType.failure, message: error!.localizedDescription)
                 } else {
-                    // success
-                    self.performSegue(withIdentifier: "HomeViewControllerSegue", sender: self)
+                    self.persistUserData(pfUser: pfUser, completion: {
+                        self.performSegue(withIdentifier: "HomeViewControllerSegue", sender: self)
+                    })
                 }
             })
         } else {
-            handleErrorResponse(message: "Failed to connect to Internet")
+            handleResponse(type: AuthViewController.ResponseType.failure, message: "Failed to connect to Internet")
         }
     }
     
@@ -36,20 +44,55 @@ extension AuthViewController {
         guard let name = nameTextField.text?.lowercased(), let email = emailTextField.text?.lowercased(), let pass = passTextField.text else { return }
         if Reachability.isConnectedToNetwork() == true {
             self.activityIndicator.startAnimating()
-            passTextField.text = ""
-            print(name, email, pass)
+            let newUser = PFUser()
+            newUser.username = name
+            newUser.email = email
+            newUser.password = pass
+            newUser.signUpInBackground(block: { (completed: Bool, error: Error?) in
+                self.activityIndicator.stopAnimating()
+                self.passTextField.text = ""
+                if error != nil {
+                    self.handleResponse(type: AuthViewController.ResponseType.failure, message: error!.localizedDescription)
+                } else {
+                    self.handleResponse(type: AuthViewController.ResponseType.success, message: "Success! Please proceed to login.")
+                }
+            })
         } else {
-            handleErrorResponse(message: "Failed to connect to Internet")
+            handleResponse(type: AuthViewController.ResponseType.failure, message: "Failed to connect to Internet")
         }
     }
     
-    func handleErrorResponse(message: String) {
-        AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-        nameTextField.jitter(repeatCount: 5)
-        emailTextField.jitter(repeatCount: 5)
-        passTextField.jitter(repeatCount: 5)
-        passTextField.text = ""
-        errorLabel.flash(delay: 4, message: message)
+    func handleResponse(type: ResponseType, message: String) {
+        if type == ResponseType.success {
+            errorLabel.textColor = UIColor.green
+            errorLabel.flash(delay: 5, message: message)
+        } else if type == ResponseType.failure {
+            errorLabel.textColor = UIColor.red
+            errorLabel.flash(delay: 4, message: message)
+            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+            nameTextField.jitter(repeatCount: 5)
+            emailTextField.jitter(repeatCount: 5)
+            passTextField.jitter(repeatCount: 5)
+            passTextField.text = ""
+        }
+    }
+    
+    // optional: I want to refactor this method into the /keychain/UIViewController extension, the AuthViewController shouldn't be handling this.
+    private func storeSecretInKeychain(secret: String, account: String) {
+        do {
+            self.accountName = account
+            if let originalAccountName = self.accountName {
+                var passwordItem = KeychainItem(service: KeychainConfiguration.serviceName, account: originalAccountName, accessGroup: KeychainConfiguration.accessGroup)
+                try passwordItem.renameAccount(account)
+                try passwordItem.savePassword(secret)
+            } else {
+                // if this is a new account, create a new keychain item
+                let tokenItem = KeychainItem(service: KeychainConfiguration.serviceName, account: account, accessGroup: KeychainConfiguration.accessGroup)
+                try tokenItem.savePassword(secret)
+            }
+        } catch {
+            fatalError("Error updating keychain = \(error)")
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

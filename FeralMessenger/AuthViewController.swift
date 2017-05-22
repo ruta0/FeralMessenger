@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Parse
 
 
 class AuthViewController: UIViewController {
@@ -15,6 +16,13 @@ class AuthViewController: UIViewController {
         case login = "Login"
         case signup = "Sign Up"
     }
+    
+    enum ResponseType {
+        case success
+        case failure
+    }
+    
+    var accountName: String?
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
@@ -36,16 +44,16 @@ class AuthViewController: UIViewController {
     
     @IBAction func authButton_tapped(_ sender: UIButton) {
         if sender.titleLabel?.text == AuthButtonType.login.rawValue {
-            if emailTextField.text != "" && passTextField.text != "" {
-                performLogin(email: emailTextField.text!, pass: passTextField.text!)
+            if nameTextField.text != "" && passTextField.text != "" {
+                performLogin(name: nameTextField.text!, pass: passTextField.text!)
             } else {
-                handleErrorResponse(message: "Fields cannot be blank")
+                handleResponse(type: AuthViewController.ResponseType.failure, message: "Fields cannot be blank")
             }
         } else {
             if nameTextField.text != "" && emailTextField.text != "" && passTextField.text != "" {
                 performSignup(name: nameTextField.text!, email: emailTextField.text!, pass: passTextField.text!)
             } else {
-                handleErrorResponse(message: "Fields cannot be blank")
+                handleResponse(type: AuthViewController.ResponseType.failure, message: "Fields cannot be blank")
             }
         }
     }
@@ -56,7 +64,7 @@ class AuthViewController: UIViewController {
     
     @IBAction func toggleButton_tapped(_ sender: UIButton) {
         UIView.animate(withDuration: 0.25, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-            self.changeUsernameTextFieldAlpha(sender: self.nameTextField)
+            self.changeEmailTextFieldAlpha(sender: self.emailTextField)
             self.changeAuthButtonTitle(sender: self.authButton)
             self.changeToggleButtonTitle(sender: self.toggleButton)
         }, completion: nil)
@@ -73,7 +81,7 @@ class AuthViewController: UIViewController {
     }
     
     // I should've use stackView to do this instead.
-    private func changeUsernameTextFieldAlpha(sender: UITextField) {
+    private func changeEmailTextFieldAlpha(sender: UITextField) {
         if sender.alpha == 0.0 {
             dividerViewOne.alpha = 1.0
             sender.alpha = 1.0
@@ -121,12 +129,12 @@ class AuthViewController: UIViewController {
         // errorLabel
         errorLabel.alpha = 0.0
         // nameTF
-        nameTextField.alpha = 0.0
         nameTextField.borderStyle = UITextBorderStyle.none
         nameTextField.attributedPlaceholder = NSAttributedString(string: "name", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
         // dividerViewOne
         dividerViewOne.alpha = 0.0
         // emailTF
+        emailTextField.alpha = 0.0
         emailTextField.borderStyle = UITextBorderStyle.none
         emailTextField.attributedPlaceholder = NSAttributedString(string: "email", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
         // passTF
@@ -148,6 +156,7 @@ class AuthViewController: UIViewController {
         setupViews()
         setupKeyboardNotifications()
         setupTextFieldDelegates()
+        
     }
     
 }
@@ -156,13 +165,7 @@ class AuthViewController: UIViewController {
 extension AuthViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == nameTextField {
-            emailTextField.becomeFirstResponder()
-        } else if textField == emailTextField {
-            passTextField.becomeFirstResponder()
-        } else if textField == passTextField {
-            passTextField.resignFirstResponder()
-        }
+        textField.resignFirstResponder()
         return true
     }
     

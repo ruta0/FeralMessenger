@@ -11,7 +11,6 @@
 		86AA0CE399E870ED1A13EDEE /* Pods_FeralMessenger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BD907D41C88F95D883A784D /* Pods_FeralMessenger.framework */; };
 		C525BC341ED02C77006BEEA3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC331ED02C77006BEEA3 /* AppDelegate.swift */; };
 		C525BC391ED02C77006BEEA3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C525BC371ED02C77006BEEA3 /* Main.storyboard */; };
-		C525BC3C1ED02C77006BEEA3 /* FeralMessenger.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C525BC3A1ED02C77006BEEA3 /* FeralMessenger.xcdatamodeld */; };
 		C525BC3E1ED02C77006BEEA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C525BC3D1ED02C77006BEEA3 /* Assets.xcassets */; };
 		C525BC411ED02C77006BEEA3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C525BC3F1ED02C77006BEEA3 /* LaunchScreen.storyboard */; };
 		C525BC4C1ED02C77006BEEA3 /* FeralMessengerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC4B1ED02C77006BEEA3 /* FeralMessengerTests.swift */; };
@@ -24,16 +23,14 @@
 		C525BC791ED0DCD9006BEEA3 /* DetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC781ED0DCD9006BEEA3 /* DetailCell.swift */; };
 		C525BC7E1ED0FF25006BEEA3 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC7D1ED0FF25006BEEA3 /* UIColor.swift */; };
 		C525BC801ED134D9006BEEA3 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC7F1ED134D9006BEEA3 /* UIView.swift */; };
-		C5439B681ED13B2700FBD7D3 /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B641ED13B2700FBD7D3 /* Message+CoreDataClass.swift */; };
-		C5439B691ED13B2700FBD7D3 /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B651ED13B2700FBD7D3 /* Message+CoreDataProperties.swift */; };
-		C5439B6A1ED13B2700FBD7D3 /* Friend+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B661ED13B2700FBD7D3 /* Friend+CoreDataClass.swift */; };
-		C5439B6B1ED13B2700FBD7D3 /* Friend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B671ED13B2700FBD7D3 /* Friend+CoreDataProperties.swift */; };
 		C5439B6F1ED14D4D00FBD7D3 /* KeychainItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B6E1ED14D4D00FBD7D3 /* KeychainItem.swift */; };
 		C5439B711ED14D7C00FBD7D3 /* KeychainConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B701ED14D7C00FBD7D3 /* KeychainConfiguration.swift */; };
 		C5439B731ED14DB600FBD7D3 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B721ED14DB600FBD7D3 /* UIViewController.swift */; };
 		C5439B751ED2094500FBD7D3 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B741ED2094500FBD7D3 /* AuthViewController.swift */; };
 		C5439B771ED248F400FBD7D3 /* AuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B761ED248F400FBD7D3 /* AuthController.swift */; };
 		C5439B791ED24AA700FBD7D3 /* UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B781ED24AA700FBD7D3 /* UILabel.swift */; };
+		C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7A1ED28B3400FBD7D3 /* User.swift */; };
+		C5439B7D1ED28B5700FBD7D3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7C1ED28B5700FBD7D3 /* Message.swift */; };
 		F60F367CA4D4A485FB6CA97E /* Pods_FeralMessengerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F49CECBB20EBDFECDB16144 /* Pods_FeralMessengerUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -67,7 +64,6 @@
 		C525BC301ED02C77006BEEA3 /* FeralMessenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeralMessenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C525BC331ED02C77006BEEA3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C525BC381ED02C77006BEEA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		C525BC3B1ED02C77006BEEA3 /* FeralMessenger.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FeralMessenger.xcdatamodel; sourceTree = "<group>"; };
 		C525BC3D1ED02C77006BEEA3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C525BC401ED02C77006BEEA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C525BC421ED02C77006BEEA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -85,16 +81,14 @@
 		C525BC781ED0DCD9006BEEA3 /* DetailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailCell.swift; sourceTree = "<group>"; };
 		C525BC7D1ED0FF25006BEEA3 /* UIColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 		C525BC7F1ED134D9006BEEA3 /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
-		C5439B641ED13B2700FBD7D3 /* Message+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataClass.swift"; sourceTree = "<group>"; };
-		C5439B651ED13B2700FBD7D3 /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		C5439B661ED13B2700FBD7D3 /* Friend+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Friend+CoreDataClass.swift"; sourceTree = "<group>"; };
-		C5439B671ED13B2700FBD7D3 /* Friend+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Friend+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		C5439B6E1ED14D4D00FBD7D3 /* KeychainItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainItem.swift; sourceTree = "<group>"; };
 		C5439B701ED14D7C00FBD7D3 /* KeychainConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainConfiguration.swift; sourceTree = "<group>"; };
 		C5439B721ED14DB600FBD7D3 /* UIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
 		C5439B741ED2094500FBD7D3 /* AuthViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		C5439B761ED248F400FBD7D3 /* AuthController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthController.swift; sourceTree = "<group>"; };
 		C5439B781ED24AA700FBD7D3 /* UILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UILabel.swift; sourceTree = "<group>"; };
+		C5439B7A1ED28B3400FBD7D3 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		C5439B7C1ED28B5700FBD7D3 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,11 +209,8 @@
 		C525BC651ED02CA8006BEEA3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				C5439B641ED13B2700FBD7D3 /* Message+CoreDataClass.swift */,
-				C5439B651ED13B2700FBD7D3 /* Message+CoreDataProperties.swift */,
-				C5439B661ED13B2700FBD7D3 /* Friend+CoreDataClass.swift */,
-				C5439B671ED13B2700FBD7D3 /* Friend+CoreDataProperties.swift */,
-				C525BC3A1ED02C77006BEEA3 /* FeralMessenger.xcdatamodeld */,
+				C5439B7A1ED28B3400FBD7D3 /* User.swift */,
+				C5439B7C1ED28B5700FBD7D3 /* Message.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -247,7 +238,6 @@
 		C525BC681ED02CC0006BEEA3 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				C5439B6D1ED14D1700FBD7D3 /* CoreData */,
 				C5439B6C1ED14D0C00FBD7D3 /* Keychain */,
 				C525BC7C1ED0FF15006BEEA3 /* UIKit */,
 				C525BC6F1ED0D442006BEEA3 /* ParseServer */,
@@ -290,13 +280,6 @@
 				C5439B721ED14DB600FBD7D3 /* UIViewController.swift */,
 			);
 			name = Keychain;
-			sourceTree = "<group>";
-		};
-		C5439B6D1ED14D1700FBD7D3 /* CoreData */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = CoreData;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -584,11 +567,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				C525BC801ED134D9006BEEA3 /* UIView.swift in Sources */,
-				C525BC3C1ED02C77006BEEA3 /* FeralMessenger.xcdatamodeld in Sources */,
 				C5439B6F1ED14D4D00FBD7D3 /* KeychainItem.swift in Sources */,
-				C5439B691ED13B2700FBD7D3 /* Message+CoreDataProperties.swift in Sources */,
 				C5439B771ED248F400FBD7D3 /* AuthController.swift in Sources */,
+				C5439B7D1ED28B5700FBD7D3 /* Message.swift in Sources */,
 				C525BC341ED02C77006BEEA3 /* AppDelegate.swift in Sources */,
+				C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */,
 				C525BC6D1ED0D2F3006BEEA3 /* ParseServerConfigs.swift in Sources */,
 				C525BC711ED0D488006BEEA3 /* Reachability.swift in Sources */,
 				C525BC7E1ED0FF25006BEEA3 /* UIColor.swift in Sources */,
@@ -598,11 +581,8 @@
 				C525BC6B1ED0C5E5006BEEA3 /* HomeViewController.swift in Sources */,
 				C5439B711ED14D7C00FBD7D3 /* KeychainConfiguration.swift in Sources */,
 				C525BC791ED0DCD9006BEEA3 /* DetailCell.swift in Sources */,
-				C5439B681ED13B2700FBD7D3 /* Message+CoreDataClass.swift in Sources */,
-				C5439B6A1ED13B2700FBD7D3 /* Friend+CoreDataClass.swift in Sources */,
 				C525BC771ED0DC8E006BEEA3 /* DetailViewController.swift in Sources */,
 				C5439B751ED2094500FBD7D3 /* AuthViewController.swift in Sources */,
-				C5439B6B1ED13B2700FBD7D3 /* Friend+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -882,19 +862,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		C525BC3A1ED02C77006BEEA3 /* FeralMessenger.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				C525BC3B1ED02C77006BEEA3 /* FeralMessenger.xcdatamodel */,
-			);
-			currentVersion = C525BC3B1ED02C77006BEEA3 /* FeralMessenger.xcdatamodel */;
-			path = FeralMessenger.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = C525BC281ED02C77006BEEA3 /* Project object */;
 }

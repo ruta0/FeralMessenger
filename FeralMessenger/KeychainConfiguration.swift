@@ -12,7 +12,7 @@ import Foundation
 
 struct KeychainConfiguration {
     
-    static let serviceName = "FeralMessenger"
+    static let serviceName = "feral"
     static let accessGroup: String? = nil
     static var accountName = ""
     

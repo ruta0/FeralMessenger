@@ -11,7 +11,7 @@ import UIKit
 
 extension UIViewController {
     
-    /// on completion, this method returns a token as String or an Error
+    /// on completion, this method returns the auth_token as String or an Error
     func fetchTokenFromKeychain(accountName: String, completion: @escaping (_ token: String) -> ()) {
         do {
             let tokenItem = KeychainItem(service: KeychainConfiguration.serviceName, account: KeychainConfiguration.accountName, accessGroup: KeychainConfiguration.accessGroup)
