@@ -30,9 +30,12 @@ final class Message: PFObject {
         super.init()
     }
     
+    // not fetching with the correct predicates???
     class func query(receiverName: String, senderName: String) -> PFQuery<PFObject>? {
-        let predicate = NSPredicate(format: "receiverName == %@ AND senderName == %@ ", receiverName, senderName)
-        let query = PFQuery(className: Message.parseClassName(), predicate: predicate)
+        let predicate = NSPredicate(format: "receiverName == %@ AND senderName == %@", receiverName, senderName)
+        let inversePredicate = NSPredicate(format: "receiverName == %@ AND senderName == %@", senderName, receiverName)
+        let compoundedPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [predicate, inversePredicate])
+        let query = PFQuery(className: Message.parseClassName(), predicate: compoundedPredicate)
         query.includeKey("Message")
         query.order(byDescending: "created_at")
         return query

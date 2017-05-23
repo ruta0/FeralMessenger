@@ -22,6 +22,8 @@ extension DetailViewController {
                 for pfObject in pfObjects {
                     let message = Message()
                     message.sms = pfObject["sms"] as? String
+                    message.receiverName = pfObject["receiverName"] as! String
+                    message.senderName = pfObject["senderName"] as! String
                     self.messages.append(message)
                 }
                 self.reloadData()
@@ -48,19 +50,18 @@ extension DetailViewController {
                 print(error!.localizedDescription)
             } else {
                 if completed == true {
-                    // perform ui changes on main queue
-                    DispatchQueue.main.async {
-                        self.messages.append(pfObject)
-                        self.reloadData()
-                    }
+                    self.pushMessageToCollectionView(message: pfObject)
                 }
             }
         }
     }
     
-    func handleRefresh() {
-        reloadData()
-        refreshControl.endRefreshing()
+    func pushMessageToCollectionView(message: Message) {
+        // perform ui changes on main queue
+        DispatchQueue.main.async {
+            self.messages.append(message)
+            self.reloadData()
+        }
     }
     
     func clearTextField() {

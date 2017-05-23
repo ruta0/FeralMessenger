@@ -22,10 +22,14 @@ extension AuthViewController {
     // synchronize call is on the not being handled correctly - fix this
     func performLogin(token: String) {
         if Reachability.isConnectedToNetwork() == true {
+            Parse.initialize(with: ParseConfig.config)
+            isParseInitialized = true
             self.activityIndicator.startAnimating()
-            self.handleResponse(type: AuthViewController.ResponseType.success, message: "Loading...")
+            handleResponse(type: AuthViewController.ResponseType.normal, message: "Resumming to previous session")
+            UIApplication.shared.beginIgnoringInteractionEvents()
             PFUser.become(inBackground: token, block: { (pfUser: PFUser?, error: Error?) in
                 self.activityIndicator.stopAnimating()
+                UIApplication.shared.endIgnoringInteractionEvents()
                 self.storeSecretInKeychain(secret: token, account: "auth_token")
                 self.presentHomeView()
             })
@@ -37,6 +41,8 @@ extension AuthViewController {
     func performLogin(name: String, pass: String) {
         guard let name = nameTextField.text?.lowercased(), let pass = passTextField.text else { return }
         if Reachability.isConnectedToNetwork() == true {
+            Parse.initialize(with: ParseConfig.config)
+            isParseInitialized = true
             self.activityIndicator.startAnimating()
             // I am using email as username
             PFUser.logInWithUsername(inBackground: name, password: pass, block: { (pfUser: PFUser?, error: Error?) in
@@ -59,6 +65,8 @@ extension AuthViewController {
     func performSignup(name: String, email: String, pass: String) {
         guard let name = nameTextField.text?.lowercased(), let email = emailTextField.text?.lowercased(), let pass = passTextField.text else { return }
         if Reachability.isConnectedToNetwork() == true {
+            Parse.initialize(with: ParseConfig.config)
+            isParseInitialized = true
             self.activityIndicator.startAnimating()
             let newUser = User()
             newUser.constructUserInfo(name: name, email: email, pass: pass)
@@ -80,9 +88,12 @@ extension AuthViewController {
         if type == ResponseType.success {
             errorLabel.textColor = UIColor.green
             errorLabel.flash(delay: 5, message: message)
+        } else if type == ResponseType.normal {
+            errorLabel.textColor = UIColor.orange
+            errorLabel.flash(delay: 5, message: message)
         } else if type == ResponseType.failure {
             errorLabel.textColor = UIColor.red
-            errorLabel.flash(delay: 4, message: message)
+            errorLabel.flash(delay: 5, message: message)
             AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
             nameTextField.jitter(repeatCount: 5)
             emailTextField.jitter(repeatCount: 5)
@@ -117,6 +128,14 @@ extension AuthViewController {
         guard let user = pfUser, let auth_token = user.sessionToken else { return }
         storeSecretInKeychain(secret: auth_token, account: "auth_token")
         completion()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ServerConfigViewControllerSegue" {
+            print(123)
+        } else if segue.identifier == "HomeViewControllerSegue" {
+            print(321)
+        }
     }
     
 }

@@ -23,6 +23,7 @@ class AuthViewController: UIViewController {
     }
     
     enum ResponseType {
+        case normal
         case success
         case failure
     }
@@ -87,6 +88,10 @@ class AuthViewController: UIViewController {
         }
     }
     
+    func presentServerConfigView(gestureRecognizer: UITapGestureRecognizer) {
+        self.performSegue(withIdentifier: "ServerConfigViewControllerSegue", sender: self)
+    }
+    
     // I should've use stackView to do this instead.
     private func changeEmailTextFieldAlpha(sender: UITextField) {
         if sender.alpha == 0.0 {
@@ -117,6 +122,12 @@ class AuthViewController: UIViewController {
     private func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.toggleScrollViewScrolling), name: Notification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.toggleScrollViewScrolling), name: Notification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    private func setupLogoImageViewGesture() {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(presentServerConfigView(gestureRecognizer:)))
+        gesture.numberOfTapsRequired = 7
+        logoImageView.addGestureRecognizer(gesture)
     }
     
     private func setupViews() {
@@ -155,20 +166,12 @@ class AuthViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        setupLogoImageViewGesture()
         setupKeyboardNotifications()
         setupTextFieldDelegates()
         setupScrollViewDelegate()
         setupScrollViewGesture()
         checkUserLoginSession()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
-//        checkUserLoginSession()
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        scrollView.endEditing(true)
     }
     
 }

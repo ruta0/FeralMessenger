@@ -13,11 +13,21 @@ extension HomeViewController {
     
     func performLogout() {
         PFUser.logOutInBackground { (error: Error?) in
+            self.removeTokenFromKeychain()
             if error != nil {
                 self.handleFatalErrorResponse(fatalError: error!)
             } else {
                 self.tabBarController?.dismiss(animated: true, completion: nil)
             }
+        }
+    }
+    
+    func removeTokenFromKeychain() {
+        let item = KeychainItem(service: KeychainConfiguration.serviceName, account: "auth_token", accessGroup: KeychainConfiguration.accessGroup)
+        do {
+            try item.deleteItem()
+        } catch let err {
+            print(err)
         }
     }
     
@@ -41,9 +51,13 @@ extension HomeViewController {
                     user.timezone = pfObject["timezone"] as! String
                     self.users.append(user)
                 }
-                self.handleRefresh()
+                self.reloadData()
             }
         }
+    }
+    
+    func reloadData() {
+        collectionView?.reloadData()
     }
     
     func handleRefresh() {

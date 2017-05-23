@@ -18,13 +18,6 @@ class DetailViewController: UICollectionViewController {
     var selectedUser = User()
     var messages = [Message]()
     
-    lazy var refreshControl: UIRefreshControl = {
-        let control = UIRefreshControl()
-        control.tintColor = UIColor.darkGray
-        control.addTarget(self, action: #selector(handleRefresh), for: UIControlEvents.valueChanged)
-        return control
-    }()
-    
     let messageInputContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.candyWhite()
@@ -64,8 +57,8 @@ class DetailViewController: UICollectionViewController {
                 self.view.layoutIfNeeded()
             }, completion: { (completed) in
                 if isKeyboardShowing {
-//                    let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
-//                    self.collectionView?.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.bottom, animated: true)
+                    let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
+                    self.collectionView?.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.bottom, animated: true)
                 }
             })
         }
@@ -101,8 +94,12 @@ class DetailViewController: UICollectionViewController {
         tabBar.isHidden = true
     }
     
-    private func setupRefreshControl() {
-        collectionView?.addSubview(refreshControl)
+    private func setupNavigationController() {
+        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 64, height: 32))
+        titleLabel.textAlignment = NSTextAlignment.center
+        titleLabel.text = selectedUser.username
+        titleLabel.textColor = UIColor.white
+        self.navigationItem.titleView = titleLabel
     }
     
     override func viewDidLoad() {
@@ -113,7 +110,7 @@ class DetailViewController: UICollectionViewController {
         setupTextFieldDelegate()
         setupCollectionViewDelegate()
         setupCollectionViewGesture()
-        setupRefreshControl()
+        setupNavigationController()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -145,29 +142,45 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout {
 
 extension DetailViewController {
     
+    /// Note: notice that there is a footer in the storyboard to offer the additional space offset for the textfield
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! DetailCell
         cell.messageTextView.text = messages[indexPath.row].sms
         if let sms = messages[indexPath.item].sms {
             cell.messageTextView.text = sms
+            cell.profileImageView.image = #imageLiteral(resourceName: "ProfileImage")
             let size = CGSize(width: 250, height: 1000)
             let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
             let estimatedFrame = NSString(string: sms).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
-            if !(messages[indexPath.item].senderName == PFUser.current()!.username) {
-                cell.bubbleView.frame = CGRect(x: 8 + 30 + 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height+20)
-                cell.bubbleView.frame = CGRect(x: 8 + 30 + 8 + 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height+20)
+            // incoming message
+            if messages[indexPath.item].senderName != PFUser.current()!.username! {
+                cell.bubbleView.frame = CGRect(x: 8 + 30 + 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
+                cell.messageTextView.frame = CGRect(x: 8 + 30 + 8 + 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
+                cell.messageTextView.textColor = UIColor.darkGray
                 cell.profileImageView.isHidden = false
                 cell.bubbleView.backgroundColor = UIColor.candyWhite()
             } else {
-                // outgoing sending message
+                // outgoing message
                 cell.bubbleView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8 - 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
-                cell.bubbleView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
+                cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
+                cell.messageTextView.textColor = UIColor.white
                 cell.profileImageView.isHidden = true
                 cell.bubbleView.backgroundColor = UIColor.miamiBlue()
                 cell.messageTextView.textColor = UIColor.white
             }
         }
         return cell
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        switch kind {
+        case UICollectionElementKindSectionFooter:
+            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "DetailViewFooter", for: indexPath)
+            footerView.backgroundColor = UIColor.clear
+            return footerView
+        default:
+            assert(false, "unexpected element kind")
+        }
     }
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {

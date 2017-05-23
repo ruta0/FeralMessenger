@@ -33,6 +33,8 @@
 		C5439B7D1ED28B5700FBD7D3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7C1ED28B5700FBD7D3 /* Message.swift */; };
 		C5439B7F1ED2CA4400FBD7D3 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7E1ED2CA4400FBD7D3 /* HomeController.swift */; };
 		C5439B851ED39E7A00FBD7D3 /* DetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B841ED39E7A00FBD7D3 /* DetailController.swift */; };
+		C5D7C38E1ED4360B00ECE44C /* ServerConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */; };
+		C5D7C3901ED44E2500ECE44C /* ServerConfigController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D7C38F1ED44E2500ECE44C /* ServerConfigController.swift */; };
 		F60F367CA4D4A485FB6CA97E /* Pods_FeralMessengerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F49CECBB20EBDFECDB16144 /* Pods_FeralMessengerUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -93,6 +95,8 @@
 		C5439B7C1ED28B5700FBD7D3 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		C5439B7E1ED2CA4400FBD7D3 /* HomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 		C5439B841ED39E7A00FBD7D3 /* DetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailController.swift; sourceTree = "<group>"; };
+		C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConfigViewController.swift; sourceTree = "<group>"; };
+		C5D7C38F1ED44E2500ECE44C /* ServerConfigController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConfigController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -222,6 +226,7 @@
 		C525BC661ED02CB1006BEEA3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */,
 				C5439B741ED2094500FBD7D3 /* AuthViewController.swift */,
 				C525BC6A1ED0C5E5006BEEA3 /* HomeViewController.swift */,
 				C525BC741ED0DC47006BEEA3 /* HomeCell.swift */,
@@ -234,6 +239,7 @@
 		C525BC671ED02CB7006BEEA3 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				C5D7C38F1ED44E2500ECE44C /* ServerConfigController.swift */,
 				C5439B761ED248F400FBD7D3 /* AuthController.swift */,
 				C5439B7E1ED2CA4400FBD7D3 /* HomeController.swift */,
 				C5439B841ED39E7A00FBD7D3 /* DetailController.swift */,
@@ -575,6 +581,7 @@
 				C525BC801ED134D9006BEEA3 /* UIKit+UIView.swift in Sources */,
 				C5439B6F1ED14D4D00FBD7D3 /* KeychainItem.swift in Sources */,
 				C5439B771ED248F400FBD7D3 /* AuthController.swift in Sources */,
+				C5D7C3901ED44E2500ECE44C /* ServerConfigController.swift in Sources */,
 				C5439B7D1ED28B5700FBD7D3 /* Message.swift in Sources */,
 				C525BC341ED02C77006BEEA3 /* AppDelegate.swift in Sources */,
 				C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */,
@@ -590,6 +597,7 @@
 				C5439B7F1ED2CA4400FBD7D3 /* HomeController.swift in Sources */,
 				C525BC791ED0DCD9006BEEA3 /* DetailCell.swift in Sources */,
 				C525BC771ED0DC8E006BEEA3 /* DetailViewController.swift in Sources */,
+				C5D7C38E1ED4360B00ECE44C /* ServerConfigViewController.swift in Sources */,
 				C5439B751ED2094500FBD7D3 /* AuthViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -748,7 +756,7 @@
 				DEVELOPMENT_TEAM = ZLUJC28Y9H;
 				INFOPLIST_FILE = FeralMessenger/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Duckisburg.FeralMessenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.openwork.Feral;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -762,7 +770,7 @@
 				DEVELOPMENT_TEAM = ZLUJC28Y9H;
 				INFOPLIST_FILE = FeralMessenger/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Duckisburg.FeralMessenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.openwork.Feral;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};

@@ -17,7 +17,7 @@ class DetailCell: UICollectionViewCell {
     
     private func setupViews() {
         // collectionViewCell
-        backgroundColor = UIColor.white
+        backgroundColor = UIColor.clear
         // profileImage
         profileImageView.layer.cornerRadius = 15
         profileImageView.contentMode = .scaleAspectFill
@@ -36,6 +36,9 @@ class DetailCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         setupViews()
+        addSubview(bubbleView)
+        addSubview(messageTextView)
+        addSubview(profileImageView)
         addConstraintsWithFormat(format: "H:|-8-[v0(30)]", views: profileImageView)
         addConstraintsWithFormat(format: "V:[v0(30)]|", views: profileImageView)
     }

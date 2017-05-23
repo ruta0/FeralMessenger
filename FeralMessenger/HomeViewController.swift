@@ -33,7 +33,6 @@ class HomeViewController: UICollectionViewController {
     lazy var titleButton: UIButton = {
         let button = UIButton()
         button.tintColor = UIColor.white
-        button.setTitle("Home", for: UIControlState.normal)
         button.frame = CGRect(x: 0, y: 0, width: 35, height: 21)
         return button
     }()
@@ -62,6 +61,8 @@ class HomeViewController: UICollectionViewController {
         super.viewDidLoad()
         setupViews()
         fetchUsers()
+        // huh, wrong place to set the nav title, but yolo...
+        titleButton.setTitle(PFUser.current()?.username!, for: UIControlState.normal)
     }
     
     override func viewWillAppear(_ animated: Bool) {
