@@ -14,15 +14,15 @@ final class Message: PFObject {
     
     // parse handles the id, created_at, updated_at automatically
     @NSManaged var image: PFFile?
-    @NSManaged var senderId: String
-    @NSManaged var receiverId: String
+    @NSManaged var senderName: String
+    @NSManaged var receiverName: String
     @NSManaged var sms: String?
     
-    init(image: PFFile?, senderId: String, receiverId: String, sms: String?) {
+    init(image: PFFile?, senderName: String, receiverName: String, sms: String?) {
         super.init()
         self.image = image
-        self.senderId = senderId
-        self.receiverId = receiverId
+        self.senderName = senderName
+        self.receiverName = receiverName
         self.sms = sms
     }
     
@@ -30,8 +30,9 @@ final class Message: PFObject {
         super.init()
     }
     
-    override class func query() -> PFQuery<PFObject>? {
-        let query = PFQuery(className: Message.parseClassName())
+    class func query(receiverName: String, senderName: String) -> PFQuery<PFObject>? {
+        let predicate = NSPredicate(format: "receiverName == %@ AND senderName == %@ ", receiverName, senderName)
+        let query = PFQuery(className: Message.parseClassName(), predicate: predicate)
         query.includeKey("Message")
         query.order(byDescending: "created_at")
         return query

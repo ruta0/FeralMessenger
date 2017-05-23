@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Parse
 
 
 class DetailViewController: UICollectionViewController {
@@ -14,8 +15,15 @@ class DetailViewController: UICollectionViewController {
     fileprivate let cellID = "DetailCell"
     
     var bottomConstraint: NSLayoutConstraint?
-    var selectedUser: User?
-    var messages: [Message]?
+    var selectedUser = User()
+    var messages = [Message]()
+    
+    lazy var refreshControl: UIRefreshControl = {
+        let control = UIRefreshControl()
+        control.tintColor = UIColor.darkGray
+        control.addTarget(self, action: #selector(handleRefresh), for: UIControlEvents.valueChanged)
+        return control
+    }()
     
     let messageInputContainerView: UIView = {
         let view = UIView()
@@ -43,13 +51,9 @@ class DetailViewController: UICollectionViewController {
         let titleColor = UIColor.miamiBlue()
         button.setTitleColor(titleColor, for: UIControlState.normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        button.addTarget(self, action: #selector(handleSend), for: UIControlEvents.touchUpInside)
+        button.addTarget(self, action: #selector(sendMessage), for: UIControlEvents.touchUpInside)
         return button
     }()
-    
-    func handleSend() {
-        print(123)
-    }
     
     func handleKeyboardNotification(notification: Notification) {
         if let userInfo = notification.userInfo {
@@ -60,8 +64,8 @@ class DetailViewController: UICollectionViewController {
                 self.view.layoutIfNeeded()
             }, completion: { (completed) in
                 if isKeyboardShowing {
-                    let indexPath = IndexPath(item: self.messages!.count - 1, section: 0)
-                    self.collectionView?.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.bottom, animated: true)
+//                    let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
+//                    self.collectionView?.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.bottom, animated: true)
                 }
             })
         }
@@ -97,11 +101,24 @@ class DetailViewController: UICollectionViewController {
         tabBar.isHidden = true
     }
     
+    private func setupRefreshControl() {
+        collectionView?.addSubview(refreshControl)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
         setupMessageInputContainerView()
         setupKeyboardNotifications()
+        setupTextFieldDelegate()
+        setupCollectionViewDelegate()
+        setupCollectionViewGesture()
+        setupRefreshControl()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        fetchMessages(receiverName: selectedUser.username!)
     }
     
 }
@@ -111,7 +128,16 @@ class DetailViewController: UICollectionViewController {
 
 extension DetailViewController: UICollectionViewDelegateFlowLayout {
 
-    // the default size is fine. I am digging it.
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if let messageText = messages[indexPath.item].sms {
+            let size = CGSize(width: 250, height: 1000)
+            let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
+            let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
+            return CGSize(width: view.frame.width, height: estimatedFrame.height+20)
+        }
+        return CGSize(width: view.frame.width, height: 84)
+    }
+    
 }
 
 
@@ -121,6 +147,26 @@ extension DetailViewController {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! DetailCell
+        cell.messageTextView.text = messages[indexPath.row].sms
+        if let sms = messages[indexPath.item].sms {
+            cell.messageTextView.text = sms
+            let size = CGSize(width: 250, height: 1000)
+            let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
+            let estimatedFrame = NSString(string: sms).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
+            if !(messages[indexPath.item].senderName == PFUser.current()!.username) {
+                cell.bubbleView.frame = CGRect(x: 8 + 30 + 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height+20)
+                cell.bubbleView.frame = CGRect(x: 8 + 30 + 8 + 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height+20)
+                cell.profileImageView.isHidden = false
+                cell.bubbleView.backgroundColor = UIColor.candyWhite()
+            } else {
+                // outgoing sending message
+                cell.bubbleView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8 - 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
+                cell.bubbleView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
+                cell.profileImageView.isHidden = true
+                cell.bubbleView.backgroundColor = UIColor.miamiBlue()
+                cell.messageTextView.textColor = UIColor.white
+            }
+        }
         return cell
     }
     
@@ -129,7 +175,7 @@ extension DetailViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+        return messages.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -138,9 +184,40 @@ extension DetailViewController {
 }
 
 
+// MARK: - UITextFieldDelegate
+
+extension DetailViewController: UITextFieldDelegate {
+    
+    func setupTextFieldDelegate() {
+        inputTextField.delegate = self
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        inputTextField.resignFirstResponder()
+        return true
+    }
+    
+}
 
 
+// MARK: - UICollectionViewTap
 
+extension DetailViewController {
+    
+    func setupCollectionViewDelegate() {
+        collectionView?.delegate = self
+    }
+    
+    func setupCollectionViewGesture() {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(collectionViewTapped(recognizer: )))
+        collectionView?.addGestureRecognizer(gesture)
+    }
+    
+    func collectionViewTapped(recognizer: UIGestureRecognizer) {
+        inputTextField.resignFirstResponder()
+    }
+    
+}
 
 
 

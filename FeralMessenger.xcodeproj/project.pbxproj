@@ -32,6 +32,7 @@
 		C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7A1ED28B3400FBD7D3 /* User.swift */; };
 		C5439B7D1ED28B5700FBD7D3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7C1ED28B5700FBD7D3 /* Message.swift */; };
 		C5439B7F1ED2CA4400FBD7D3 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7E1ED2CA4400FBD7D3 /* HomeController.swift */; };
+		C5439B851ED39E7A00FBD7D3 /* DetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B841ED39E7A00FBD7D3 /* DetailController.swift */; };
 		F60F367CA4D4A485FB6CA97E /* Pods_FeralMessengerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F49CECBB20EBDFECDB16144 /* Pods_FeralMessengerUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -91,6 +92,7 @@
 		C5439B7A1ED28B3400FBD7D3 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		C5439B7C1ED28B5700FBD7D3 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		C5439B7E1ED2CA4400FBD7D3 /* HomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
+		C5439B841ED39E7A00FBD7D3 /* DetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -234,6 +236,7 @@
 			children = (
 				C5439B761ED248F400FBD7D3 /* AuthController.swift */,
 				C5439B7E1ED2CA4400FBD7D3 /* HomeController.swift */,
+				C5439B841ED39E7A00FBD7D3 /* DetailController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -576,6 +579,7 @@
 				C525BC341ED02C77006BEEA3 /* AppDelegate.swift in Sources */,
 				C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */,
 				C525BC6D1ED0D2F3006BEEA3 /* ParseServerConfigs.swift in Sources */,
+				C5439B851ED39E7A00FBD7D3 /* DetailController.swift in Sources */,
 				C525BC711ED0D488006BEEA3 /* Reachability.swift in Sources */,
 				C525BC7E1ED0FF25006BEEA3 /* UIKit+UIColor.swift in Sources */,
 				C5439B731ED14DB600FBD7D3 /* Keychain+UIViewController.swift in Sources */,

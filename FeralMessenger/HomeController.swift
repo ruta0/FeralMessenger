@@ -30,12 +30,12 @@ extension HomeViewController {
     
     func fetchUsers() {
         guard let query = User.query() else { return }
-        query.findObjectsInBackground { (pfobjects: [PFObject]?, error: Error?) in
+        query.findObjectsInBackground { (pfObjects: [PFObject]?, error: Error?) in
             if error != nil {
                 print(error!.localizedDescription)
             } else {
-                guard let pfobjects = pfobjects else { return }
-                for pfObject in pfobjects {
+                guard let pfObjects = pfObjects else { return }
+                for pfObject in pfObjects {
                     let user = User()
                     user.username = pfObject["username"] as? String
                     user.timezone = pfObject["timezone"] as! String
@@ -49,6 +49,16 @@ extension HomeViewController {
     func handleRefresh() {
         collectionView?.reloadData()
         refreshController.endRefreshing()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "DetailViewControllerSegue" {
+            if let selectedCell = sender as? UICollectionViewCell {
+                let indexPath = collectionView?.indexPath(for: selectedCell)!.row
+                let vc = segue.destination as! DetailViewController
+                vc.selectedUser = users[indexPath!]
+            }
+        }
     }
     
 }

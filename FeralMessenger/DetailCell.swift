@@ -27,7 +27,7 @@ class DetailCell: UICollectionViewCell {
         bubbleView.layer.cornerRadius = 15
         bubbleView.layer.masksToBounds = true
         // messageTextView
-        messageTextView.textColor = UIColor.white
+        messageTextView.textColor = UIColor.darkGray
         messageTextView.backgroundColor = UIColor.clear
         messageTextView.font = UIFont.systemFont(ofSize: 14)
         messageTextView.text = "message"
@@ -36,6 +36,8 @@ class DetailCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         setupViews()
+        addConstraintsWithFormat(format: "H:|-8-[v0(30)]", views: profileImageView)
+        addConstraintsWithFormat(format: "V:[v0(30)]|", views: profileImageView)
     }
     
 }

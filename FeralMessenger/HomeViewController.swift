@@ -15,7 +15,7 @@ class HomeViewController: UICollectionViewController {
     fileprivate let cellID = "HomeCell"
     
     var users = [User]()
-    var selectedUser: User?
+    var selectedUser = User()
     
     @IBOutlet weak var logoutButton: UIBarButtonItem!
     
@@ -110,10 +110,6 @@ extension HomeViewController {
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return users.count
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // implement this
     }
     
 }

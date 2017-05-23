@@ -65,7 +65,7 @@ class AuthViewController: UIViewController {
     }
     
     @IBAction func termsButton_tapped(_ sender: UIButton) {
-        // use a webview to display the terms
+        // implement this. use a webview to display the terms
         print(123)
     }
     
@@ -85,10 +85,6 @@ class AuthViewController: UIViewController {
             scrollView.setContentOffset(CGPoint(x: self.scrollView.contentOffset.x, y: 0), animated: true)
             scrollView.isScrollEnabled = false
         }
-    }
-    
-    func handleTapOnLogo(logo: UIImageView) {
-        print(123)
     }
     
     // I should've use stackView to do this instead.
@@ -131,7 +127,6 @@ class AuthViewController: UIViewController {
         let tinitedImage = originalImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         logoImageView.image = tinitedImage
         logoImageView.tintColor = UIColor.white
-        logoImageView.addGestureRecognizer(UIGestureRecognizer(target: self, action: #selector(handleTapOnLogo(logo:))))
         // errorLabel
         errorLabel.alpha = 0.0
         // nameTF
