@@ -9,6 +9,7 @@
 import UIKit
 import UserNotifications
 
+
 var isParseInitialized: Bool?
 
 @UIApplicationMain
@@ -19,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         isParseInitialized = false
+        registerForAPNS(application: application)
         return true
     }
 
@@ -40,9 +42,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 
+// MARK: - APNS
+
 extension AppDelegate: UNUserNotificationCenterDelegate {
     
-    // implement this for parse
+    func registerForAPNS(application: UIApplication) {
+        let center = UNUserNotificationCenter.current()
+        center.delegate = self
+        center.requestAuthorization(options: [.sound, .alert, .badge]) { (granted: Bool, error: Error?) in
+            if error != nil {
+                print(error!.localizedDescription)
+            } else if granted {
+                application.registerForRemoteNotifications()
+            }
+        }
+    }
+    
+    func scheduleLocalNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = NSString.localizedUserNotificationString(forKey: "hello_title", arguments: nil)
+        content.body = NSString.localizedUserNotificationString(forKey: "hello_body", arguments: nil)
+        // deliver the notification in 10 seconds
+        content.sound = UNNotificationSound.default()
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+        let request = UNNotificationRequest(identifier: "tenseconds", content: content, trigger: trigger)
+        let center = UNUserNotificationCenter.current()
+        center.add(request, withCompletionHandler: nil)
+    }
     
 }
 

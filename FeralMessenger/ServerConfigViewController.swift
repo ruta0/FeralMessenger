@@ -8,6 +8,7 @@
 
 import UIKit
 import Parse
+import AudioToolbox
 
 
 class ServerConfigViewController: UIViewController {
@@ -61,6 +62,10 @@ class ServerConfigViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.toggleScrollViewScrolling), name: Notification.Name.UIKeyboardWillHide, object: nil)
     }
     
+    private func alertWithVibration() {
+        AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+    }
+    
     private func setupViews() {
         // scrollView
         scrollView.isScrollEnabled = false
@@ -91,6 +96,11 @@ class ServerConfigViewController: UIViewController {
         setupTextFieldDelegates()
         setupScrollViewDelegate()
         setupScrollViewGesture()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        alertWithVibration()
     }
     
 }

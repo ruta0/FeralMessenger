@@ -97,6 +97,7 @@
 		C5439B841ED39E7A00FBD7D3 /* DetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailController.swift; sourceTree = "<group>"; };
 		C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConfigViewController.swift; sourceTree = "<group>"; };
 		C5D7C38F1ED44E2500ECE44C /* ServerConfigController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConfigController.swift; sourceTree = "<group>"; };
+		C5D7C3911ED45FFA00ECE44C /* FeralMessenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FeralMessenger.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,6 +206,7 @@
 		C525BC641ED02C94006BEEA3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C5D7C3911ED45FFA00ECE44C /* FeralMessenger.entitlements */,
 				C525BC331ED02C77006BEEA3 /* AppDelegate.swift */,
 				C525BC371ED02C77006BEEA3 /* Main.storyboard */,
 				C525BC3D1ED02C77006BEEA3 /* Assets.xcassets */,
@@ -373,16 +375,21 @@
 						CreatedOnToolsVersion = 8.3.2;
 						DevelopmentTeam = ZLUJC28Y9H;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					C525BC461ED02C77006BEEA3 = {
 						CreatedOnToolsVersion = 8.3.2;
-						DevelopmentTeam = LUU7Q496SS;
+						DevelopmentTeam = ZLUJC28Y9H;
 						ProvisioningStyle = Automatic;
 						TestTargetID = C525BC2F1ED02C77006BEEA3;
 					};
 					C525BC511ED02C77006BEEA3 = {
 						CreatedOnToolsVersion = 8.3.2;
-						DevelopmentTeam = LUU7Q496SS;
+						DevelopmentTeam = ZLUJC28Y9H;
 						ProvisioningStyle = Automatic;
 						TestTargetID = C525BC2F1ED02C77006BEEA3;
 					};
@@ -753,6 +760,7 @@
 			baseConfigurationReference = 67925B23A2C5D2F4FC6967F8 /* Pods-FeralMessenger.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = FeralMessenger/FeralMessenger.entitlements;
 				DEVELOPMENT_TEAM = ZLUJC28Y9H;
 				INFOPLIST_FILE = FeralMessenger/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -767,6 +775,7 @@
 			baseConfigurationReference = BC10FAB8FECDA137C6373323 /* Pods-FeralMessenger.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = FeralMessenger/FeralMessenger.entitlements;
 				DEVELOPMENT_TEAM = ZLUJC28Y9H;
 				INFOPLIST_FILE = FeralMessenger/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -782,7 +791,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = LUU7Q496SS;
+				DEVELOPMENT_TEAM = ZLUJC28Y9H;
 				INFOPLIST_FILE = FeralMessengerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Duckisburg.FeralMessengerTests;
@@ -798,7 +807,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = LUU7Q496SS;
+				DEVELOPMENT_TEAM = ZLUJC28Y9H;
 				INFOPLIST_FILE = FeralMessengerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Duckisburg.FeralMessengerTests;
@@ -813,7 +822,7 @@
 			baseConfigurationReference = 48A3E24C8951A9721EEFB1E3 /* Pods-FeralMessengerUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				DEVELOPMENT_TEAM = LUU7Q496SS;
+				DEVELOPMENT_TEAM = ZLUJC28Y9H;
 				INFOPLIST_FILE = FeralMessengerUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Duckisburg.FeralMessengerUITests;
@@ -828,7 +837,7 @@
 			baseConfigurationReference = 7A494FA67A0C77F53EA4C3DC /* Pods-FeralMessengerUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				DEVELOPMENT_TEAM = LUU7Q496SS;
+				DEVELOPMENT_TEAM = ZLUJC28Y9H;
 				INFOPLIST_FILE = FeralMessengerUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Duckisburg.FeralMessengerUITests;

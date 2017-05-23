@@ -15,8 +15,8 @@
         <!--home-->
         <scene sceneID="VRs-u7-eFW">
             <objects>
-                <collectionViewController restorationIdentifier="HomeViewController" storyboardIdentifier="HomeViewController" id="64d-Yl-Fg7" customClass="HomeViewController" customModule="FeralMessenger" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" indicatorStyle="black" delaysContentTouches="NO" bouncesZoom="NO" dataMode="prototypes" id="PO1-Vs-jIc" customClass="HomeViewController">
+                <collectionViewController storyboardIdentifier="HomeViewController" id="64d-Yl-Fg7" customClass="HomeViewController" customModule="FeralMessenger" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" indicatorStyle="black" delaysContentTouches="NO" bouncesZoom="NO" dataMode="prototypes" id="PO1-Vs-jIc" customClass="HomeViewController">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -117,7 +117,7 @@
         <scene sceneID="5PN-Fh-lL4">
             <objects>
                 <collectionViewController storyboardIdentifier="DetailViewController" hidesBottomBarWhenPushed="YES" id="Z3t-To-DmP" customClass="DetailViewController" customModule="FeralMessenger" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" indicatorStyle="black" delaysContentTouches="NO" dataMode="prototypes" id="dY2-Nu-Bwh">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" indicatorStyle="black" delaysContentTouches="NO" dataMode="prototypes" id="dY2-Nu-Bwh">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -391,8 +391,8 @@
                         <outlet property="scrollView" destination="KiB-aZ-2iw" id="SBv-1h-eGk"/>
                         <outlet property="termsButton" destination="4vZ-vp-BVN" id="h0F-LG-eyU"/>
                         <outlet property="toggleButton" destination="hXp-MJ-i5h" id="sdK-pR-7SN"/>
-                        <segue destination="stg-7x-c5V" kind="presentation" identifier="HomeViewControllerSegue" modalTransitionStyle="flipHorizontal" id="YkA-uc-LQg"/>
                         <segue destination="Myi-mJ-GiT" kind="presentation" identifier="ServerConfigViewControllerSegue" id="1n2-zL-6ae"/>
+                        <segue destination="stg-7x-c5V" kind="presentation" identifier="HomeViewControllerSegue" id="qd5-wj-LSv"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yoW-lY-Jam" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -409,7 +409,7 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
                     <connections>
-                        <segue destination="5ee-Ti-YX7" kind="relationship" relationship="viewControllers" id="LVS-b1-dOJ"/>
+                        <segue destination="5ee-Ti-YX7" kind="relationship" relationship="viewControllers" id="Neg-cZ-Sbi"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Z0C-wd-tgS" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -434,7 +434,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </toolbar>
                     <connections>
-                        <segue destination="64d-Yl-Fg7" kind="relationship" relationship="rootViewController" id="tBh-tO-94u"/>
+                        <segue destination="64d-Yl-Fg7" kind="relationship" relationship="rootViewController" id="jt8-EQ-VFI"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ORs-o4-6no" userLabel="First Responder" sceneMemberID="firstResponder"/>
