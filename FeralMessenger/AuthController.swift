@@ -22,8 +22,7 @@ extension AuthViewController {
     // synchronize call is on the not being handled correctly - fix this
     func performLogin(token: String) {
         if Reachability.isConnectedToNetwork() == true {
-            Parse.initialize(with: ParseConfig.config)
-            isParseInitialized = true
+            ParseConfig.attemptToInitializeParse()
             self.activityIndicator.startAnimating()
             handleResponse(type: AuthViewController.ResponseType.normal, message: "Resumming to previous session")
             UIApplication.shared.beginIgnoringInteractionEvents()
@@ -41,8 +40,7 @@ extension AuthViewController {
     func performLogin(name: String, pass: String) {
         guard let name = nameTextField.text?.lowercased(), let pass = passTextField.text else { return }
         if Reachability.isConnectedToNetwork() == true {
-            Parse.initialize(with: ParseConfig.config)
-            isParseInitialized = true
+            ParseConfig.attemptToInitializeParse()
             self.activityIndicator.startAnimating()
             // I am using email as username
             PFUser.logInWithUsername(inBackground: name, password: pass, block: { (pfUser: PFUser?, error: Error?) in
@@ -65,8 +63,7 @@ extension AuthViewController {
     func performSignup(name: String, email: String, pass: String) {
         guard let name = nameTextField.text?.lowercased(), let email = emailTextField.text?.lowercased(), let pass = passTextField.text else { return }
         if Reachability.isConnectedToNetwork() == true {
-            Parse.initialize(with: ParseConfig.config)
-            isParseInitialized = true
+            ParseConfig.attemptToInitializeParse()
             self.activityIndicator.startAnimating()
             let newUser = User()
             newUser.constructUserInfo(name: name, email: email, pass: pass)
@@ -104,6 +101,15 @@ extension AuthViewController {
     
     func presentHomeView() {
         self.performSegue(withIdentifier: "HomeViewControllerSegue", sender: self)
+    }
+    
+    func redirectToBrowserForTerms() {
+        guard let termsUrl = URL(string: "https://sheltered-ridge-89457.herokuapp.com/terms") else { return }
+        if #available(iOS 10.0, *) {
+            UIApplication.shared.open(termsUrl, options: [:], completionHandler: nil)
+        } else {
+            UIApplication.shared.openURL(termsUrl)
+        }
     }
     
     // optional: I want to refactor this method into the /keychain/UIViewController extension, the AuthViewController shouldn't be handling this.

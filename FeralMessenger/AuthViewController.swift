@@ -66,8 +66,14 @@ class AuthViewController: UIViewController {
     }
     
     @IBAction func termsButton_tapped(_ sender: UIButton) {
-        // implement this. use a webview to display the terms
-        print(123)
+        let alert = UIAlertController(title: "You will be redirected to your browser", message: "Are you sure?", preferredStyle: UIAlertControllerStyle.alert)
+        let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: nil)
+        let redirect = UIAlertAction(title: "Redirect", style: UIAlertActionStyle.destructive) { (action: UIAlertAction) in
+            self.redirectToBrowserForTerms()
+        }
+        alert.addAction(cancel)
+        alert.addAction(redirect)
+        self.present(alert, animated: true, completion: nil)
     }
     
     @IBAction func toggleButton_tapped(_ sender: UIButton) {

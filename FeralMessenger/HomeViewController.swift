@@ -54,6 +54,7 @@ class HomeViewController: UICollectionViewController {
     
     private func setupViews() {
         guard let collectionView = collectionView else { return }
+        collectionView.backgroundColor = UIColor.white
         collectionView.addSubview(refreshController)
     }
     

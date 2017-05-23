@@ -20,6 +20,8 @@ class HomeCell: UICollectionViewCell {
         // collectionViewCell
         self.backgroundColor = UIColor.candyWhite()
         self.dividerView.backgroundColor = UIColor.lightGray
+        // dividerView
+        dividerView.backgroundColor = UIColor.lightGray
         // profileImage
         profileImageView.layer.cornerRadius = 10
         profileImageView.layer.borderColor = UIColor.white.cgColor

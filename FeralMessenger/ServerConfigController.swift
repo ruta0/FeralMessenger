@@ -15,12 +15,12 @@ extension ServerConfigViewController {
     
     func attemptToInitiateParse(appId: String, serverUrl: String, masterKey: String) {
         if isParseInitialized == true {
-            handleResponse(type: ServerConfigViewController.ResponseType.normal, message: "Restart the app to setup a new configuration")
+            handleResponse(type: ServerConfigViewController.ResponseType.normal, message: "Restart the app to setup a new server configuration")
         } else {
             ParseConfig.heroku_app_id = appId
             ParseConfig.heroku_server_url = serverUrl
             ParseConfig.heroku_master_key = masterKey
-            Parse.initialize(with: ParseConfig.config)
+            ParseConfig.attemptToInitializeParse()
             master_keyTextField.text = ""
         }
     }
@@ -31,8 +31,9 @@ extension ServerConfigViewController {
             errorLabel.flash(delay: 5, message: message)
         } else if type == ResponseType.normal {
             errorLabel.textColor = UIColor.orange
-            errorLabel.flash(delay: 5, message: message)
+            errorLabel.flash(delay: 7, message: message)
             master_keyTextField.text = ""
+            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
         } else if type == ResponseType.failure {
             errorLabel.textColor = UIColor.red
             errorLabel.flash(delay: 5, message: message)

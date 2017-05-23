@@ -8,9 +8,8 @@
 
 import UIKit
 import UserNotifications
+import Parse
 
-
-var isParseInitialized: Bool?
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -73,7 +72,20 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 }
 
 
+// MARK: - Parse lifecycle
 
+extension AppDelegate {
+    
+    func attemptToInitializeParse() {
+        if isParseInitialized == false {
+            Parse.initialize(with: ParseConfig.config)
+            isParseInitialized = true
+        } else {
+            // Parse has already been initialized
+        }
+    }
+    
+}
 
 
 
