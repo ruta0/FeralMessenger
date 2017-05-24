@@ -25,7 +25,7 @@ class HomeViewController: UICollectionViewController {
     
     lazy var refreshController: UIRefreshControl = {
         let control = UIRefreshControl()
-        control.tintColor = UIColor.lightGray
+        control.tintColor = UIColor.candyWhite()
         control.addTarget(self, action: #selector(handleRefresh), for: UIControlEvents.valueChanged)
         return control
     }()
@@ -39,14 +39,16 @@ class HomeViewController: UICollectionViewController {
     
     private func setupTabBar() {
         guard let tabBar = tabBarController?.tabBar else { return }
-        tabBar.tintColor = UIColor.miamiBlue()
-        tabBar.isTranslucent = false
+        tabBar.tintColor = UIColor.candyWhite()
+        tabBar.barTintColor = UIColor.midNightBlack()
         tabBar.isHidden = false
+        tabBar.isTranslucent = false
     }
     
     private func setupNavigationController() {
         guard let navigationController = navigationController else { return }
-        navigationController.navigationBar.barTintColor = UIColor.deepSeaBlue()
+        navigationController.navigationBar.isTranslucent = false
+        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
         navigationController.navigationBar.tintColor = UIColor.white
         navigationItem.rightBarButtonItem?.tintColor = UIColor.white
         navigationItem.titleView = titleButton
@@ -54,7 +56,7 @@ class HomeViewController: UICollectionViewController {
     
     private func setupViews() {
         guard let collectionView = collectionView else { return }
-        collectionView.backgroundColor = UIColor.white
+        collectionView.backgroundColor = UIColor.midNightBlack()
         collectionView.addSubview(refreshController)
     }
     

@@ -17,11 +17,21 @@ extension ServerConfigViewController {
         if isParseInitialized == true {
             handleResponse(type: ServerConfigViewController.ResponseType.normal, message: "Restart the app to setup a new server configuration")
         } else {
-            ParseConfig.heroku_app_id = appId
-            ParseConfig.heroku_server_url = serverUrl
-            ParseConfig.heroku_master_key = masterKey
-            ParseConfig.attemptToInitializeParse()
-            master_keyTextField.text = ""
+            if Reachability.isConnectedToNetwork() == true {
+                guard let url: URL = URL(string: serverUrl) else { return }
+                if UIApplication.shared.canOpenURL(url) == true {
+                    ParseConfig.heroku_app_id = appId
+                    ParseConfig.heroku_server_url = serverUrl
+                    ParseConfig.heroku_master_key = masterKey
+                    ParseConfig.attemptToInitializeParse()
+                    handleResponse(type: ServerConfigViewController.ResponseType.success, message: "Server initialized with provided credentials")
+                    master_keyTextField.text = ""
+                } else {
+                    handleResponse(type: ServerConfigViewController.ResponseType.failure, message: "Invalid URL")
+                }
+            } else {
+                handleResponse(type: ServerConfigViewController.ResponseType.failure, message: "Failed to connect to Internet")
+            }
         }
     }
     
@@ -43,6 +53,10 @@ extension ServerConfigViewController {
             master_keyTextField.jitter(repeatCount: 5)
             master_keyTextField.text = ""
         }
+    }
+    
+    func initializeParseWithNewConfigs() {
+        
     }
     
 }

@@ -139,6 +139,7 @@ class AuthViewController: UIViewController {
     private func setupViews() {
         // scrollView
         scrollView.isScrollEnabled = false
+        scrollView.backgroundColor = UIColor.midNightBlack()
         // logoImageView
         let originalImage = UIImage(named: "AppLogo")
         let tinitedImage = originalImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)

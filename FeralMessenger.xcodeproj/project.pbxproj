@@ -764,7 +764,7 @@
 				DEVELOPMENT_TEAM = ZLUJC28Y9H;
 				INFOPLIST_FILE = FeralMessenger/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.openwork.Feral;
+				PRODUCT_BUNDLE_IDENTIFIER = Duckisburg.Feral;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -779,7 +779,7 @@
 				DEVELOPMENT_TEAM = ZLUJC28Y9H;
 				INFOPLIST_FILE = FeralMessenger/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.openwork.Feral;
+				PRODUCT_BUNDLE_IDENTIFIER = Duckisburg.Feral;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};

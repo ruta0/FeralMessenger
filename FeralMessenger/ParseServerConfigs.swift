@@ -44,14 +44,10 @@ extension ParseConfig {
         if isParseInitialized == false {
             Parse.initialize(with: ParseConfig.config)
             isParseInitialized = true
-        } else {
-            // Parse has already been initialized, the app will continue to use the initialized settings.
-            // Note: there seems to be no way to deinit Parse. So I will have to force my user to kill the app in order to change to a different server
         }
     }
     
 }
-
 
 
 

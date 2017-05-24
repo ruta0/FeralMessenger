@@ -20,7 +20,7 @@ class DetailViewController: UICollectionViewController {
     
     let messageInputContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.candyWhite()
+        view.backgroundColor = UIColor.mediumBlueGray()
         return view
     }()
     
@@ -32,8 +32,9 @@ class DetailViewController: UICollectionViewController {
     
     let inputTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Enter message..."
-        textField.backgroundColor = UIColor.candyWhite()
+        textField.textColor = UIColor.white
+        textField.backgroundColor = UIColor.clear
+        textField.attributedPlaceholder = NSAttributedString(string: "Enter message...", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
         textField.keyboardAppearance = UIKeyboardAppearance.dark
         return textField
     }()
@@ -41,7 +42,8 @@ class DetailViewController: UICollectionViewController {
     lazy var sendButton: UIButton = {
         let button = UIButton(type: UIButtonType.system)
         button.setTitle("Send", for: UIControlState.normal)
-        let titleColor = UIColor.miamiBlue()
+        button.backgroundColor = UIColor.clear
+        let titleColor = UIColor.white
         button.setTitleColor(titleColor, for: UIControlState.normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.addTarget(self, action: #selector(sendMessage), for: UIControlEvents.touchUpInside)
@@ -57,11 +59,15 @@ class DetailViewController: UICollectionViewController {
                 self.view.layoutIfNeeded()
             }, completion: { (completed) in
                 if isKeyboardShowing {
-                    let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
-                    self.collectionView?.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.bottom, animated: true)
+                    self.scrollToLastCellItem()
                 }
             })
         }
+    }
+    
+    func scrollToLastCellItem() {
+        let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
+        self.collectionView?.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.bottom, animated: true)
     }
     
     private func setupKeyboardNotifications() {
@@ -102,19 +108,20 @@ class DetailViewController: UICollectionViewController {
         self.navigationItem.titleView = titleLabel
     }
     
+    private func setupViews() {
+        self.collectionView?.backgroundColor = UIColor.midNightBlack()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
+        setupViews()
         setupMessageInputContainerView()
         setupKeyboardNotifications()
         setupTextFieldDelegate()
         setupCollectionViewDelegate()
         setupCollectionViewGesture()
         setupNavigationController()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
         fetchMessages(receiverName: selectedUser.username!)
     }
     
@@ -156,16 +163,16 @@ extension DetailViewController {
             if messages[indexPath.item].senderName != PFUser.current()!.username! {
                 cell.bubbleView.frame = CGRect(x: 8 + 30 + 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
                 cell.messageTextView.frame = CGRect(x: 8 + 30 + 8 + 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
-                cell.messageTextView.textColor = UIColor.darkGray
+                cell.messageTextView.textColor = UIColor.black
                 cell.profileImageView.isHidden = false
-                cell.bubbleView.backgroundColor = UIColor.candyWhite()
+                cell.bubbleView.backgroundColor = UIColor.lightBlue()
             } else {
                 // outgoing message
                 cell.bubbleView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8 - 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
                 cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
                 cell.messageTextView.textColor = UIColor.white
                 cell.profileImageView.isHidden = true
-                cell.bubbleView.backgroundColor = UIColor.miamiBlue()
+                cell.bubbleView.backgroundColor = UIColor.mediumBlueGray()
                 cell.messageTextView.textColor = UIColor.white
             }
         }
@@ -179,7 +186,9 @@ extension DetailViewController {
             footerView.backgroundColor = UIColor.clear
             return footerView
         default:
-            assert(false, "unexpected element kind")
+            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "DetailViewFooter", for: indexPath)
+            footerView.backgroundColor = UIColor.clear
+            return footerView
         }
     }
     

@@ -73,7 +73,7 @@ extension AuthViewController {
                 if error != nil {
                     self.handleResponse(type: AuthViewController.ResponseType.failure, message: error!.localizedDescription)
                 } else {
-                    self.handleResponse(type: AuthViewController.ResponseType.success, message: "Success! Please proceed to login.")
+                    self.handleResponse(type: AuthViewController.ResponseType.success, message: "Success! Please proceed to login")
                 }
             })
         } else {
@@ -134,14 +134,6 @@ extension AuthViewController {
         guard let user = pfUser, let auth_token = user.sessionToken else { return }
         storeSecretInKeychain(secret: auth_token, account: "auth_token")
         completion()
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "ServerConfigViewControllerSegue" {
-            print(123)
-        } else if segue.identifier == "HomeViewControllerSegue" {
-            print(321)
-        }
     }
     
 }

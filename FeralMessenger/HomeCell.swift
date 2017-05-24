@@ -18,8 +18,7 @@ class HomeCell: UICollectionViewCell {
     
     private func setupViews() {
         // collectionViewCell
-        self.backgroundColor = UIColor.candyWhite()
-        self.dividerView.backgroundColor = UIColor.lightGray
+        self.backgroundColor = UIColor.mediumBlueGray()
         // dividerView
         dividerView.backgroundColor = UIColor.lightGray
         // profileImage
@@ -28,20 +27,18 @@ class HomeCell: UICollectionViewCell {
         profileImageView.layer.borderWidth = 2
         profileImageView.image = UIImage(named: "ProfileImage")
         // usernameLabel
-        usernameLabel.textColor = UIColor.deepSeaBlue()
+        usernameLabel.textColor = UIColor.white
         usernameLabel.backgroundColor = UIColor.clear
         usernameLabel.text = "username"
         // messageLabel
-        messageLabel.textColor = UIColor.darkGray
+        messageLabel.textColor = UIColor.candyWhite()
         messageLabel.backgroundColor = UIColor.clear
         messageLabel.text = "message"
     }
     
     override var isHighlighted: Bool {
         didSet {
-            backgroundColor = isHighlighted ? UIColor.miamiBlue() : UIColor.candyWhite()
-            usernameLabel.textColor = isHighlighted ? UIColor.white : UIColor.deepSeaBlue()
-            messageLabel.textColor = isHighlighted ? UIColor.white : UIColor.darkGray
+            backgroundColor = isHighlighted ? UIColor.miamiBlue() : UIColor.mediumBlueGray()
         }
     }
     

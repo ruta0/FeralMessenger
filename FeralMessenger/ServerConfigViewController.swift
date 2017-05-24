@@ -25,11 +25,11 @@ class ServerConfigViewController: UIViewController {
     @IBOutlet weak var application_idTextField: UITextField!
     @IBOutlet weak var server_urlTextField: UITextField!
     @IBOutlet weak var master_keyTextField: UITextField!
-    @IBOutlet weak var persistButton: UIButton!
+    @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var defaultButton: UIButton!
     @IBOutlet weak var returnButton: UIButton!
     
-    @IBAction func persistButton_tapped(_ sender: UIButton) {
+    @IBAction func saveButton_tapped(_ sender: UIButton) {
         if application_idTextField.text != "" && server_urlTextField.text != "" && master_keyTextField.text != "" {
             attemptToInitiateParse(appId: application_idTextField.text!, serverUrl: server_urlTextField.text!, masterKey: master_keyTextField.text!)
         } else {
@@ -62,13 +62,10 @@ class ServerConfigViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.toggleScrollViewScrolling), name: Notification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    private func alertWithVibration() {
-        AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-    }
-    
     private func setupViews() {
         // scrollView
         scrollView.isScrollEnabled = false
+        scrollView.backgroundColor = UIColor.midNightBlack()
         // errorLabel
         errorLabel.alpha = 0.0
         // application_idTextField
@@ -80,9 +77,9 @@ class ServerConfigViewController: UIViewController {
         // master_keyTextField
         master_keyTextField.borderStyle = UITextBorderStyle.none
         master_keyTextField.attributedPlaceholder = NSAttributedString(string: "master_key", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
-        // connectButton
-        persistButton.layer.cornerRadius = 25 // height is set to 50 in storyboard
-        persistButton.backgroundColor = UIColor.metallicGold()
+        // saveButton
+        saveButton.layer.cornerRadius = 25 // height is set to 50 in storyboard
+        saveButton.backgroundColor = UIColor.metallicGold()
         // defaultButton
         defaultButton.backgroundColor = UIColor.clear
         // returnButton
@@ -96,11 +93,6 @@ class ServerConfigViewController: UIViewController {
         setupTextFieldDelegates()
         setupScrollViewDelegate()
         setupScrollViewGesture()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
-        alertWithVibration()
     }
     
 }
