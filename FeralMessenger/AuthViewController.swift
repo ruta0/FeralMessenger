@@ -84,16 +84,6 @@ class AuthViewController: UIViewController {
         }, completion: nil)
     }
     
-    func toggleScrollViewScrolling(notification: Notification) {
-        let isKeyboardShowing = (notification.name == NSNotification.Name.UIKeyboardWillShow)
-        if isKeyboardShowing == true {
-            scrollView.isScrollEnabled = true
-        } else {
-            scrollView.setContentOffset(CGPoint(x: self.scrollView.contentOffset.x, y: 0), animated: true)
-            scrollView.isScrollEnabled = false
-        }
-    }
-    
     func presentServerConfigView(gestureRecognizer: UITapGestureRecognizer) {
         self.performSegue(withIdentifier: "ServerConfigViewControllerSegue", sender: self)
     }
@@ -125,11 +115,6 @@ class AuthViewController: UIViewController {
         }
     }
     
-    private func setupKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(self.toggleScrollViewScrolling), name: Notification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.toggleScrollViewScrolling), name: Notification.Name.UIKeyboardWillHide, object: nil)
-    }
-    
     private func setupLogoImageViewGesture() {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(presentServerConfigView(gestureRecognizer:)))
         gesture.numberOfTapsRequired = 7
@@ -145,6 +130,9 @@ class AuthViewController: UIViewController {
         let tinitedImage = originalImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         logoImageView.image = tinitedImage
         logoImageView.tintColor = UIColor.white
+        if UIScreen.main.bounds.size == CGSize(width: 414, height: 736) {
+            logoImageView.frame.size.height = 64
+        }
         // errorLabel
         errorLabel.alpha = 0.0
         // nameTF
@@ -160,7 +148,7 @@ class AuthViewController: UIViewController {
         passTextField.borderStyle = UITextBorderStyle.none
         passTextField.attributedPlaceholder = NSAttributedString(string: "pass", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
         // authButton
-        authButton.layer.cornerRadius = 25 // height is set to 50 in storyboard
+        authButton.layer.cornerRadius = 21 // height is set to 50 in storyboard
         authButton.backgroundColor = UIColor.mandarinOrange()
         authButton.setTitle(AuthButtonType.login.rawValue, for: UIControlState.normal)
         // termsButton
@@ -174,11 +162,20 @@ class AuthViewController: UIViewController {
         super.viewDidLoad()
         setupViews()
         setupLogoImageViewGesture()
-        setupKeyboardNotifications()
         setupTextFieldDelegates()
         setupScrollViewDelegate()
         setupScrollViewGesture()
         checkUserLoginSession()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidDisappear(true)
+        registerForKeyboardNotifications()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(true)
+        deregisterFromKeyboardNotifications()
     }
     
 }
@@ -197,6 +194,50 @@ extension AuthViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        textField.resignFirstResponder()
+    }
+    
+    func registerForKeyboardNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    func deregisterFromKeyboardNotifications() {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    func keyboardWasShown(notification: NSNotification){
+        //Need to calculate keyboard exact size due to Apple suggestions
+        self.scrollView.isScrollEnabled = true
+        var info = notification.userInfo!
+        let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize!.height, 0.0)
+        
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
+        
+        var aRect : CGRect = self.view.frame
+        aRect.size.height -= keyboardSize!.height
+        if let activeField = self.passTextField {
+            if (!aRect.contains(activeField.frame.origin)){
+                self.scrollView.scrollRectToVisible(activeField.frame, animated: true)
+            }
+        }
+    }
+    
+    func keyboardWillBeHidden(notification: NSNotification){
+        //Once keyboard disappears, restore original positions
+        var info = notification.userInfo!
+        let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardSize!.height, 0.0)
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
+        self.view.endEditing(true)
+        self.scrollView.isScrollEnabled = false
     }
     
 }
@@ -220,9 +261,6 @@ extension AuthViewController: UIScrollViewDelegate {
     }
     
 }
-
-
-
 
 
 
