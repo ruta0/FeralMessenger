@@ -66,8 +66,12 @@ class DetailViewController: UICollectionViewController {
     }
     
     func scrollToLastCellItem() {
-        let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
-        self.collectionView?.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.bottom, animated: true)
+        guard let collectionView = collectionView else { return }
+        let numberOfItems = collectionView.numberOfItems(inSection: 0)
+        let lastIndexPath = IndexPath(item: numberOfItems - 1, section: 0)
+        if numberOfItems >= 1 {
+            collectionView.scrollToItem(at: lastIndexPath, at: UICollectionViewScrollPosition.bottom, animated: true)
+        }
     }
     
     private func setupKeyboardNotifications() {
@@ -123,6 +127,11 @@ class DetailViewController: UICollectionViewController {
         setupCollectionViewGesture()
         setupNavigationController()
         fetchMessages(receiverName: selectedUser.username!)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        scrollToLastCellItem()
     }
     
 }

@@ -40,7 +40,6 @@ extension DetailViewController {
             pushMessageToParse(sms: inputTextField.text!) // asynchronous
             clearTextField()
         }
-        scrollToLastCellItem()
     }
     
     func pushMessageToParse(sms: String) {
