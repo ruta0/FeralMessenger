@@ -18,7 +18,7 @@ class ServerConfigViewController: UIViewController {
         case success
         case failure
     }
-    
+        
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var errorLabel: UILabel!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!

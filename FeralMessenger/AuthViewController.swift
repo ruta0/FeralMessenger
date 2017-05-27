@@ -28,6 +28,8 @@ class AuthViewController: UIViewController {
         case failure
     }
     
+    let termsUrl: String = "https://sheltered-ridge-89457.herokuapp.com/terms"
+    
     var accountName: String?
     var blockOperations = [BlockOperation]()
     
@@ -66,7 +68,7 @@ class AuthViewController: UIViewController {
     }
     
     @IBAction func termsButton_tapped(_ sender: UIButton) {
-        let alert = UIAlertController(title: "You will be redirected to your browser", message: "Are you sure?", preferredStyle: UIAlertControllerStyle.alert)
+        let alert = UIAlertController(title: "You will be redirected to your browser for the following URL", message: "\(termsUrl)", preferredStyle: UIAlertControllerStyle.alert)
         let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: nil)
         let redirect = UIAlertAction(title: "Redirect", style: UIAlertActionStyle.destructive) { (action: UIAlertAction) in
             self.redirectToBrowserForTerms()

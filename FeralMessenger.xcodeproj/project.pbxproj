@@ -23,6 +23,7 @@
 		C525BC791ED0DCD9006BEEA3 /* DetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC781ED0DCD9006BEEA3 /* DetailCell.swift */; };
 		C525BC7E1ED0FF25006BEEA3 /* UIKit+UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC7D1ED0FF25006BEEA3 /* UIKit+UIColor.swift */; };
 		C525BC801ED134D9006BEEA3 /* UIKit+UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC7F1ED134D9006BEEA3 /* UIKit+UIView.swift */; };
+		C53F98401ED79BAD0085EB78 /* Feral.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C53F983E1ED79BAD0085EB78 /* Feral.xcdatamodeld */; };
 		C5439B6F1ED14D4D00FBD7D3 /* KeychainItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B6E1ED14D4D00FBD7D3 /* KeychainItem.swift */; };
 		C5439B711ED14D7C00FBD7D3 /* KeychainConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B701ED14D7C00FBD7D3 /* KeychainConfiguration.swift */; };
 		C5439B731ED14DB600FBD7D3 /* Keychain+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B721ED14DB600FBD7D3 /* Keychain+UIViewController.swift */; };
@@ -85,6 +86,7 @@
 		C525BC781ED0DCD9006BEEA3 /* DetailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailCell.swift; sourceTree = "<group>"; };
 		C525BC7D1ED0FF25006BEEA3 /* UIKit+UIColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+UIColor.swift"; sourceTree = "<group>"; };
 		C525BC7F1ED134D9006BEEA3 /* UIKit+UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+UIView.swift"; sourceTree = "<group>"; };
+		C53F983F1ED79BAD0085EB78 /* Feral.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Feral.xcdatamodel; sourceTree = "<group>"; };
 		C5439B6E1ED14D4D00FBD7D3 /* KeychainItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainItem.swift; sourceTree = "<group>"; };
 		C5439B701ED14D7C00FBD7D3 /* KeychainConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainConfiguration.swift; sourceTree = "<group>"; };
 		C5439B721ED14DB600FBD7D3 /* Keychain+UIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Keychain+UIViewController.swift"; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 			children = (
 				C5439B7A1ED28B3400FBD7D3 /* User.swift */,
 				C5439B7C1ED28B5700FBD7D3 /* Message.swift */,
+				C53F983E1ED79BAD0085EB78 /* Feral.xcdatamodeld */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -593,6 +596,7 @@
 				C525BC341ED02C77006BEEA3 /* AppDelegate.swift in Sources */,
 				C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */,
 				C525BC6D1ED0D2F3006BEEA3 /* ParseServerConfigs.swift in Sources */,
+				C53F98401ED79BAD0085EB78 /* Feral.xcdatamodeld in Sources */,
 				C5439B851ED39E7A00FBD7D3 /* DetailController.swift in Sources */,
 				C525BC711ED0D488006BEEA3 /* Reachability.swift in Sources */,
 				C525BC7E1ED0FF25006BEEA3 /* UIKit+UIColor.swift in Sources */,
@@ -887,6 +891,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		C53F983E1ED79BAD0085EB78 /* Feral.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				C53F983F1ED79BAD0085EB78 /* Feral.xcdatamodel */,
+			);
+			currentVersion = C53F983F1ED79BAD0085EB78 /* Feral.xcdatamodel */;
+			path = Feral.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = C525BC281ED02C77006BEEA3 /* Project object */;
 }

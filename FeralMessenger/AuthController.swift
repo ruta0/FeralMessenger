@@ -104,7 +104,7 @@ extension AuthViewController {
     }
     
     func redirectToBrowserForTerms() {
-        guard let termsUrl = URL(string: "https://sheltered-ridge-89457.herokuapp.com/terms") else { return }
+        guard let termsUrl = URL(string: termsUrl) else { return }
         if #available(iOS 10.0, *) {
             UIApplication.shared.open(termsUrl, options: [:], completionHandler: nil)
         } else {

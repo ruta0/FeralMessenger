@@ -10,6 +10,7 @@ import Parse
 import UIKit
 
 
+// This is a PFUser object to handle temporarily JSON transaction between REST and Core Data. The primary model object for user is CoreUser
 final class User: PFUser {
     
     @NSManaged var profile_image: String
@@ -26,6 +27,7 @@ final class User: PFUser {
         return query
     }
     
+    // username, email and password are inheritated from PFUser
     func constructUserInfo(name: String, email: String, pass: String) {
         self.username = name
         self.email = email
