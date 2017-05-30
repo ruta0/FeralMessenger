@@ -27,8 +27,8 @@
 3. | Chat with anyone in your database
 
 ## Class Structure
-### To incorporate with Core Data and all of super methods, I needed a structure that is clean and re-usable for API calls from/to Parse and Core Data itself. So here what I did to improve the readability and resuability of the app's MVCs.
-### As for classes that are not related to Core Data in any way, I haven't figured out a way to refactor them yet. The challenge is that they generally have a lot of custom parts, such as buttons and logo and stackviews.
+* To incorporate with Core Data and all of super methods, I needed a structure that is clean and re-usable for API calls from/to Parse and Core Data itself. So here what I did to improve the readability and resuability of the app's MVCs.
+* As for classes that are not related to Core Data in any way, I haven't figured out a way to refactor them yet. The challenge is that they generally have a lot of custom parts, such as buttons and logo and stackviews.
 <img src="https://raw.githubusercontent.com/jinhedev/FeralMessenger/master/art/structure.png" width="720px" height="480px" />
 
 ## Task List
