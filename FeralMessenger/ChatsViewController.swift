@@ -37,7 +37,7 @@ class ChatsViewController: MasterViewController {
             }
             self?.performFetchFromCoreData()
             self?.reloadColectionView()
-            self?.printDatabaseStats()
+//            self?.printDatabaseStats()
         }
     }
     
@@ -81,9 +81,9 @@ extension ChatsViewController {
                 print("unexpected sender of cell")
                 return
             }
-            let detailViewController = segue.destination as! DetailViewController
-            detailViewController.selectedUserName = selectedCell.usernameLabel.text!
-            detailViewController.container = container
+            let messageViewController = segue.destination as! MessageViewController
+            messageViewController.selectedUserName = selectedCell.usernameLabel.text!
+            messageViewController.container = container
         }
     }
     

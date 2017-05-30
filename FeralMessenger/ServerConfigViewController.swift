@@ -11,6 +11,8 @@ import Parse
 import AudioToolbox
 
 
+// MARK: - UI
+
 class ServerConfigViewController: UIViewController {
     
     enum ResponseType {
@@ -47,7 +49,27 @@ class ServerConfigViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
-    private func setupViews() {
+    func handleResponse(type: ResponseType, message: String) {
+        if type == ResponseType.success {
+            errorLabel.textColor = UIColor.green
+            errorLabel.flash(delay: 5, message: message)
+        } else if type == ResponseType.normal {
+            errorLabel.textColor = UIColor.orange
+            errorLabel.flash(delay: 7, message: message)
+            master_keyTextField.text = ""
+            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+        } else if type == ResponseType.failure {
+            errorLabel.textColor = UIColor.red
+            errorLabel.flash(delay: 5, message: message)
+            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+            application_idTextField.jitter(repeatCount: 5)
+            server_urlTextField.jitter(repeatCount: 5)
+            master_keyTextField.jitter(repeatCount: 5)
+            master_keyTextField.text = ""
+        }
+    }
+    
+    fileprivate func setupViews() {
         // scrollView
         scrollView.isScrollEnabled = false
         scrollView.backgroundColor = UIColor.midNightBlack()
@@ -71,6 +93,13 @@ class ServerConfigViewController: UIViewController {
         returnButton.backgroundColor = UIColor.clear
     }
     
+}
+
+
+// MARK: - Lifecycle
+
+extension ServerConfigViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
@@ -88,9 +117,11 @@ class ServerConfigViewController: UIViewController {
 }
 
 
+// MARK: - UITextFieldDelegate + UIKeyboard
+
 extension ServerConfigViewController: UITextFieldDelegate {
     
-    func setupTextFieldDelegates() {
+    fileprivate func setupTextFieldDelegates() {
         application_idTextField.delegate = self
         server_urlTextField.delegate = self
         master_keyTextField.delegate = self
@@ -105,17 +136,17 @@ extension ServerConfigViewController: UITextFieldDelegate {
         textField.resignFirstResponder()
     }
     
-    func registerForKeyboardNotifications() {
+    fileprivate func registerForKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    func deregisterFromKeyboardNotifications() {
+    fileprivate func deregisterFromKeyboardNotifications() {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    func keyboardWasShown(notification: NSNotification) {
+    internal func keyboardWasShown(notification: NSNotification) {
         //Need to calculate keyboard exact size due to Apple suggestions
         self.scrollView.isScrollEnabled = true
         var info = notification.userInfo!
@@ -134,7 +165,7 @@ extension ServerConfigViewController: UITextFieldDelegate {
         }
     }
     
-    func keyboardWillBeHidden(notification: NSNotification) {
+    internal func keyboardWillBeHidden(notification: NSNotification) {
         //Once keyboard disappears, restore original positions
         var info = notification.userInfo!
         let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
@@ -152,23 +183,49 @@ extension ServerConfigViewController: UITextFieldDelegate {
 
 extension ServerConfigViewController: UIScrollViewDelegate {
     
-    func setupScrollViewDelegate() {
+    fileprivate func setupScrollViewDelegate() {
         scrollView.delegate = self
     }
     
-    func setupScrollViewGesture() {
+    fileprivate func setupScrollViewGesture() {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(scrollViewTapped(recognizer:)))
         scrollView.addGestureRecognizer(gesture)
     }
     
-    func scrollViewTapped(recognizer: UIGestureRecognizer) {
+    internal func scrollViewTapped(recognizer: UIGestureRecognizer) {
         scrollView.endEditing(true)
     }
     
 }
 
 
+// MARK: - Parse
 
+extension ServerConfigViewController {
+    
+    fileprivate func attemptToInitiateParse(appId: String, serverUrl: String, masterKey: String) {
+        if isParseInitialized == true {
+            handleResponse(type: ServerConfigViewController.ResponseType.normal, message: "Restart the app to setup a new server configuration")
+        } else {
+            if Reachability.isConnectedToNetwork() == true {
+                guard let url: URL = URL(string: serverUrl) else { return }
+                if UIApplication.shared.canOpenURL(url) == true {
+                    ParseConfig.heroku_app_id = appId
+                    ParseConfig.heroku_server_url = serverUrl
+                    ParseConfig.heroku_master_key = masterKey
+                    ParseConfig.attemptToInitializeParse()
+                    handleResponse(type: ServerConfigViewController.ResponseType.success, message: "Server initialized with provided credentials")
+                    master_keyTextField.text = ""
+                } else {
+                    handleResponse(type: ServerConfigViewController.ResponseType.failure, message: "Invalid URL")
+                }
+            } else {
+                handleResponse(type: ServerConfigViewController.ResponseType.failure, message: "Failed to connect to Internet")
+            }
+        }
+    }
+    
+}
 
 
 

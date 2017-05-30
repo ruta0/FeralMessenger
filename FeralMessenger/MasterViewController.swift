@@ -11,6 +11,7 @@ import Parse
 
 
 // MARK: - UI
+
 // This is a generic masterViewController designed to be subclassed to complete its functionality with either Core Data or Realm
 class MasterViewController: FetchedResultsCollectionViewController {
     

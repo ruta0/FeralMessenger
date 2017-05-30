@@ -32,15 +32,13 @@
 		C5439B711ED14D7C00FBD7D3 /* KeychainConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B701ED14D7C00FBD7D3 /* KeychainConfiguration.swift */; };
 		C5439B731ED14DB600FBD7D3 /* Keychain+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B721ED14DB600FBD7D3 /* Keychain+UIViewController.swift */; };
 		C5439B751ED2094500FBD7D3 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B741ED2094500FBD7D3 /* AuthViewController.swift */; };
-		C5439B771ED248F400FBD7D3 /* AuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B761ED248F400FBD7D3 /* AuthController.swift */; };
 		C5439B791ED24AA700FBD7D3 /* UIKit+UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B781ED24AA700FBD7D3 /* UIKit+UILabel.swift */; };
 		C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7A1ED28B3400FBD7D3 /* User.swift */; };
 		C5439B7D1ED28B5700FBD7D3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7C1ED28B5700FBD7D3 /* Message.swift */; };
-		C5439B851ED39E7A00FBD7D3 /* DetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B841ED39E7A00FBD7D3 /* DetailController.swift */; };
 		C56AD9401EDB657E00A9855B /* FetchedResultsCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56AD93F1EDB657E00A9855B /* FetchedResultsCollectionViewController.swift */; };
 		C5C58B931EDD6D2A003E19B7 /* ChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */; };
+		C5C58B981EDD87A4003E19B7 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C58B971EDD87A4003E19B7 /* MessageViewController.swift */; };
 		C5D7C38E1ED4360B00ECE44C /* ServerConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */; };
-		C5D7C3901ED44E2500ECE44C /* ServerConfigController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D7C38F1ED44E2500ECE44C /* ServerConfigController.swift */; };
 		F60F367CA4D4A485FB6CA97E /* Pods_FeralMessengerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F49CECBB20EBDFECDB16144 /* Pods_FeralMessengerUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -100,15 +98,13 @@
 		C5439B701ED14D7C00FBD7D3 /* KeychainConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainConfiguration.swift; sourceTree = "<group>"; };
 		C5439B721ED14DB600FBD7D3 /* Keychain+UIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Keychain+UIViewController.swift"; sourceTree = "<group>"; };
 		C5439B741ED2094500FBD7D3 /* AuthViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
-		C5439B761ED248F400FBD7D3 /* AuthController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthController.swift; sourceTree = "<group>"; };
 		C5439B781ED24AA700FBD7D3 /* UIKit+UILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+UILabel.swift"; sourceTree = "<group>"; };
 		C5439B7A1ED28B3400FBD7D3 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		C5439B7C1ED28B5700FBD7D3 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		C5439B841ED39E7A00FBD7D3 /* DetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailController.swift; sourceTree = "<group>"; };
 		C56AD93F1EDB657E00A9855B /* FetchedResultsCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchedResultsCollectionViewController.swift; sourceTree = "<group>"; };
 		C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatsViewController.swift; sourceTree = "<group>"; };
+		C5C58B971EDD87A4003E19B7 /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
 		C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConfigViewController.swift; sourceTree = "<group>"; };
-		C5D7C38F1ED44E2500ECE44C /* ServerConfigController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConfigController.swift; sourceTree = "<group>"; };
 		C5D7C3911ED45FFA00ECE44C /* FeralMessenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FeralMessenger.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -245,9 +241,6 @@
 				C525BC3F1ED02C77006BEEA3 /* LaunchScreen.storyboard */,
 				C525BC741ED0DC47006BEEA3 /* MasterCell.swift */,
 				C525BC781ED0DCD9006BEEA3 /* DetailCell.swift */,
-				C525BC761ED0DC8E006BEEA3 /* DetailViewController.swift */,
-				C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */,
-				C5439B741ED2094500FBD7D3 /* AuthViewController.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -340,8 +333,8 @@
 		C5C58B951EDD7FC8003E19B7 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				C5D7C38F1ED44E2500ECE44C /* ServerConfigController.swift */,
-				C5439B761ED248F400FBD7D3 /* AuthController.swift */,
+				C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */,
+				C5439B741ED2094500FBD7D3 /* AuthViewController.swift */,
 			);
 			name = Auth;
 			sourceTree = "<group>";
@@ -349,7 +342,8 @@
 		C5C58B961EDD7FDC003E19B7 /* Detail */ = {
 			isa = PBXGroup;
 			children = (
-				C5439B841ED39E7A00FBD7D3 /* DetailController.swift */,
+				C525BC761ED0DC8E006BEEA3 /* DetailViewController.swift */,
+				C5C58B971EDD87A4003E19B7 /* MessageViewController.swift */,
 			);
 			name = Detail;
 			sourceTree = "<group>";
@@ -645,17 +639,15 @@
 			files = (
 				C525BC801ED134D9006BEEA3 /* UIKit+UIView.swift in Sources */,
 				C5439B6F1ED14D4D00FBD7D3 /* KeychainItem.swift in Sources */,
-				C5439B771ED248F400FBD7D3 /* AuthController.swift in Sources */,
-				C5D7C3901ED44E2500ECE44C /* ServerConfigController.swift in Sources */,
 				C5439B7D1ED28B5700FBD7D3 /* Message.swift in Sources */,
 				C525BC341ED02C77006BEEA3 /* AppDelegate.swift in Sources */,
+				C5C58B981EDD87A4003E19B7 /* MessageViewController.swift in Sources */,
 				C53D0A5C1EDA2BE10048CC44 /* CoreDataStack.swift in Sources */,
 				C56AD9401EDB657E00A9855B /* FetchedResultsCollectionViewController.swift in Sources */,
 				C53D0A5E1EDA754A0048CC44 /* CoreMessage.swift in Sources */,
 				C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */,
 				C525BC6D1ED0D2F3006BEEA3 /* ParseServerConfigs.swift in Sources */,
 				C53F98401ED79BAD0085EB78 /* Feral.xcdatamodeld in Sources */,
-				C5439B851ED39E7A00FBD7D3 /* DetailController.swift in Sources */,
 				C525BC711ED0D488006BEEA3 /* Reachability.swift in Sources */,
 				C525BC7E1ED0FF25006BEEA3 /* UIKit+UIColor.swift in Sources */,
 				C5439B731ED14DB600FBD7D3 /* Keychain+UIViewController.swift in Sources */,

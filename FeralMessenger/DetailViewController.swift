@@ -11,13 +11,9 @@ import Parse
 import CoreData
 
 
-private let cellID = "DetailCell"
+// MARK: - UI
 
 class DetailViewController: FetchedResultsCollectionViewController {
-    
-    var container: NSPersistentContainer? = CoreDataStack.persistentContainer
-    
-    var fetchedResultsController: NSFetchedResultsController<CoreMessage>?
     
     var bottomConstraint: NSLayoutConstraint?
     var selectedUserName: String?
@@ -54,12 +50,7 @@ class DetailViewController: FetchedResultsCollectionViewController {
         return button
     }()
     
-    func sendMessage() {
-        if let sms = inputTextField.text, sms != "" {
-            uploadToParse(with: inputTextField.text!)
-            inputTextField.text = ""
-        }
-    }
+    func sendMessage() { }
     
     func reloadCollectionView() {
         DispatchQueue.main.async {
@@ -67,7 +58,17 @@ class DetailViewController: FetchedResultsCollectionViewController {
         }
     }
     
-    func handleKeyboardNotification(notification: Notification) {
+    func scrollToLastCellItem() {
+        guard let collectionView = collectionView else { return }
+        let numberOfItems = collectionView.numberOfItems(inSection: 0)
+        let lastIndexPath = IndexPath(item: numberOfItems - 1, section: 0)
+        if numberOfItems >= 1 {
+            collectionView.scrollToItem(at: lastIndexPath, at: UICollectionViewScrollPosition.bottom, animated: true)
+        }
+    }
+    
+    // Although unnecessary, I explicitly marked this method as "internal" because it's made visible for obj-c #selector
+    internal func handleKeyboardNotification(notification: Notification) {
         if let userInfo = notification.userInfo {
             let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
             let isKeyboardShowing = notification.name == NSNotification.Name.UIKeyboardWillShow
@@ -82,21 +83,12 @@ class DetailViewController: FetchedResultsCollectionViewController {
         }
     }
     
-    func scrollToLastCellItem() {
-        guard let collectionView = collectionView else { return }
-        let numberOfItems = collectionView.numberOfItems(inSection: 0)
-        let lastIndexPath = IndexPath(item: numberOfItems - 1, section: 0)
-        if numberOfItems >= 1 {
-            collectionView.scrollToItem(at: lastIndexPath, at: UICollectionViewScrollPosition.bottom, animated: true)
-        }
-    }
-    
-    private func setupKeyboardNotifications() {
+    fileprivate func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    private func setupInputComponent() {
+    fileprivate func setupInputComponent() {
         messageInputContainerView.addSubview(inputTextField)
         messageInputContainerView.addSubview(sendButton)
         messageInputContainerView.addSubview(topBorderView)
@@ -107,7 +99,7 @@ class DetailViewController: FetchedResultsCollectionViewController {
         messageInputContainerView.addConstraintsWithFormat(format: "V:|[v0(1)]", views: topBorderView)
     }
     
-    private func setupMessageInputContainerView() {
+    fileprivate func setupMessageInputContainerView() {
         view.addSubview(messageInputContainerView)
         view.addConstraintsWithFormat(format: "H:|[v0]|", views: messageInputContainerView)
         view.addConstraintsWithFormat(format: "V:[v0(48)]", views: messageInputContainerView)
@@ -116,12 +108,12 @@ class DetailViewController: FetchedResultsCollectionViewController {
         setupInputComponent()
     }
     
-    private func setupTabBar() {
+    fileprivate func setupTabBar() {
         guard let tabBar = tabBarController?.tabBar else { return }
         tabBar.isHidden = true
     }
     
-    private func setupNavigationController() {
+    fileprivate func setupNavigationController() {
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 64, height: 32))
         titleLabel.textAlignment = NSTextAlignment.center
         titleLabel.text = selectedUserName!
@@ -129,9 +121,16 @@ class DetailViewController: FetchedResultsCollectionViewController {
         self.navigationItem.titleView = titleLabel
     }
     
-    private func setupCollectionView() {
+    fileprivate func setupCollectionView() {
         self.collectionView?.backgroundColor = UIColor.midNightBlack()
     }
+    
+}
+
+
+// MARK: - Lifecycle
+
+extension DetailViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -144,16 +143,6 @@ class DetailViewController: FetchedResultsCollectionViewController {
         setupNavigationController()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        downloadMessageFromParse(with: selectedUserName!)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
-        scrollToLastCellItem()
-    }
-    
 }
 
 
@@ -164,82 +153,11 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout {
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
         collectionViewLayout.invalidateLayout()
     }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if let sms = fetchedResultsController?.object(at: indexPath).sms {
-            let size = CGSize(width: 250, height: 1000)
-            let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
-            let estimatedFrame = NSString(string: sms).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
-            return CGSize(width: view.frame.width, height: estimatedFrame.height+20)
-        }
-        return CGSize(width: view.frame.width, height: 84)
-    }
     
 }
 
 
-// MARK: - UICollectionViewDataSource  + NSFetchedResultsController
-
-extension DetailViewController {
-    
-    /// Note: notice that there is a footer in the storyboard to offer the additional space offset for the textfield
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! DetailCell
-        if let coreMessage = fetchedResultsController?.object(at: indexPath) {
-            cell.messageTextView.text = coreMessage.sms!
-            cell.profileImageView.image = #imageLiteral(resourceName: "ProfileImage")
-            let size = CGSize(width: 250, height: 1000)
-            let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
-            let estimatedFrame = NSString(string: coreMessage.sms!).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
-            // incoming message
-            if coreMessage.sender_name != PFUser.current()!.username! {
-                cell.bubbleView.frame = CGRect(x: 8 + 30 + 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
-                cell.messageTextView.frame = CGRect(x: 8 + 30 + 8 + 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
-                cell.messageTextView.textColor = UIColor.black
-                cell.profileImageView.isHidden = false
-                cell.bubbleView.backgroundColor = UIColor.lightBlue()
-            } else {
-                // outgoing message
-                cell.bubbleView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8 - 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
-                cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
-                cell.messageTextView.textColor = UIColor.white
-                cell.profileImageView.isHidden = true
-                cell.bubbleView.backgroundColor = UIColor.mediumBlueGray()
-                cell.messageTextView.textColor = UIColor.white
-            }
-        }
-        return cell
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        switch kind {
-        case UICollectionElementKindSectionFooter:
-            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "DetailViewFooter", for: indexPath)
-            footerView.backgroundColor = UIColor.clear
-            return footerView
-        default:
-            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "DetailViewFooter", for: indexPath)
-            footerView.backgroundColor = UIColor.clear
-            return footerView
-        }
-    }
-    
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return fetchedResultsController?.sections?.count ?? 1
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let sections = fetchedResultsController?.sections, sections.count > 0 {
-            return sections[section].numberOfObjects
-        } else {
-            return 0
-        }
-    }
-    
-}
-
-
-// MARK: - UITextFieldDelegate + UICollectionViewTap
+// MARK: - UITextFieldDelegate
 
 extension DetailViewController: UITextFieldDelegate {
     
@@ -264,6 +182,43 @@ extension DetailViewController: UITextFieldDelegate {
 }
 
 
+// MARK: - Parse
+
+extension DetailViewController {
+    
+    func downloadMessageFromParse(with selectedUserName: String, completion: @escaping ([PFObject]) -> Void) {
+        guard let query = Message.query(receiverName: selectedUserName, senderName: (PFUser.current()?.username)!) else { return }
+        query.findObjectsInBackground { (pfObjects: [PFObject]?, error: Error?) in
+            if error != nil {
+                print(error!.localizedDescription)
+            } else {
+                guard let pfObjects = pfObjects else {
+                    print("updateCoreMessageFromParse - pfObjects are nil")
+                    return
+                }
+                completion(pfObjects)
+            }
+        }
+    }
+    
+    func uploadToParse(with sms: String, completion: @escaping (Message) -> Void) {
+        let pfObject = Message()
+        pfObject["sms"] = sms
+        pfObject["image"] = ""
+        pfObject["senderName"] = selectedUserName!
+        pfObject["receiverName"] = (PFUser.current()?.username)!
+        pfObject.saveInBackground { (completed: Bool, error: Error?) in
+            if error != nil {
+                print(error!.localizedDescription)
+            } else {
+                if completed == true {
+                    completion(pfObject)
+                }
+            }
+        }
+    }
+    
+}
 
 
 
