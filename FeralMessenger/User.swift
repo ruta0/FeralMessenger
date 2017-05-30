@@ -8,17 +8,23 @@
 
 import Parse
 import UIKit
+import CoreData
 
 
 // This is a PFUser object to handle temporarily JSON transaction between REST and Core Data. The primary model object for user is CoreUser
 final class User: PFUser {
     
-    @NSManaged var profile_image: String
-    @NSManaged var uuid: String
-    @NSManaged var sysName: String
-    @NSManaged var sysVersion: String
-    @NSManaged var timezone: String
-    @NSManaged var model: String
+//    var id: String
+    var profile_image: String
+//    var username: String
+//    var email: String
+    var pass: String
+
+    var uuid: String
+    var sysName: String
+    var sysVersion: String
+    var timezone: String
+    var model: String
     
     func query() -> PFQuery<PFObject>? {
         let query = PFQuery(className: User.parseClassName())
@@ -29,9 +35,12 @@ final class User: PFUser {
     
     // username, email and password are inheritated from PFUser
     func constructUserInfo(name: String, email: String, pass: String) {
+        // user specific
+        self.profile_image = "default"
         self.username = name
         self.email = email
-        self.password = pass
+        self.pass = pass
+        // device specific
         self.uuid = UIDevice.current.identifierForVendor!.uuidString
         self.sysVersion = UIDevice.current.systemVersion
         self.sysName = UIDevice.current.systemName
@@ -40,6 +49,13 @@ final class User: PFUser {
     }
     
     override init() {
+        profile_image = String()
+        pass = String()
+        uuid = String()
+        sysName = String()
+        sysVersion = String()
+        timezone = String()
+        model = String()
         super.init()
     }
     

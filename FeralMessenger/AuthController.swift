@@ -14,8 +14,8 @@ import Parse
 extension AuthViewController {
     
     func checkUserLoginSession() {
-        fetchTokenFromKeychain(accountName: "auth_token") { (token: String) in
-            self.performLogin(token: token)
+        fetchTokenFromKeychain(accountName: "auth_token") { [weak self] (token: String) in
+            self?.performLogin(token: token)
         }
     }
     
@@ -26,11 +26,11 @@ extension AuthViewController {
             self.activityIndicator.startAnimating()
             handleResponse(type: AuthViewController.ResponseType.normal, message: "Resumming to previous session")
             UIApplication.shared.beginIgnoringInteractionEvents()
-            PFUser.become(inBackground: token, block: { (pfUser: PFUser?, error: Error?) in
-                self.activityIndicator.stopAnimating()
+            PFUser.become(inBackground: token, block: { [weak self] (pfUser: PFUser?, error: Error?) in
+                self?.activityIndicator.stopAnimating()
                 UIApplication.shared.endIgnoringInteractionEvents()
-                self.storeSecretInKeychain(secret: token, account: "auth_token")
-                self.presentHomeView()
+                self?.storeSecretInKeychain(secret: token, account: "auth_token")
+                self?.presentHomeView()
             })
         } else {
             handleResponse(type: AuthViewController.ResponseType.failure, message: "Failed to connect to Internet")
@@ -43,14 +43,14 @@ extension AuthViewController {
             ParseConfig.attemptToInitializeParse()
             self.activityIndicator.startAnimating()
             // I am using email as username
-            PFUser.logInWithUsername(inBackground: name, password: pass, block: { (pfUser: PFUser?, error: Error?) in
-                self.activityIndicator.stopAnimating()
-                self.passTextField.text = ""
+            PFUser.logInWithUsername(inBackground: name, password: pass, block: { [weak self] (pfUser: PFUser?, error: Error?) in
+                self?.activityIndicator.stopAnimating()
+                self?.passTextField.text = ""
                 if error != nil {
-                    self.handleResponse(type: AuthViewController.ResponseType.failure, message: error!.localizedDescription)
+                    self?.handleResponse(type: AuthViewController.ResponseType.failure, message: error!.localizedDescription)
                 } else {
-                    self.persistUserData(pfUser: pfUser, completion: {
-                        self.presentHomeView()
+                    self?.persistUserData(pfUser: pfUser, completion: {
+                        self?.presentHomeView()
                     })
                 }
             })
@@ -67,13 +67,13 @@ extension AuthViewController {
             self.activityIndicator.startAnimating()
             let newUser = User()
             newUser.constructUserInfo(name: name, email: email, pass: pass)
-            newUser.signUpInBackground(block: { (completed: Bool, error: Error?) in
-                self.activityIndicator.stopAnimating()
-                self.passTextField.text = ""
+            newUser.signUpInBackground(block: { [weak self] (completed: Bool, error: Error?) in
+                self?.activityIndicator.stopAnimating()
+                self?.passTextField.text = ""
                 if error != nil {
-                    self.handleResponse(type: AuthViewController.ResponseType.failure, message: error!.localizedDescription)
+                    self?.handleResponse(type: AuthViewController.ResponseType.failure, message: error!.localizedDescription)
                 } else {
-                    self.handleResponse(type: AuthViewController.ResponseType.success, message: "Success! Please proceed to login")
+                    self?.handleResponse(type: AuthViewController.ResponseType.success, message: "Success! Please proceed to login")
                 }
             })
         } else {

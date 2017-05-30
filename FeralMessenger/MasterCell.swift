@@ -9,12 +9,31 @@
 import UIKit
 
 
-class HomeCell: UICollectionViewCell {
+class MasterCell: UICollectionViewCell {
     
     @IBOutlet weak var dividerView: UIView!
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
+    
+    var coreUser: CoreUser? {
+        didSet {
+            updateCell()
+        }
+    }
+    
+    private func updateCell() {
+        // STEP 1: reset any existing UI info/outlets, otherwise info will become misplaced
+        profileImageView?.image = nil
+        usernameLabel?.text = nil
+        messageLabel?.text = nil
+        // STEP 2: load new info from user (if any)
+        if let coreUser = self.coreUser {
+            usernameLabel.text = coreUser.username
+            messageLabel.text = coreUser.timezone
+            profileImageView.image = #imageLiteral(resourceName: "ProfileImage")
+        }
+    }
     
     private func setupViews() {
         // collectionViewCell

@@ -8,14 +8,20 @@
 
 import UIKit
 import Parse
+import CoreData
 
 
-class DetailViewController: UICollectionViewController {
+private let cellID = "DetailCell"
+
+class DetailViewController: FetchedResultsCollectionViewController {
     
-    fileprivate let cellID = "DetailCell"
+    var container: NSPersistentContainer? = CoreDataStack.persistentContainer {
+        didSet { updateCollectionView() }
+    }
     
+    fileprivate var fetchedResultsController: NSFetchedResultsController<CoreMessage>?
     var bottomConstraint: NSLayoutConstraint?
-    var selectedUser = User()
+    var selectedUserName: String?
     var messages = [Message]()
     
     let messageInputContainerView: UIView = {
@@ -74,6 +80,25 @@ class DetailViewController: UICollectionViewController {
         }
     }
     
+    private func updateCollectionView() {
+        if let context = container?.viewContext, selectedUserName != nil {
+            let request: NSFetchRequest<CoreMessage> = CoreMessage.fetchRequest()
+            let predicate = NSPredicate(format: "receiver_name == %@ AND sender_name == %@", selectedUserName!, (PFUser.current()?.username!)!)
+            let inversePredicate = NSPredicate(format: "receiver_name == %@ AND sender_name == %@", (PFUser.current()?.username!)!, selectedUserName!)
+            let compoundedPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [predicate, inversePredicate])
+            request.sortDescriptors = [NSSortDescriptor(key: "created_at", ascending: true, selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+            request.predicate = compoundedPredicate
+            fetchedResultsController = NSFetchedResultsController<CoreMessage>(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+            fetchedResultsController?.delegate = self
+            do {
+                try fetchedResultsController?.performFetch()
+            } catch let err {
+                print("performFetch failed to fetch: - \(err)")
+            }
+            collectionView?.reloadData()
+        }
+    }
+    
     private func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
@@ -107,26 +132,25 @@ class DetailViewController: UICollectionViewController {
     private func setupNavigationController() {
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 64, height: 32))
         titleLabel.textAlignment = NSTextAlignment.center
-        titleLabel.text = selectedUser.username
+        titleLabel.text = selectedUserName!
         titleLabel.textColor = UIColor.white
         self.navigationItem.titleView = titleLabel
     }
     
-    private func setupViews() {
+    private func setupCollectionView() {
         self.collectionView?.backgroundColor = UIColor.midNightBlack()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
-        setupViews()
+        setupCollectionView()
         setupMessageInputContainerView()
         setupKeyboardNotifications()
         setupTextFieldDelegate()
-        setupCollectionViewDelegate()
         setupCollectionViewGesture()
         setupNavigationController()
-        fetchMessages(receiverName: selectedUser.username!)
+        fetchMessages(receiverName: selectedUserName!)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -158,7 +182,7 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout {
 }
 
 
-// MARK: - UICollectionViewDelegate
+// MARK: - UICollectionViewDataSource  + NSFetchedResultsController
 
 extension DetailViewController {
     
@@ -206,20 +230,21 @@ extension DetailViewController {
     }
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+        return fetchedResultsController!.sections?.count ?? 1
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return messages.count
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let sections = fetchedResultsController?.sections, sections.count > 0 {
+            return sections[section].numberOfObjects
+        } else {
+            return 0
+        }
     }
     
 }
 
 
-// MARK: - UITextFieldDelegate
+// MARK: - UITextFieldDelegate + UICollectionViewTap
 
 extension DetailViewController: UITextFieldDelegate {
     
@@ -230,17 +255,6 @@ extension DetailViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         inputTextField.resignFirstResponder()
         return true
-    }
-    
-}
-
-
-// MARK: - UICollectionViewTap
-
-extension DetailViewController {
-    
-    func setupCollectionViewDelegate() {
-        collectionView?.delegate = self
     }
     
     func setupCollectionViewGesture() {

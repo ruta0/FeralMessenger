@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16E195" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="CoreMessage" representedClassName="CoreMessage" syncable="YES">
+    <entity name="CoreMessage" representedClassName=".CoreMessage" syncable="YES" codeGenerationType="category">
         <attribute name="created_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="image" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="image_path" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="receiver_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sender_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sms" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updated_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <relationship name="newRelationship" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreUser" inverseName="newRelationship" inverseEntity="CoreUser" syncable="YES"/>
+        <relationship name="coreUser" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreUser" inverseName="coreMessages" inverseEntity="CoreUser" syncable="YES"/>
     </entity>
-    <entity name="CoreUser" representedClassName="CoreUser" syncable="YES">
+    <entity name="CoreUser" representedClassName=".CoreUser" syncable="YES" codeGenerationType="category">
         <attribute name="created_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="profile_image" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="timezone" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updated_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="newRelationship" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreMessage" inverseName="newRelationship" inverseEntity="CoreMessage" syncable="YES"/>
+        <relationship name="coreMessages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CoreMessage" inverseName="coreUser" inverseEntity="CoreMessage" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CoreUser" positionX="-549" positionY="-27" width="128" height="148"/>
-        <element name="CoreMessage" positionX="-308" positionY="-27" width="128" height="148"/>
+        <element name="CoreMessage" positionX="-308" positionY="-27" width="128" height="165"/>
+        <element name="CoreUser" positionX="-549" positionY="-27" width="128" height="180"/>
     </elements>
 </model>

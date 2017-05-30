@@ -150,7 +150,7 @@ class AuthViewController: UIViewController {
         passTextField.borderStyle = UITextBorderStyle.none
         passTextField.attributedPlaceholder = NSAttributedString(string: "pass", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
         // authButton
-        authButton.layer.cornerRadius = 21 // height is set to 50 in storyboard
+        authButton.layer.cornerRadius = 25 // height is set to 50 in storyboard
         authButton.backgroundColor = UIColor.mandarinOrange()
         authButton.setTitle(AuthButtonType.login.rawValue, for: UIControlState.normal)
         // termsButton

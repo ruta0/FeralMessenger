@@ -13,20 +13,22 @@ import Parse
 final class Message: PFObject {
     
     // parse handles the id, created_at, updated_at automatically
-    @NSManaged var image: PFFile?
-    @NSManaged var senderName: String
-    @NSManaged var receiverName: String
-    @NSManaged var sms: String?
+    var image: PFFile?
+    var senderName: String
+    var receiverName: String
+    var sms: String?
     
     init(image: PFFile?, senderName: String, receiverName: String, sms: String?) {
-        super.init()
         self.image = image
         self.senderName = senderName
         self.receiverName = receiverName
         self.sms = sms
+        super.init()
     }
     
     override init() {
+        senderName = String()
+        receiverName = String()
         super.init()
     }
     
@@ -53,3 +55,28 @@ extension Message: PFSubclassing {
     }
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -8,20 +8,22 @@
 
 import UIKit
 import Parse
+import CoreData
 
 
-class HomeViewController: UICollectionViewController {
-    
-    fileprivate let cellID = "HomeCell"
-    
-    var users = [User]()
-    var selectedUser = User()
+private let cellID = "MasterCell"
+
+class MasterViewController: FetchedResultsCollectionViewController {
     
     @IBOutlet weak var logoutButton: UIBarButtonItem!
     
-    @IBAction func logoutButton_tapped(_ sender: UIBarButtonItem) {
-        performLogout()
-    }
+    var container: NSPersistentContainer? = CoreDataStack.persistentContainer
+    
+    lazy var fetchedResultsController: NSFetchedResultsController<CoreUser> = {
+        let frc = NSFetchedResultsController(fetchRequest: CoreUser.defaultFetchedRequest, managedObjectContext: CoreDataStack.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        frc.delegate = self
+        return frc
+    }()
     
     lazy var refreshController: UIRefreshControl = {
         let control = UIRefreshControl()
@@ -36,6 +38,23 @@ class HomeViewController: UICollectionViewController {
         button.frame = CGRect(x: 0, y: 0, width: 35, height: 21)
         return button
     }()
+    
+    @IBAction func logoutButton_tapped(_ sender: UIBarButtonItem) {
+        performLogout()
+    }
+    
+    func reloadColectionView() {
+        DispatchQueue.main.async {
+            self.collectionView?.reloadData()
+        }
+    }
+    
+    func handleRefresh() {
+        DispatchQueue.main.async {
+            self.collectionView?.reloadData()
+            self.refreshController.endRefreshing()
+        }
+    }
     
     private func setupTabBar() {
         guard let tabBar = tabBarController?.tabBar else { return }
@@ -52,9 +71,15 @@ class HomeViewController: UICollectionViewController {
         navigationController.navigationBar.tintColor = UIColor.white
         navigationItem.rightBarButtonItem?.tintColor = UIColor.white
         navigationItem.titleView = titleButton
+        // setting the title of the navigationItem
+        guard let username = PFUser.current()?.username else {
+            print("setupNavigationController - PFUser.current()?.username is nil")
+            return
+        }
+        titleButton.setTitle(username, for: UIControlState.normal)
     }
     
-    private func setupViews() {
+    private func setupCollectionView() {
         guard let collectionView = collectionView else { return }
         collectionView.backgroundColor = UIColor.midNightBlack()
         collectionView.addSubview(refreshController)
@@ -62,10 +87,8 @@ class HomeViewController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupViews()
-        fetchUsers()
-        // huh, wrong place to set the nav title, but yolo...
-        titleButton.setTitle(PFUser.current()?.username!, for: UIControlState.normal)
+        setupCollectionView()
+        updateCoreUserFromParse()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -74,12 +97,24 @@ class HomeViewController: UICollectionViewController {
         setupNavigationController()
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "DetailViewControllerSegue" {
+            guard let selectedCell = sender as? MasterCell else {
+                print("unexpected sender of cell")
+                return
+            }
+            let detailViewController = segue.destination as! DetailViewController
+            detailViewController.selectedUserName = selectedCell.usernameLabel.text!
+            detailViewController.container = container
+        }
+    }
+    
 }
 
 
 // MARK: - UICollectionViewDelegateFlowLayout
 
-extension HomeViewController: UICollectionViewDelegateFlowLayout {
+extension MasterViewController: UICollectionViewDelegateFlowLayout {
     
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
         collectionViewLayout.invalidateLayout()
@@ -101,28 +136,32 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
 }
 
 
-// MARK: - UICollectionViewDelegate
+// MARK: - UICollectionViewDataSource + NSFetchedResultsController
 
-extension HomeViewController {
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! HomeCell
-        cell.usernameLabel.text = users[indexPath.item].username
-        cell.messageLabel.text = users[indexPath.item].timezone
-        return cell
-    }
+extension MasterViewController {
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+        return fetchedResultsController.sections?.count ?? 1
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return users.count
+        if let sections = fetchedResultsController.sections, sections.count > 0 {
+            return sections[section].numberOfObjects
+        } else {
+            return 0
+        }
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath)
+        let coreUser = fetchedResultsController.object(at: indexPath)
+        if let masterCell = cell as? MasterCell {
+            masterCell.coreUser = coreUser
+        }
+        return cell
     }
     
 }
-
-
 
 
 
