@@ -8,22 +8,13 @@
 
 import UIKit
 import Parse
-import CoreData
 
 
-private let cellID = "MasterCell"
-
+// MARK: - UI
+// This is a generic masterViewController designed to be subclassed to complete its functionality with either Core Data or Realm
 class MasterViewController: FetchedResultsCollectionViewController {
     
     @IBOutlet weak var logoutButton: UIBarButtonItem!
-    
-    var container: NSPersistentContainer? = CoreDataStack.persistentContainer
-    
-    lazy var fetchedResultsController: NSFetchedResultsController<CoreUser> = {
-        let frc = NSFetchedResultsController(fetchRequest: CoreUser.defaultFetchedRequest, managedObjectContext: CoreDataStack.viewContext, sectionNameKeyPath: nil, cacheName: nil)
-        frc.delegate = self
-        return frc
-    }()
     
     lazy var refreshController: UIRefreshControl = {
         let control = UIRefreshControl()
@@ -43,6 +34,13 @@ class MasterViewController: FetchedResultsCollectionViewController {
         performLogout()
     }
     
+    func handleFatalErrorResponse(fatalError: Error) {
+        let alert = UIAlertController(title: "Unexpected Error", message: fatalError.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        let ok = UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil)
+        alert.addAction(ok)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     func reloadColectionView() {
         DispatchQueue.main.async {
             self.collectionView?.reloadData()
@@ -56,7 +54,7 @@ class MasterViewController: FetchedResultsCollectionViewController {
         }
     }
     
-    private func setupTabBar() {
+    fileprivate func setupTabBar() {
         guard let tabBar = tabBarController?.tabBar else { return }
         tabBar.tintColor = UIColor.candyWhite()
         tabBar.barTintColor = UIColor.midNightBlack()
@@ -64,7 +62,7 @@ class MasterViewController: FetchedResultsCollectionViewController {
         tabBar.isTranslucent = false
     }
     
-    private func setupNavigationController() {
+    fileprivate func setupNavigationController() {
         guard let navigationController = navigationController else { return }
         navigationController.navigationBar.isTranslucent = false
         navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
@@ -79,34 +77,28 @@ class MasterViewController: FetchedResultsCollectionViewController {
         titleButton.setTitle(username, for: UIControlState.normal)
     }
     
-    private func setupCollectionView() {
+    fileprivate func setupCollectionView() {
         guard let collectionView = collectionView else { return }
         collectionView.backgroundColor = UIColor.midNightBlack()
         collectionView.addSubview(refreshController)
     }
     
+}
+
+
+// MARK: - Lifecycle
+
+extension MasterViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
-        updateCoreUserFromParse()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         setupTabBar()
         setupNavigationController()
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "DetailViewControllerSegue" {
-            guard let selectedCell = sender as? MasterCell else {
-                print("unexpected sender of cell")
-                return
-            }
-            let detailViewController = segue.destination as! DetailViewController
-            detailViewController.selectedUserName = selectedCell.usernameLabel.text!
-            detailViewController.container = container
-        }
     }
     
 }
@@ -136,36 +128,53 @@ extension MasterViewController: UICollectionViewDelegateFlowLayout {
 }
 
 
-// MARK: - UICollectionViewDataSource + NSFetchedResultsController
+// MARK: - Keychain
 
 extension MasterViewController {
     
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return fetchedResultsController.sections?.count ?? 1
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let sections = fetchedResultsController.sections, sections.count > 0 {
-            return sections[section].numberOfObjects
-        } else {
-            return 0
+    func removeTokenFromKeychain() {
+        let item = KeychainItem(service: KeychainConfiguration.serviceName, account: "auth_token", accessGroup: KeychainConfiguration.accessGroup)
+        do {
+            try item.deleteItem()
+        } catch let err {
+            print(err)
         }
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath)
-        let coreUser = fetchedResultsController.object(at: indexPath)
-        if let masterCell = cell as? MasterCell {
-            masterCell.coreUser = coreUser
-        }
-        return cell
     }
     
 }
 
 
+// MARK: - Parse
 
-
+extension MasterViewController {
+    
+    func performLogout() {
+        PFUser.logOutInBackground { [weak self] (error: Error?) in
+            self?.removeTokenFromKeychain()
+            if error != nil {
+                self?.handleFatalErrorResponse(fatalError: error!)
+            } else {
+                self?.tabBarController?.dismiss(animated: true, completion: nil)
+            }
+        }
+    }
+    
+    func downloadUserFromParse(completion: @escaping ([PFObject]) -> Void) {
+        guard let query = User.query() else { return }
+        query.findObjectsInBackground { ( pfObjects: [PFObject]?, error: Error?) in
+            if error != nil {
+                print(error!.localizedDescription)
+            } else {
+                guard let pfObjects = pfObjects else {
+                    print("updateCoreUserFromParse - pfObjects are nil")
+                    return
+                }
+                completion(pfObjects)
+            }
+        }
+    }
+    
+}
 
 
 

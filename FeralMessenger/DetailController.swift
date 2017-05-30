@@ -41,7 +41,8 @@ extension DetailViewController {
                 print(error!.localizedDescription)
             } else {
                 if completed == true {
-                    self?.downloadMessageFromParse(with: (self?.selectedUserName)!)
+                    self?.insertToCoreMessage(with: pfObject)
+                    // reload the collectionview
                     self?.scrollToLastCellItem()
                 }
             }
@@ -49,6 +50,19 @@ extension DetailViewController {
     }
     
     // MARK: - Core Data stuff
+    
+    func insertToCoreMessage(with pfObject: Message) {
+        if let context = container?.newBackgroundContext() {
+            let newCoreMessage = CoreMessage(context: context)
+            newCoreMessage.created_at = pfObject.createdAt! as NSDate
+            newCoreMessage.sms = pfObject["sms"] as? String
+            newCoreMessage.updated_at = pfObject.updatedAt! as NSDate
+            newCoreMessage.sender_name = pfObject["senderName"] as? String
+            newCoreMessage.receiver_name = pfObject["receiverName"] as? String
+            newCoreMessage.id = pfObject.objectId!
+            try? context.save()
+        }
+    }
     
     func persistToCoreMessage(with pfObjects: [PFObject]) {
         self.container?.performBackgroundTask { [weak self] context in

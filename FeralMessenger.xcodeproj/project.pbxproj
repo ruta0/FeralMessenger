@@ -36,9 +36,9 @@
 		C5439B791ED24AA700FBD7D3 /* UIKit+UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B781ED24AA700FBD7D3 /* UIKit+UILabel.swift */; };
 		C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7A1ED28B3400FBD7D3 /* User.swift */; };
 		C5439B7D1ED28B5700FBD7D3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7C1ED28B5700FBD7D3 /* Message.swift */; };
-		C5439B7F1ED2CA4400FBD7D3 /* MasterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7E1ED2CA4400FBD7D3 /* MasterController.swift */; };
 		C5439B851ED39E7A00FBD7D3 /* DetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B841ED39E7A00FBD7D3 /* DetailController.swift */; };
 		C56AD9401EDB657E00A9855B /* FetchedResultsCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56AD93F1EDB657E00A9855B /* FetchedResultsCollectionViewController.swift */; };
+		C5C58B931EDD6D2A003E19B7 /* ChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */; };
 		C5D7C38E1ED4360B00ECE44C /* ServerConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */; };
 		C5D7C3901ED44E2500ECE44C /* ServerConfigController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D7C38F1ED44E2500ECE44C /* ServerConfigController.swift */; };
 		F60F367CA4D4A485FB6CA97E /* Pods_FeralMessengerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F49CECBB20EBDFECDB16144 /* Pods_FeralMessengerUITests.framework */; };
@@ -104,9 +104,9 @@
 		C5439B781ED24AA700FBD7D3 /* UIKit+UILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+UILabel.swift"; sourceTree = "<group>"; };
 		C5439B7A1ED28B3400FBD7D3 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		C5439B7C1ED28B5700FBD7D3 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		C5439B7E1ED2CA4400FBD7D3 /* MasterController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterController.swift; sourceTree = "<group>"; };
 		C5439B841ED39E7A00FBD7D3 /* DetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailController.swift; sourceTree = "<group>"; };
 		C56AD93F1EDB657E00A9855B /* FetchedResultsCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchedResultsCollectionViewController.swift; sourceTree = "<group>"; };
+		C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatsViewController.swift; sourceTree = "<group>"; };
 		C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConfigViewController.swift; sourceTree = "<group>"; };
 		C5D7C38F1ED44E2500ECE44C /* ServerConfigController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConfigController.swift; sourceTree = "<group>"; };
 		C5D7C3911ED45FFA00ECE44C /* FeralMessenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FeralMessenger.entitlements; sourceTree = "<group>"; };
@@ -220,9 +220,7 @@
 			children = (
 				C5D7C3911ED45FFA00ECE44C /* FeralMessenger.entitlements */,
 				C525BC331ED02C77006BEEA3 /* AppDelegate.swift */,
-				C525BC371ED02C77006BEEA3 /* Main.storyboard */,
 				C525BC3D1ED02C77006BEEA3 /* Assets.xcassets */,
-				C525BC3F1ED02C77006BEEA3 /* LaunchScreen.storyboard */,
 				C525BC421ED02C77006BEEA3 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -243,9 +241,13 @@
 		C525BC661ED02CB1006BEEA3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				C56AD93F1EDB657E00A9855B /* FetchedResultsCollectionViewController.swift */,
-				C56AD9431EDB824D00A9855B /* Auth */,
-				C56AD9411EDB820400A9855B /* Home */,
+				C525BC371ED02C77006BEEA3 /* Main.storyboard */,
+				C525BC3F1ED02C77006BEEA3 /* LaunchScreen.storyboard */,
+				C525BC741ED0DC47006BEEA3 /* MasterCell.swift */,
+				C525BC781ED0DCD9006BEEA3 /* DetailCell.swift */,
+				C525BC761ED0DC8E006BEEA3 /* DetailViewController.swift */,
+				C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */,
+				C5439B741ED2094500FBD7D3 /* AuthViewController.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -253,10 +255,10 @@
 		C525BC671ED02CB7006BEEA3 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				C5D7C38F1ED44E2500ECE44C /* ServerConfigController.swift */,
-				C5439B761ED248F400FBD7D3 /* AuthController.swift */,
-				C5439B7E1ED2CA4400FBD7D3 /* MasterController.swift */,
-				C5439B841ED39E7A00FBD7D3 /* DetailController.swift */,
+				C56AD93F1EDB657E00A9855B /* FetchedResultsCollectionViewController.swift */,
+				C5C58B951EDD7FC8003E19B7 /* Auth */,
+				C5C58B941EDD7FB1003E19B7 /* Home */,
+				C5C58B961EDD7FDC003E19B7 /* Detail */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -265,7 +267,7 @@
 			isa = PBXGroup;
 			children = (
 				C53D0A5A1EDA2BC60048CC44 /* CoreData */,
-				C53D0A571EDA12DE0048CC44 /* Time */,
+				C53D0A571EDA12DE0048CC44 /* Secret */,
 				C5439B6C1ED14D0C00FBD7D3 /* Keychain */,
 				C525BC7C1ED0FF15006BEEA3 /* UIKit */,
 				C525BC6F1ED0D442006BEEA3 /* ParseServer */,
@@ -300,12 +302,12 @@
 			name = UIKit;
 			sourceTree = "<group>";
 		};
-		C53D0A571EDA12DE0048CC44 /* Time */ = {
+		C53D0A571EDA12DE0048CC44 /* Secret */ = {
 			isa = PBXGroup;
 			children = (
 				C53D0A581EDA13050048CC44 /* Secret.swift */,
 			);
-			name = Time;
+			name = Secret;
 			sourceTree = "<group>";
 		};
 		C53D0A5A1EDA2BC60048CC44 /* CoreData */ = {
@@ -326,24 +328,30 @@
 			name = Keychain;
 			sourceTree = "<group>";
 		};
-		C56AD9411EDB820400A9855B /* Home */ = {
+		C5C58B941EDD7FB1003E19B7 /* Home */ = {
 			isa = PBXGroup;
 			children = (
 				C525BC6A1ED0C5E5006BEEA3 /* MasterViewController.swift */,
-				C525BC741ED0DC47006BEEA3 /* MasterCell.swift */,
-				C525BC761ED0DC8E006BEEA3 /* DetailViewController.swift */,
-				C525BC781ED0DCD9006BEEA3 /* DetailCell.swift */,
+				C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */,
 			);
 			name = Home;
 			sourceTree = "<group>";
 		};
-		C56AD9431EDB824D00A9855B /* Auth */ = {
+		C5C58B951EDD7FC8003E19B7 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */,
-				C5439B741ED2094500FBD7D3 /* AuthViewController.swift */,
+				C5D7C38F1ED44E2500ECE44C /* ServerConfigController.swift */,
+				C5439B761ED248F400FBD7D3 /* AuthController.swift */,
 			);
 			name = Auth;
+			sourceTree = "<group>";
+		};
+		C5C58B961EDD7FDC003E19B7 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				C5439B841ED39E7A00FBD7D3 /* DetailController.swift */,
+			);
+			name = Detail;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -653,10 +661,10 @@
 				C5439B731ED14DB600FBD7D3 /* Keychain+UIViewController.swift in Sources */,
 				C53D0A591EDA13050048CC44 /* Secret.swift in Sources */,
 				C5439B791ED24AA700FBD7D3 /* UIKit+UILabel.swift in Sources */,
+				C5C58B931EDD6D2A003E19B7 /* ChatsViewController.swift in Sources */,
 				C525BC751ED0DC47006BEEA3 /* MasterCell.swift in Sources */,
 				C525BC6B1ED0C5E5006BEEA3 /* MasterViewController.swift in Sources */,
 				C5439B711ED14D7C00FBD7D3 /* KeychainConfiguration.swift in Sources */,
-				C5439B7F1ED2CA4400FBD7D3 /* MasterController.swift in Sources */,
 				C525BC791ED0DCD9006BEEA3 /* DetailCell.swift in Sources */,
 				C525BC771ED0DC8E006BEEA3 /* DetailViewController.swift in Sources */,
 				C53D0A601EDA75800048CC44 /* CoreUser.swift in Sources */,
