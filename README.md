@@ -1,6 +1,7 @@
 # This is a Parse chat app with Swift 3+
-<img src="https://raw.githubusercontent.com/jinhedev/FeralMessenger/master/art/1.png" width="200px" height="360px" />
-<img src="https://raw.githubusercontent.com/jinhedev/FeralMessenger/master/art/2.png" width="200px" height="360px" />
+<img src="https://raw.githubusercontent.com/jinhedev/FeralMessenger/master/art/1.jpg" width="200px" height="360px" />
+<img src="https://raw.githubusercontent.com/jinhedev/FeralMessenger/master/art/2.jpg" width="200px" height="360px" />
+
 ## What's inside?
 * OAuth for user login signup
 * Keychain protection for user sensitive information
