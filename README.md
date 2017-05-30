@@ -1,5 +1,5 @@
 # This is a chat app with Swift 3+, Parse Server & MongoDB
-<img src="https://raw.githubusercontent.com/jinhedev/FeralMessenger/master/art/1.jpg" width="200px" height="360px" /><img src="https://raw.githubusercontent.com/jinhedev/FeralMessenger/master/art/2.jpg" width="200px" height="360px" /><img src="https://raw.githubusercontent.com/jinhedev/FeralMessenger/master/art/3.jpeg" width="200px" height="360px" />
+<img src="https://raw.githubusercontent.com/jinhedev/FeralMessenger/master/art/1.jpg" width="200px" height="360px" /><img src="https://raw.githubusercontent.com/jinhedev/FeralMessenger/master/art/2.jpg" width="200px" height="360px" /><img src="https://raw.githubusercontent.com/jinhedev/FeralMessenger/master/art/3.jpg" width="200px" height="360px" />
 
 ## What's inside?
 * OAuth for user login signup
