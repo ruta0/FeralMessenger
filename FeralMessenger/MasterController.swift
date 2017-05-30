@@ -19,7 +19,7 @@ extension MasterViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    // MARK: - Auth logout
+    // MARK: - Parse Auth
     
     func performLogout() {
         PFUser.logOutInBackground { [weak self] (error: Error?) in
@@ -41,19 +41,17 @@ extension MasterViewController {
         }
     }
     
-    // MARK: - Core Data stuff
-    
     func updateCoreUserFromParse() {
         guard let query = User.query() else { return }
         query.findObjectsInBackground { [weak self] ( pfObjects: [PFObject]?, error: Error?) in
             if error != nil {
                 print(error!.localizedDescription)
             } else {
+                guard let pfObjects = pfObjects else {
+                    print("updateCoreUserFromParse - pfObjects are nil")
+                    return
+                }
                 self?.container?.performBackgroundTask { [weak self] context in
-                    guard let pfObjects = pfObjects else {
-                        print("pfObjects are nil")
-                        return
-                    }
                     for pfObject in pfObjects {
                         _ = try? CoreUser.findOrCreateCoreUser(matching: pfObject, in: context)
                     }
@@ -62,7 +60,7 @@ extension MasterViewController {
                     } catch let err {
                         print("updateCoreUserFromParse - Failed to save context", err)
                     }
-                    self?.performFetch()
+                    self?.performFetchFromCoreData()
                     self?.reloadColectionView()
                     self?.printDatabaseStats()
                 }
@@ -70,13 +68,15 @@ extension MasterViewController {
         }
     }
     
-    func performFetch() {
+    // MARK: - Core Data stuff
+    
+    func performFetchFromCoreData() {
         guard let context = container?.viewContext else { return }
         context.perform {
             do {
                 try self.fetchedResultsController.performFetch()
             } catch let err {
-                print("performFetch failed to fetch: - \(err)")
+                print("performFetchFromCoreData failed to fetch: - \(err)")
             }
         }
     }

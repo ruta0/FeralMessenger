@@ -38,7 +38,7 @@ class CoreUser: NSManagedObject {
         let request: NSFetchRequest<CoreUser> = CoreUser.fetchRequest()
         request.predicate = NSPredicate(format: "id = %@", pfObject.objectId!)
         do {
-            let matches = try context.fetch(request) // returning as [Message]
+            let matches = try context.fetch(request) // returning as [CoreUser]
             if matches.count > 0 {
                 assert(matches.count == 1, "CoreMessage.findOrCreateCoreMessage - database inconsistency")
                 return matches[0]

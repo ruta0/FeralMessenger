@@ -14,21 +14,11 @@ final class Message: PFObject {
     
     // parse handles the id, created_at, updated_at automatically
     var image: PFFile?
-    var senderName: String
-    var receiverName: String
+    var senderName: String?
+    var receiverName: String?
     var sms: String?
     
-    init(image: PFFile?, senderName: String, receiverName: String, sms: String?) {
-        self.image = image
-        self.senderName = senderName
-        self.receiverName = receiverName
-        self.sms = sms
-        super.init()
-    }
-    
     override init() {
-        senderName = String()
-        receiverName = String()
         super.init()
     }
     

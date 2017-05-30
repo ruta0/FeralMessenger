@@ -15,14 +15,12 @@ private let cellID = "DetailCell"
 
 class DetailViewController: FetchedResultsCollectionViewController {
     
-    var container: NSPersistentContainer? = CoreDataStack.persistentContainer {
-        didSet { updateCollectionView() }
-    }
+    var container: NSPersistentContainer? = CoreDataStack.persistentContainer
     
-    fileprivate var fetchedResultsController: NSFetchedResultsController<CoreMessage>?
+    var fetchedResultsController: NSFetchedResultsController<CoreMessage>?
+    
     var bottomConstraint: NSLayoutConstraint?
     var selectedUserName: String?
-    var messages = [Message]()
     
     let messageInputContainerView: UIView = {
         let view = UIView()
@@ -56,6 +54,19 @@ class DetailViewController: FetchedResultsCollectionViewController {
         return button
     }()
     
+    func sendMessage() {
+        if let sms = inputTextField.text, sms != "" {
+            uploadToParse(with: inputTextField.text!)
+            inputTextField.text = ""
+        }
+    }
+    
+    func reloadCollectionView() {
+        DispatchQueue.main.async {
+            self.collectionView?.reloadData()
+        }
+    }
+    
     func handleKeyboardNotification(notification: Notification) {
         if let userInfo = notification.userInfo {
             let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
@@ -77,25 +88,6 @@ class DetailViewController: FetchedResultsCollectionViewController {
         let lastIndexPath = IndexPath(item: numberOfItems - 1, section: 0)
         if numberOfItems >= 1 {
             collectionView.scrollToItem(at: lastIndexPath, at: UICollectionViewScrollPosition.bottom, animated: true)
-        }
-    }
-    
-    private func updateCollectionView() {
-        if let context = container?.viewContext, selectedUserName != nil {
-            let request: NSFetchRequest<CoreMessage> = CoreMessage.fetchRequest()
-            let predicate = NSPredicate(format: "receiver_name == %@ AND sender_name == %@", selectedUserName!, (PFUser.current()?.username!)!)
-            let inversePredicate = NSPredicate(format: "receiver_name == %@ AND sender_name == %@", (PFUser.current()?.username!)!, selectedUserName!)
-            let compoundedPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [predicate, inversePredicate])
-            request.sortDescriptors = [NSSortDescriptor(key: "created_at", ascending: true, selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
-            request.predicate = compoundedPredicate
-            fetchedResultsController = NSFetchedResultsController<CoreMessage>(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-            fetchedResultsController?.delegate = self
-            do {
-                try fetchedResultsController?.performFetch()
-            } catch let err {
-                print("performFetch failed to fetch: - \(err)")
-            }
-            collectionView?.reloadData()
         }
     }
     
@@ -150,7 +142,11 @@ class DetailViewController: FetchedResultsCollectionViewController {
         setupTextFieldDelegate()
         setupCollectionViewGesture()
         setupNavigationController()
-        fetchMessages(receiverName: selectedUserName!)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        downloadMessageFromParse(with: selectedUserName!)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -170,10 +166,10 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if let messageText = messages[indexPath.item].sms {
+        if let sms = fetchedResultsController?.object(at: indexPath).sms {
             let size = CGSize(width: 250, height: 1000)
             let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
-            let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
+            let estimatedFrame = NSString(string: sms).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
             return CGSize(width: view.frame.width, height: estimatedFrame.height+20)
         }
         return CGSize(width: view.frame.width, height: 84)
@@ -189,15 +185,14 @@ extension DetailViewController {
     /// Note: notice that there is a footer in the storyboard to offer the additional space offset for the textfield
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! DetailCell
-        cell.messageTextView.text = messages[indexPath.row].sms
-        if let sms = messages[indexPath.item].sms {
-            cell.messageTextView.text = sms
+        if let coreMessage = fetchedResultsController?.object(at: indexPath) {
+            cell.messageTextView.text = coreMessage.sms!
             cell.profileImageView.image = #imageLiteral(resourceName: "ProfileImage")
             let size = CGSize(width: 250, height: 1000)
             let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
-            let estimatedFrame = NSString(string: sms).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
+            let estimatedFrame = NSString(string: coreMessage.sms!).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
             // incoming message
-            if messages[indexPath.item].senderName != PFUser.current()!.username! {
+            if coreMessage.sender_name != PFUser.current()!.username! {
                 cell.bubbleView.frame = CGRect(x: 8 + 30 + 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
                 cell.messageTextView.frame = CGRect(x: 8 + 30 + 8 + 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
                 cell.messageTextView.textColor = UIColor.black
@@ -230,7 +225,7 @@ extension DetailViewController {
     }
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return fetchedResultsController!.sections?.count ?? 1
+        return fetchedResultsController?.sections?.count ?? 1
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
