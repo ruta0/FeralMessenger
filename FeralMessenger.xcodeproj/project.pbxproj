@@ -250,7 +250,7 @@
 			children = (
 				C56AD93F1EDB657E00A9855B /* FetchedResultsCollectionViewController.swift */,
 				C5C58B951EDD7FC8003E19B7 /* Auth */,
-				C5C58B941EDD7FB1003E19B7 /* Home */,
+				C5C58B941EDD7FB1003E19B7 /* Master */,
 				C5C58B961EDD7FDC003E19B7 /* Detail */,
 			);
 			name = Controllers;
@@ -321,13 +321,13 @@
 			name = Keychain;
 			sourceTree = "<group>";
 		};
-		C5C58B941EDD7FB1003E19B7 /* Home */ = {
+		C5C58B941EDD7FB1003E19B7 /* Master */ = {
 			isa = PBXGroup;
 			children = (
 				C525BC6A1ED0C5E5006BEEA3 /* MasterViewController.swift */,
 				C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */,
 			);
-			name = Home;
+			name = Master;
 			sourceTree = "<group>";
 		};
 		C5C58B951EDD7FC8003E19B7 /* Auth */ = {

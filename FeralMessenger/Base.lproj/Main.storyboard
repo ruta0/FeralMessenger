@@ -1207,11 +1207,11 @@
             </objects>
             <point key="canvasLocation" x="2814" y="-510"/>
         </scene>
-        <!--Home-->
+        <!--Chats-->
         <scene sceneID="VIz-hb-Z7t">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="5ee-Ti-YX7" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Home" image="Home" selectedImage="Home" id="eGR-cH-Tyk">
+                    <tabBarItem key="tabBarItem" title="Chats" image="Home" selectedImage="Home" id="eGR-cH-Tyk">
                         <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="0.0"/>
                     </tabBarItem>
                     <toolbarItems/>
