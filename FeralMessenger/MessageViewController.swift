@@ -17,7 +17,7 @@ class MessageViewController: DetailViewController {
     
     fileprivate let cellID = "DetailCell"
     
-    var container: NSPersistentContainer? = CoreDataStack.persistentContainer
+    var container: NSPersistentContainer? = CoreDataStack.persistentContainer // default to the container from CoreDataStack
     var fetchedResultsController: NSFetchedResultsController<CoreMessage>?
     
     func insertToCoreMessage(with pfObject: Message) {
@@ -45,7 +45,6 @@ class MessageViewController: DetailViewController {
             }
             self?.performFetchFromCoreData()
             self?.reloadCollectionView()
-//            self?.printDatabaseStats()
         }
     }
     
@@ -86,6 +85,7 @@ class MessageViewController: DetailViewController {
                 self?.insertToCoreMessage(with: pfObject)
                 self?.scrollToLastCellItem()
                 self?.inputTextField.text = ""
+                self?.performFetchFromCoreData() // I should insert the next object into the last indexPath! instead of a full fetch. Well YOLO.
             })
         }
     }
