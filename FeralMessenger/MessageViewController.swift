@@ -17,7 +17,7 @@ final class MessageViewController: DetailViewController {
     
     fileprivate let cellID = "DetailCell"
     
-    var container: NSPersistentContainer? = CoreDataStack.persistentContainer // default to the container from CoreDataStack
+    var container: NSPersistentContainer? = CoreDataManager.persistentContainer // default to the container from CoreDataManager
     var fetchedResultsController: NSFetchedResultsController<CoreMessage>?
     
     func insertToCoreMessage(with pfObject: Message) {
@@ -44,7 +44,6 @@ final class MessageViewController: DetailViewController {
                 print("updateCoreMessageFromParse - Failed to save context", err)
             }
             self?.performFetchFromCoreData()
-            self?.reloadCollectionView()
         }
     }
     
@@ -71,6 +70,7 @@ final class MessageViewController: DetailViewController {
                 do {
                     try self.fetchedResultsController?.performFetch()
                     self.collectionView?.reloadData()
+                    self.scrollToLastCellItem()
                 } catch let err {
                     print("performFetch failed to fetch: - \(err)")
                 }
@@ -99,14 +99,13 @@ extension MessageViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        downloadMessageFromParse(with: selectedUserName!) { [weak self] (pfObjects: [PFObject]) in
-            self?.persistToCoreMessage(with: pfObjects)
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        scrollToLastCellItem()
+        downloadMessageFromParse(with: selectedUserName!) { [weak self] (pfObjects: [PFObject]) in
+            self?.persistToCoreMessage(with: pfObjects)
+        }
     }
     
 }

@@ -9,9 +9,9 @@
 import CoreData
 
 
-final class CoreDataStack {
+final class CoreDataManager {
     
-    static let shared = CoreDataStack()
+    static let shared = CoreDataManager()
     
     static var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "Feral")

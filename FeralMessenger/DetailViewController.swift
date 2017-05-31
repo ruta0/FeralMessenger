@@ -55,6 +55,7 @@ class DetailViewController: FetchedResultsCollectionViewController {
     func reloadCollectionView() {
         DispatchQueue.main.async {
             self.collectionView?.reloadData()
+            self.scrollToLastCellItem()
         }
     }
     
