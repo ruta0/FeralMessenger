@@ -20,8 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         isParseInitialized = false
         registerForAPNS(application: application)
-        Secret.shared.setupSecret()
-//        CoreDataStack.emptyPersistentContainer()
+        // In order to be in sync with what I have in the database, I need to empty the database on start. Note: I can afford to do this because this app is currently only a pure text messenger.
+        CoreDataManager.emptyPersistentContainer()
         return true
     }
 
@@ -35,10 +35,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
+        Secret.shared.setupSecret()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        CoreDataStack.saveContext()
+        CoreDataManager.saveContext()
     }
 
 }
@@ -47,6 +48,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 // MARK: - APNS
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        // implement this
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        // fetch notification in the background
+        UNUserNotificationCenter.current().getNotificationSettings { (settings: UNNotificationSettings) in
+            switch settings.soundSetting {
+            case .enabled:
+                print("enabled sound setting")
+            case .disabled:
+                print("disable sound setting")
+            case .notSupported:
+                print("not supported")
+            }
+        }
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let deviceTokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
+        print(deviceTokenString)
+        // persist token to backend
+        // persist token to UserDefault
+        UserDefaults.standard.set(deviceTokenString, forKey: "apns_token")
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("Failed to register: ", error)
+    }
     
     func registerForAPNS(application: UIApplication) {
         let center = UNUserNotificationCenter.current()

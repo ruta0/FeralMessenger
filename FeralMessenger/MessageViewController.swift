@@ -13,11 +13,11 @@ import CoreData
 
 // MARK: - Core Data
 
-class MessageViewController: DetailViewController {
+final class MessageViewController: DetailViewController {
     
     fileprivate let cellID = "DetailCell"
     
-    var container: NSPersistentContainer? = CoreDataStack.persistentContainer // default to the container from CoreDataStack
+    var container: NSPersistentContainer? = CoreDataManager.persistentContainer // default to the container from CoreDataManager
     var fetchedResultsController: NSFetchedResultsController<CoreMessage>?
     
     func insertToCoreMessage(with pfObject: Message) {
@@ -44,7 +44,6 @@ class MessageViewController: DetailViewController {
                 print("updateCoreMessageFromParse - Failed to save context", err)
             }
             self?.performFetchFromCoreData()
-            self?.reloadCollectionView()
         }
     }
     
@@ -71,6 +70,7 @@ class MessageViewController: DetailViewController {
                 do {
                     try self.fetchedResultsController?.performFetch()
                     self.collectionView?.reloadData()
+                    self.scrollToLastCellItem()
                 } catch let err {
                     print("performFetch failed to fetch: - \(err)")
                 }
@@ -106,7 +106,6 @@ extension MessageViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        scrollToLastCellItem()
     }
     
 }
@@ -125,15 +124,15 @@ extension MessageViewController {
             let size = CGSize(width: 250, height: 1000)
             let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
             let estimatedFrame = NSString(string: coreMessage.sms!).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
-            // incoming message
-            if coreMessage.sender_name != PFUser.current()!.username! {
+            // incoming message - text on the left
+            if coreMessage.receiver_name == PFUser.current()!.username! {
                 cell.bubbleView.frame = CGRect(x: 8 + 30 + 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
                 cell.messageTextView.frame = CGRect(x: 8 + 30 + 8 + 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
                 cell.messageTextView.textColor = UIColor.black
                 cell.profileImageView.isHidden = false
                 cell.bubbleView.backgroundColor = UIColor.lightBlue()
-            } else {
-                // outgoing message
+            } else if coreMessage.receiver_name != PFUser.current()!.username! {
+                // outgoing message - text on the right
                 cell.bubbleView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8 - 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
                 cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
                 cell.messageTextView.textColor = UIColor.white

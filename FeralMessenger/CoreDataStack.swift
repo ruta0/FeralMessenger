@@ -6,13 +6,12 @@
 //  Copyright © 2017 Duckisburg. All rights reserved.
 //
 
-import Foundation
 import CoreData
 
 
-final class CoreDataStack {
+final class CoreDataManager {
     
-    static let shared = CoreDataStack()
+    static let shared = CoreDataManager()
     
     static var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "Feral")
@@ -33,7 +32,7 @@ final class CoreDataStack {
         let context = self.viewContext
         context.perform {
             do {
-                let entityNames = ["CoreUser", "CoreMessage"]
+                let entityNames = [CoreUser.entityName, CoreMessage.entityName]
                 for entityName in entityNames {
                     let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entityName)
                     let fetchedObjects = try context.fetch(fetchRequest) as? [NSManagedObject]

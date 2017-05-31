@@ -14,21 +14,29 @@ class FetchedResultsCollectionViewController: UICollectionViewController, NSFetc
     
     // MARK: - NSFetchedResultsControllerDelegate
     
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+    public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        print("controller will change content")
+    }
+    
+    public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        print("controller did change content")
+    }
+    
+    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         guard let collectionView = collectionView else { return }
         collectionView.performBatchUpdates({
             switch type {
             case .insert:
-                collectionView.insertSections([sectionIndex])
+                collectionView.insertSections(IndexSet(integer: sectionIndex))
             case .delete:
-                collectionView.deleteSections([sectionIndex])
+                collectionView.deleteSections(IndexSet(integer: sectionIndex))
             default:
                 break
             }
         }, completion: nil)
     }
     
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         guard let collectionView = collectionView else { return }
         collectionView.performBatchUpdates({
             switch type {
@@ -46,3 +54,21 @@ class FetchedResultsCollectionViewController: UICollectionViewController, NSFetc
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

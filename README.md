@@ -27,8 +27,13 @@
 3. | Chat with anyone in your database
 
 ## Class Structure
+<<<<<<< HEAD
 ### To incorporate with Core Data and all of super methods, I needed a structure that is clean and re-usable for API calls from/to Parse and Core Data itself. So here what I did to improve the readability and resuability of the app's MVCs.
 ### As for classes that are not related to Core Data in any way, I haven't figured out a way to refactor them yet. The challenge is that they generally have a lot of custom parts, such as buttons and logo and stackviews.
+=======
+* To incorporate with Core Data and all of super methods, I needed a structure that is clean and re-usable for API calls from/to Parse and Core Data itself. So here what I did to improve the readability and resuability of the app's MVCs.
+* As for classes that are not related to Core Data in any way, I haven't figured out a way to refactor them yet. The challenge is that they generally have a lot of custom parts, such as buttons and logo and stackviews.
+>>>>>>> 4a9e349b2205bdecdedb0bfeb37950ef4970570a
 <img src="https://raw.githubusercontent.com/jinhedev/FeralMessenger/master/art/structure.png" width="720px" height="480px" />
 
 ## Task List
@@ -41,8 +46,11 @@
 - [ ] Add a new Tab to allow user to manage their profile
 - [ ] ...Automate custom database creation with Heroku
 
+## Explanation in my blog
+Visit [Initial Setup with CoreDataStack](https://sheltered-ridge-89457.herokuapp.com/posts/initial-setup-with-coredatastack) for details
+
 ## Support or Contact
-Visit [ShelteredRidge](http://sheltered-ridge-89457.herokuapp.com/) to see more
+Visit [ShelteredRidge](http://sheltered-ridge-89457.herokuapp.com/) to see all of my blog posts (well, 3 at least...)
 
 ## Licensing
 My Feral project are licensed under [the MIT License](LICENSE)

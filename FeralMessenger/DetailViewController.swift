@@ -8,12 +8,14 @@
 
 import UIKit
 import Parse
-import CoreData
+import AVFoundation
 
 
 // MARK: - UI
 
 class DetailViewController: FetchedResultsCollectionViewController {
+    
+    var player: AVAudioPlayer?
     
     var bottomConstraint: NSLayoutConstraint?
     var selectedUserName: String?
@@ -50,11 +52,28 @@ class DetailViewController: FetchedResultsCollectionViewController {
         return button
     }()
     
+    func playSound() {
+        guard let sound = NSDataAsset(name: "sent") else {
+            print("sound file not found")
+            return
+        }
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            try AVAudioSession.sharedInstance().setActive(true)
+            player = try AVAudioPlayer(data: sound.data, fileTypeHint: AVFileTypeWAVE)
+            guard let player = player else { return }
+            player.play()
+        } catch let err {
+            print(err.localizedDescription)
+        }
+    }
+    
     func sendMessage() { }
     
     func reloadCollectionView() {
         DispatchQueue.main.async {
             self.collectionView?.reloadData()
+            self.scrollToLastCellItem()
         }
     }
     
@@ -205,14 +224,15 @@ extension DetailViewController {
         let pfObject = Message()
         pfObject["sms"] = sms
         pfObject["image"] = ""
-        pfObject["senderName"] = selectedUserName!
-        pfObject["receiverName"] = (PFUser.current()?.username)!
-        pfObject.saveInBackground { (completed: Bool, error: Error?) in
+        pfObject["senderName"] = PFUser.current()?.username!
+        pfObject["receiverName"] = selectedUserName!
+        pfObject.saveInBackground { [weak self] (completed: Bool, error: Error?) in
             if error != nil {
                 print(error!.localizedDescription)
             } else {
                 if completed == true {
                     completion(pfObject)
+                    self?.playSound()
                 }
             }
         }

@@ -13,14 +13,14 @@ import CoreData
 
 // MARK: - Core Data
 
-class ChatsViewController: MasterViewController {
+final class ChatsViewController: MasterViewController {
     
     fileprivate let cellID = "MasterCell"
     
-    var container: NSPersistentContainer? = CoreDataStack.persistentContainer
+    var container: NSPersistentContainer? = CoreDataManager.persistentContainer
     
     lazy var fetchedResultsController: NSFetchedResultsController<CoreUser> = {
-        let frc = NSFetchedResultsController(fetchRequest: CoreUser.defaultFetchedRequest, managedObjectContext: CoreDataStack.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        let frc = NSFetchedResultsController(fetchRequest: CoreUser.defaultFetchedRequest, managedObjectContext: CoreDataManager.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         frc.delegate = self
         return frc
     }()

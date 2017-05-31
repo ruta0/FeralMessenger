@@ -15,6 +15,24 @@ class DetailCell: UICollectionViewCell {
     @IBOutlet weak var bubbleView: UIView!
     @IBOutlet weak var messageTextView: UITextView!
     
+    var coreMessage: CoreMessage? {
+        didSet {
+            updateCell()
+        }
+    }
+    
+    private func updateCell() {
+        // STEP 1: reset any existing UI info/outlets, otherwise info will become misplaced
+        messageTextView?.text = nil
+        profileImageView?.image = nil
+        // STEP 2: load new info from user (if any)
+        if let coreMessage = self.coreMessage {
+            // implement profile_image
+            messageTextView.text = coreMessage.sms
+            profileImageView.image = #imageLiteral(resourceName: "ProfileImage")
+        }
+    }
+    
     private func setupViews() {
         // collectionViewCell
         backgroundColor = UIColor.clear
