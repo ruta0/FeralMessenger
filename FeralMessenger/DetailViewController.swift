@@ -8,12 +8,14 @@
 
 import UIKit
 import Parse
-import CoreData
+import AVFoundation
 
 
 // MARK: - UI
 
 class DetailViewController: FetchedResultsCollectionViewController {
+    
+    var player: AVAudioPlayer?
     
     var bottomConstraint: NSLayoutConstraint?
     var selectedUserName: String?
@@ -49,6 +51,22 @@ class DetailViewController: FetchedResultsCollectionViewController {
         button.addTarget(self, action: #selector(sendMessage), for: UIControlEvents.touchUpInside)
         return button
     }()
+    
+    func playSound() {
+        guard let sound = NSDataAsset(name: "sent") else {
+            print("sound file not found")
+            return
+        }
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            try AVAudioSession.sharedInstance().setActive(true)
+            player = try AVAudioPlayer(data: sound.data, fileTypeHint: AVFileTypeWAVE)
+            guard let player = player else { return }
+            player.play()
+        } catch let err {
+            print(err.localizedDescription)
+        }
+    }
     
     func sendMessage() { }
     
@@ -208,12 +226,13 @@ extension DetailViewController {
         pfObject["image"] = ""
         pfObject["senderName"] = PFUser.current()?.username!
         pfObject["receiverName"] = selectedUserName!
-        pfObject.saveInBackground { (completed: Bool, error: Error?) in
+        pfObject.saveInBackground { [weak self] (completed: Bool, error: Error?) in
             if error != nil {
                 print(error!.localizedDescription)
             } else {
                 if completed == true {
                     completion(pfObject)
+                    self?.playSound()
                 }
             }
         }
