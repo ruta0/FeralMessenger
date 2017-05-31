@@ -23,6 +23,8 @@ class Secret: NSObject {
         if let hourInt = Int(hourString) {
             if hourInt > Secret.almostMidNight {
                 addButton()
+            } else {
+                print("time is still early")
             }
         }
     }

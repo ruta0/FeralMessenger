@@ -20,7 +20,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         isParseInitialized = false
         registerForAPNS(application: application)
-        Secret.shared.setupSecret()
         // In order to be in sync with what I have in the database, I need to empty the database on start. Note: I can afford to do this because this app is currently only a pure text messenger.
         CoreDataManager.emptyPersistentContainer()
         return true
@@ -36,6 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
+        Secret.shared.setupSecret()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

@@ -206,8 +206,8 @@ extension DetailViewController {
         let pfObject = Message()
         pfObject["sms"] = sms
         pfObject["image"] = ""
-        pfObject["senderName"] = selectedUserName!
-        pfObject["receiverName"] = (PFUser.current()?.username)!
+        pfObject["senderName"] = PFUser.current()?.username!
+        pfObject["receiverName"] = selectedUserName!
         pfObject.saveInBackground { (completed: Bool, error: Error?) in
             if error != nil {
                 print(error!.localizedDescription)

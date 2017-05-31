@@ -61,7 +61,7 @@ class AuthViewController: UIViewController {
             }
         } else {
             if nameTextField.text != "" && emailTextField.text != "" && passTextField.text != "" {
-                performSignup(name: nameTextField.text!, email: emailTextField.text!, pass: passTextField.text!)
+                performSignup(name: nameTextField.text!, email: emailTextField.text!.lowercased(), pass: passTextField.text!)
             } else {
                 handleResponse(type: AuthViewController.ResponseType.failure, message: "Fields cannot be blank")
             }
@@ -331,6 +331,10 @@ extension AuthViewController {
         }
     }
     
+    fileprivate func removeSecretInKeychain(account: String) {
+        print(account)
+    }
+    
 }
 
 
@@ -383,8 +387,13 @@ extension AuthViewController {
             PFUser.become(inBackground: token, block: { [weak self] (pfUser: PFUser?, error: Error?) in
                 self?.activityIndicator.stopAnimating()
                 UIApplication.shared.endIgnoringInteractionEvents()
-                self?.storeSecretInKeychain(secret: token, account: "auth_token")
-                self?.presentHomeView()
+                if error != nil {
+                    self?.handleResponse(type: AuthViewController.ResponseType.failure, message: error!.localizedDescription)
+                    self?.removeSecretInKeychain(account: "auth_token")
+                } else {
+                    self?.storeSecretInKeychain(secret: token, account: "auth_token")
+                    self?.presentHomeView()
+                }
             })
         } else {
             handleResponse(type: AuthViewController.ResponseType.failure, message: "Failed to connect to Internet")
@@ -398,13 +407,16 @@ extension AuthViewController {
             self.activityIndicator.startAnimating()
             let newUser = User()
             newUser.constructUserInfo(name: name, email: email, pass: pass)
+            print(newUser)
             newUser.signUpInBackground(block: { [weak self] (completed: Bool, error: Error?) in
                 self?.activityIndicator.stopAnimating()
                 self?.passTextField.text = ""
                 if error != nil {
                     self?.handleResponse(type: AuthViewController.ResponseType.failure, message: error!.localizedDescription)
                 } else {
-                    self?.handleResponse(type: AuthViewController.ResponseType.success, message: "Success! Please proceed to login")
+                    if completed == true {
+                        self?.handleResponse(type: AuthViewController.ResponseType.success, message: "Success! Please proceed to login")
+                    }
                 }
             })
         } else {

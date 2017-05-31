@@ -47,11 +47,10 @@ class CoreUser: NSManagedObject {
             throw error
         }
         let coreUser = CoreUser(context: context)
-        guard let id = pfObject.objectId, let email = pfObject["email"] as? String, let profileImage = pfObject["profile_image"] as? String, let timezone = pfObject["timezone"] as? String, let username = pfObject["username"] as? String, let uuid = pfObject["uuid"] as? String else {
+        guard let id = pfObject.objectId, let profileImage = pfObject["avatar"] as? String, let timezone = pfObject["timezone"] as? String, let username = pfObject["username"] as? String, let uuid = pfObject["uuid"] as? String else {
             fatalError("findOrCreateCoreUser: - failed to parse PFObject")
         }
         coreUser.id = id as String
-        coreUser.email = email
         coreUser.profile_image = profileImage
         coreUser.timezone = timezone
         coreUser.username = username

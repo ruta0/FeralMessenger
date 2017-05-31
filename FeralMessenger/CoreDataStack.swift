@@ -32,7 +32,7 @@ final class CoreDataManager {
         let context = self.viewContext
         context.perform {
             do {
-                let entityNames = ["CoreUser", "CoreMessage"]
+                let entityNames = [CoreUser.entityName, CoreMessage.entityName]
                 for entityName in entityNames {
                     let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entityName)
                     let fetchedObjects = try context.fetch(fetchRequest) as? [NSManagedObject]

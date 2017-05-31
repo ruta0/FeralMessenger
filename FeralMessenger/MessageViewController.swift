@@ -99,13 +99,13 @@ extension MessageViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        downloadMessageFromParse(with: selectedUserName!) { [weak self] (pfObjects: [PFObject]) in
+            self?.persistToCoreMessage(with: pfObjects)
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        downloadMessageFromParse(with: selectedUserName!) { [weak self] (pfObjects: [PFObject]) in
-            self?.persistToCoreMessage(with: pfObjects)
-        }
     }
     
 }
@@ -124,15 +124,15 @@ extension MessageViewController {
             let size = CGSize(width: 250, height: 1000)
             let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
             let estimatedFrame = NSString(string: coreMessage.sms!).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
-            // incoming message
-            if coreMessage.sender_name != PFUser.current()!.username! {
+            // incoming message - text on the left
+            if coreMessage.receiver_name == PFUser.current()!.username! {
                 cell.bubbleView.frame = CGRect(x: 8 + 30 + 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
                 cell.messageTextView.frame = CGRect(x: 8 + 30 + 8 + 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
                 cell.messageTextView.textColor = UIColor.black
                 cell.profileImageView.isHidden = false
                 cell.bubbleView.backgroundColor = UIColor.lightBlue()
-            } else {
-                // outgoing message
+            } else if coreMessage.receiver_name != PFUser.current()!.username! {
+                // outgoing message - text on the right
                 cell.bubbleView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8 - 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
                 cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
                 cell.messageTextView.textColor = UIColor.white

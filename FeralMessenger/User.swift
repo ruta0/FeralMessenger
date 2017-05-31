@@ -16,7 +16,7 @@ final class User: PFUser {
     var profile_image: String
 //    var username: String
 //    var email: String
-    var pass: String
+//    var pass: String
 
     var uuid: String
     var sysName: String
@@ -34,21 +34,20 @@ final class User: PFUser {
     // username, email and password are inheritated from PFUser
     func constructUserInfo(name: String, email: String, pass: String) {
         // user specific
-        self.profile_image = "default"
         self.username = name
         self.email = email
-        self.pass = pass
+        self.password = pass
+        self["avatar"] = "default"
         // device specific
-        self.uuid = UIDevice.current.identifierForVendor!.uuidString
-        self.sysVersion = UIDevice.current.systemVersion
-        self.sysName = UIDevice.current.systemName
-        self.timezone = NSTimeZone.system.identifier
-        self.model = UIDevice.current.model
+        self["uuid"] = UIDevice.current.identifierForVendor!.uuidString
+        self["sysVersion"] = UIDevice.current.systemVersion
+        self["sysName"] = UIDevice.current.systemName
+        self["timezone"] = NSTimeZone.system.identifier
+        self["model"] = UIDevice.current.model
     }
     
     override init() {
         profile_image = String()
-        pass = String()
         uuid = String()
         sysName = String()
         sysVersion = String()

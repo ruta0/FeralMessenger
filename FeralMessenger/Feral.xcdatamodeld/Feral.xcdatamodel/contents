@@ -12,7 +12,6 @@
     </entity>
     <entity name="CoreUser" representedClassName=".CoreUser" syncable="YES" codeGenerationType="category">
         <attribute name="created_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="profile_image" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="timezone" optional="YES" attributeType="String" syncable="YES"/>
@@ -23,6 +22,6 @@
     </entity>
     <elements>
         <element name="CoreMessage" positionX="-308" positionY="-27" width="128" height="165"/>
-        <element name="CoreUser" positionX="-549" positionY="-27" width="128" height="180"/>
+        <element name="CoreUser" positionX="-549" positionY="-27" width="128" height="163"/>
     </elements>
 </model>
