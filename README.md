@@ -41,8 +41,11 @@
 - [ ] Add a new Tab to allow user to manage their profile
 - [ ] ...Automate custom database creation with Heroku
 
+## Explanation in my blog
+Visit [Initial Setup with CoreDataStack](https://sheltered-ridge-89457.herokuapp.com/posts/initial-setup-with-coredatastack) for details
+
 ## Support or Contact
-Visit [ShelteredRidge](http://sheltered-ridge-89457.herokuapp.com/) to see more
+Visit [ShelteredRidge](http://sheltered-ridge-89457.herokuapp.com/) to see all of my blog posts (well, 3 at least...)
 
 ## Licensing
 My Feral project are licensed under [the MIT License](LICENSE)

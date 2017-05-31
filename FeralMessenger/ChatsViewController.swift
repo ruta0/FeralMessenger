@@ -13,7 +13,7 @@ import CoreData
 
 // MARK: - Core Data
 
-class ChatsViewController: MasterViewController {
+final class ChatsViewController: MasterViewController {
     
     fileprivate let cellID = "MasterCell"
     

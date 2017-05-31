@@ -7,8 +7,6 @@
 //
 
 import Parse
-import UIKit
-import CoreData
 
 
 // This is a PFUser object to handle temporarily JSON transaction between REST and Core Data. The primary model object for user is CoreUser

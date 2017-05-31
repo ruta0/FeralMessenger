@@ -13,7 +13,7 @@ import CoreData
 
 // MARK: - Core Data
 
-class MessageViewController: DetailViewController {
+final class MessageViewController: DetailViewController {
     
     fileprivate let cellID = "DetailCell"
     
