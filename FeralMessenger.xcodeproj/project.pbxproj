@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		3C529BD04307FB8AEE50BBBD /* Pods_FeralMessengerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC04006C827BFC56EA402FA /* Pods_FeralMessengerTests.framework */; };
 		86AA0CE399E870ED1A13EDEE /* Pods_FeralMessenger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BD907D41C88F95D883A784D /* Pods_FeralMessenger.framework */; };
+		C510CAD11EDF8E8B007ADC92 /* StaticGroupTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C510CAD01EDF8E8B007ADC92 /* StaticGroupTableViewController.swift */; };
+		C510CAD41EDF8F94007ADC92 /* DisclosureCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C510CAD31EDF8F94007ADC92 /* DisclosureCollectionViewController.swift */; };
 		C525BC341ED02C77006BEEA3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC331ED02C77006BEEA3 /* AppDelegate.swift */; };
 		C525BC391ED02C77006BEEA3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C525BC371ED02C77006BEEA3 /* Main.storyboard */; };
 		C525BC3E1ED02C77006BEEA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C525BC3D1ED02C77006BEEA3 /* Assets.xcassets */; };
@@ -69,6 +71,8 @@
 		A02F9F65A8E59CB2A68E8920 /* Pods-FeralMessengerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeralMessengerTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-FeralMessengerTests/Pods-FeralMessengerTests.release.xcconfig"; sourceTree = "<group>"; };
 		BC10FAB8FECDA137C6373323 /* Pods-FeralMessenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeralMessenger.release.xcconfig"; path = "Pods/Target Support Files/Pods-FeralMessenger/Pods-FeralMessenger.release.xcconfig"; sourceTree = "<group>"; };
 		BCC04006C827BFC56EA402FA /* Pods_FeralMessengerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FeralMessengerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C510CAD01EDF8E8B007ADC92 /* StaticGroupTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StaticGroupTableViewController.swift; sourceTree = "<group>"; };
+		C510CAD31EDF8F94007ADC92 /* DisclosureCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisclosureCollectionViewController.swift; sourceTree = "<group>"; };
 		C525BC301ED02C77006BEEA3 /* FeralMessenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeralMessenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C525BC331ED02C77006BEEA3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C525BC381ED02C77006BEEA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -157,6 +161,22 @@
 				7A494FA67A0C77F53EA4C3DC /* Pods-FeralMessengerUITests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		C510CACB1EDF8D61007ADC92 /* StaticGroup */ = {
+			isa = PBXGroup;
+			children = (
+				C510CAD01EDF8E8B007ADC92 /* StaticGroupTableViewController.swift */,
+			);
+			name = StaticGroup;
+			sourceTree = "<group>";
+		};
+		C510CAD21EDF8F70007ADC92 /* Disclosure */ = {
+			isa = PBXGroup;
+			children = (
+				C510CAD31EDF8F94007ADC92 /* DisclosureCollectionViewController.swift */,
+			);
+			name = Disclosure;
 			sourceTree = "<group>";
 		};
 		C525BC271ED02C77006BEEA3 = {
@@ -252,6 +272,8 @@
 				C5C58B951EDD7FC8003E19B7 /* Auth */,
 				C5C58B941EDD7FB1003E19B7 /* Master */,
 				C5C58B961EDD7FDC003E19B7 /* Detail */,
+				C510CACB1EDF8D61007ADC92 /* StaticGroup */,
+				C510CAD21EDF8F70007ADC92 /* Disclosure */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -644,10 +666,12 @@
 				C5C58B981EDD87A4003E19B7 /* MessageViewController.swift in Sources */,
 				C53D0A5C1EDA2BE10048CC44 /* CoreDataStack.swift in Sources */,
 				C56AD9401EDB657E00A9855B /* FetchedResultsCollectionViewController.swift in Sources */,
+				C510CAD11EDF8E8B007ADC92 /* StaticGroupTableViewController.swift in Sources */,
 				C53D0A5E1EDA754A0048CC44 /* CoreMessage.swift in Sources */,
 				C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */,
 				C525BC6D1ED0D2F3006BEEA3 /* ParseServerConfigs.swift in Sources */,
 				C53F98401ED79BAD0085EB78 /* Feral.xcdatamodeld in Sources */,
+				C510CAD41EDF8F94007ADC92 /* DisclosureCollectionViewController.swift in Sources */,
 				C525BC711ED0D488006BEEA3 /* Reachability.swift in Sources */,
 				C525BC7E1ED0FF25006BEEA3 /* UIKit+UIColor.swift in Sources */,
 				C5439B731ED14DB600FBD7D3 /* Keychain+UIViewController.swift in Sources */,
