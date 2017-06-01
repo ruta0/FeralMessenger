@@ -407,7 +407,6 @@ extension AuthViewController {
             self.activityIndicator.startAnimating()
             let newUser = User()
             newUser.constructUserInfo(name: name, email: email, pass: pass)
-            print(newUser)
             newUser.signUpInBackground(block: { [weak self] (completed: Bool, error: Error?) in
                 self?.activityIndicator.stopAnimating()
                 self?.passTextField.text = ""

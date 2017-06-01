@@ -16,6 +16,7 @@ import Parse
 class MasterViewController: FetchedResultsCollectionViewController {
     
     @IBOutlet weak var logoutButton: UIBarButtonItem!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     lazy var refreshController: UIRefreshControl = {
         let control = UIRefreshControl()

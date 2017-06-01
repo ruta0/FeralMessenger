@@ -26,6 +26,10 @@
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
+                        <activityIndicatorView key="backgroundView" hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" id="LKR-Qe-yGw">
+                            <rect key="frame" x="0.0" y="-64" width="320" height="480"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        </activityIndicatorView>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="MasterCell" id="cbz-uU-Or4" customClass="MasterCell" customModule="FeralMessenger" customModuleProvider="target">
                                 <rect key="frame" x="22" y="0.0" width="276" height="152"/>
@@ -104,6 +108,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="activityIndicator" destination="LKR-Qe-yGw" id="WrP-jx-PbG"/>
                         <outlet property="logoutButton" destination="w0u-aO-GeT" id="noa-9u-STz"/>
                     </connections>
                 </collectionViewController>
@@ -203,7 +208,7 @@
         <scene sceneID="5PN-Fh-lL4">
             <objects>
                 <collectionViewController storyboardIdentifier="DetailViewController" hidesBottomBarWhenPushed="YES" id="Z3t-To-DmP" customClass="MessageViewController" customModule="FeralMessenger" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" indicatorStyle="black" delaysContentTouches="NO" bouncesZoom="NO" keyboardDismissMode="interactive" dataMode="prototypes" id="dY2-Nu-Bwh">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" indicatorStyle="black" delaysContentTouches="NO" bouncesZoom="NO" dataMode="prototypes" id="dY2-Nu-Bwh">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.13725490196078433" green="0.13725490196078433" blue="0.13725490196078433" alpha="1" colorSpace="calibratedRGB"/>
@@ -213,6 +218,10 @@
                             <size key="footerReferenceSize" width="50" height="64"/>
                             <inset key="sectionInset" minX="0.0" minY="10" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
+                        <activityIndicatorView key="backgroundView" hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" id="rQJ-Sg-Uil">
+                            <rect key="frame" x="0.0" y="-64" width="320" height="480"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        </activityIndicatorView>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DetailCell" id="sM6-W3-L9w" customClass="DetailCell" customModule="FeralMessenger" customModuleProvider="target">
                                 <rect key="frame" x="4" y="10" width="312" height="127"/>
@@ -258,7 +267,7 @@
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="¯\_(ツ)_/¯" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I6C-j9-uDi">
-                                    <rect key="frame" x="8" y="15" width="304" height="21"/>
+                                    <rect key="frame" x="8" y="21.5" width="304" height="21"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="21" id="Rvv-it-DJj"/>
                                     </constraints>
@@ -282,6 +291,9 @@
                     <navigationItem key="navigationItem" title="conversation" id="JRL-F0-nns"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="activityIndicator" destination="rQJ-Sg-Uil" id="zqL-wz-pim"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qEI-k4-Z7I" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1300,7 +1312,7 @@
         <scene sceneID="VIz-hb-Z7t">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="5ee-Ti-YX7" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Chats" image="Home" selectedImage="Home" id="eGR-cH-Tyk">
+                    <tabBarItem key="tabBarItem" title="Chats" image="Chats" selectedImage="Chats" id="eGR-cH-Tyk">
                         <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="0.0"/>
                     </tabBarItem>
                     <toolbarItems/>
@@ -2387,7 +2399,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Home" width="25" height="25"/>
+        <image name="Chats" width="25" height="25"/>
         <image name="ProfileImage" width="260" height="260"/>
         <image name="Settings" width="25" height="25"/>
     </resources>

@@ -20,6 +20,8 @@ class DetailViewController: FetchedResultsCollectionViewController {
     var bottomConstraint: NSLayoutConstraint?
     var selectedUserName: String?
     
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
     let messageInputContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.mediumBlueGray()
@@ -102,6 +104,11 @@ class DetailViewController: FetchedResultsCollectionViewController {
         }
     }
     
+    fileprivate func removeKeyboardNotifications() {
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
     fileprivate func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
@@ -160,6 +167,11 @@ extension DetailViewController {
         setupTextFieldDelegate()
         setupCollectionViewGesture()
         setupNavigationController()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(true)
+        removeKeyboardNotifications()
     }
     
 }

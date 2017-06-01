@@ -34,6 +34,7 @@ final class MessageViewController: DetailViewController {
     }
     
     func persistToCoreMessage(with pfObjects: [PFObject]) {
+        super.activityIndicator.stopAnimating()
         self.container?.performBackgroundTask { [weak self] context in
             for pfObject in pfObjects {
                 _ = try? CoreMessage.findOrCreateCoreMessage(matching: pfObject, in: context)
@@ -99,6 +100,7 @@ extension MessageViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        super.activityIndicator.startAnimating()
         downloadMessageFromParse(with: selectedUserName!) { [weak self] (pfObjects: [PFObject]) in
             self?.persistToCoreMessage(with: pfObjects)
         }
