@@ -26,7 +26,6 @@ final class ChatsViewController: MasterViewController {
     }()
     
     func persistToCoreUser(with pfObjects: [PFObject]) {
-        super.activityIndicator.stopAnimating()
         self.container?.performBackgroundTask { [weak self] context in
             for pfObject in pfObjects {
                 _ = try? CoreUser.findOrCreateCoreUser(matching: pfObject, in: context)
@@ -73,6 +72,7 @@ extension ChatsViewController {
         super.viewDidLoad()
         super.activityIndicator.startAnimating()
         downloadUserFromParse { [weak self] (pfObjects: [PFObject]) in
+            self?.activityIndicator.stopAnimating()
             self?.persistToCoreUser(with: pfObjects)
         }
     }

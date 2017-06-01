@@ -70,7 +70,9 @@ class DetailViewController: FetchedResultsCollectionViewController {
         }
     }
     
-    func sendMessage() { }
+    func sendMessage() {
+        self.activityIndicator.startAnimating()
+    }
     
     func reloadCollectionView() {
         DispatchQueue.main.async {

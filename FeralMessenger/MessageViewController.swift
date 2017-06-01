@@ -34,7 +34,6 @@ final class MessageViewController: DetailViewController {
     }
     
     func persistToCoreMessage(with pfObjects: [PFObject]) {
-        super.activityIndicator.stopAnimating()
         self.container?.performBackgroundTask { [weak self] context in
             for pfObject in pfObjects {
                 _ = try? CoreMessage.findOrCreateCoreMessage(matching: pfObject, in: context)
@@ -83,6 +82,7 @@ final class MessageViewController: DetailViewController {
         super.sendMessage()
         if let sms = inputTextField.text, sms != "" {
             uploadToParse(with: sms, completion: { [weak self] (pfObject: Message) in
+                self?.activityIndicator.stopAnimating()
                 self?.insertToCoreMessage(with: pfObject)
                 self?.scrollToLastCellItem()
                 self?.inputTextField.text = ""
@@ -102,6 +102,7 @@ extension MessageViewController {
         super.viewDidLoad()
         super.activityIndicator.startAnimating()
         downloadMessageFromParse(with: selectedUserName!) { [weak self] (pfObjects: [PFObject]) in
+            self?.activityIndicator.stopAnimating()
             self?.persistToCoreMessage(with: pfObjects)
         }
     }
