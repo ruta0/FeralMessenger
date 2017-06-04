@@ -69,10 +69,11 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let deviceTokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
-        print(deviceTokenString)
         // persist token to backend
         // persist token to UserDefault
         UserDefaults.standard.set(deviceTokenString, forKey: "apns_token")
+        let apns_token = UserDefaults.standard.string(forKey: "apns_token")
+        print(apns_token!)
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {

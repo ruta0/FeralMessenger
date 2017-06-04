@@ -14,12 +14,6 @@ import AudioToolbox
 // MARK: - UI
 
 class ServerConfigViewController: UIViewController {
-    
-    enum ResponseType {
-        case normal
-        case success
-        case failure
-    }
         
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var errorLabel: UILabel!
@@ -30,12 +24,18 @@ class ServerConfigViewController: UIViewController {
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var defaultButton: UIButton!
     @IBOutlet weak var returnButton: UIButton!
+    @IBOutlet weak var warningLabel: UILabel!
     
     @IBAction func saveButton_tapped(_ sender: UIButton) {
         if application_idTextField.text != "" && server_urlTextField.text != "" && master_keyTextField.text != "" {
             attemptToInitiateParse(appId: application_idTextField.text!, serverUrl: server_urlTextField.text!, masterKey: master_keyTextField.text!)
         } else {
-            handleResponse(type: ServerConfigViewController.ResponseType.failure, message: "Fields cannot be blank")
+            localTextResponder(errorLabel, for: ResponseType.failure, with: "Fields cannot be blank", completion: { [weak self] in
+                self?.application_idTextField.jitter(repeatCount: 5)
+                self?.server_urlTextField.jitter(repeatCount: 5)
+                self?.master_keyTextField.jitter(repeatCount: 5)
+                self?.master_keyTextField.text = ""
+            })
         }
     }
     
@@ -49,30 +49,18 @@ class ServerConfigViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
-    func handleResponse(type: ResponseType, message: String) {
-        if type == ResponseType.success {
-            errorLabel.textColor = UIColor.green
-            errorLabel.flash(delay: 5, message: message)
-        } else if type == ResponseType.normal {
-            errorLabel.textColor = UIColor.orange
-            errorLabel.flash(delay: 7, message: message)
-            master_keyTextField.text = ""
-            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-        } else if type == ResponseType.failure {
-            errorLabel.textColor = UIColor.red
-            errorLabel.flash(delay: 5, message: message)
-            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            application_idTextField.jitter(repeatCount: 5)
-            server_urlTextField.jitter(repeatCount: 5)
-            master_keyTextField.jitter(repeatCount: 5)
-            master_keyTextField.text = ""
-        }
+    fileprivate func setupWarningLabelGesture() {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(enableSudo(gestureRecognizer:)))
+        gesture.numberOfTapsRequired = 49
+        warningLabel.addGestureRecognizer(gesture)
     }
     
     fileprivate func setupViews() {
         // scrollView
         scrollView.isScrollEnabled = false
         scrollView.backgroundColor = UIColor.midNightBlack()
+        // warningLabel
+        warningLabel.isUserInteractionEnabled = true
         // errorLabel
         errorLabel.alpha = 0.0
         // application_idTextField
@@ -100,9 +88,16 @@ class ServerConfigViewController: UIViewController {
 
 extension ServerConfigViewController {
     
+    internal func enableSudo(gestureRecognizer: UITapGestureRecognizer) {
+        localTextResponder(errorLabel, for: ResponseType.success, with: "sudo granted") {
+            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        setupWarningLabelGesture()
         setupTextFieldDelegates()
         setupScrollViewDelegate()
         setupScrollViewGesture()
@@ -205,7 +200,7 @@ extension ServerConfigViewController {
     
     fileprivate func attemptToInitiateParse(appId: String, serverUrl: String, masterKey: String) {
         if isParseInitialized == true {
-            handleResponse(type: ServerConfigViewController.ResponseType.normal, message: "Restart the app to setup a new server configuration")
+            localTextResponder(errorLabel, for: ResponseType.normal, with: "Restart the app to setup a new server configuration", completion: nil)
         } else {
             if Reachability.isConnectedToNetwork() == true {
                 guard let url: URL = URL(string: serverUrl) else { return }
@@ -214,13 +209,25 @@ extension ServerConfigViewController {
                     ParseConfig.heroku_server_url = serverUrl
                     ParseConfig.heroku_master_key = masterKey
                     ParseConfig.attemptToInitializeParse()
-                    handleResponse(type: ServerConfigViewController.ResponseType.success, message: "Server initialized with provided credentials")
-                    master_keyTextField.text = ""
+                    localTextResponder(errorLabel, for: ResponseType.success, with: "Server initialized with provided credentials", completion: { [weak self] in
+                        self?.master_keyTextField.text = ""
+                        self?.server_urlTextField.text = ""
+                    })
                 } else {
-                    handleResponse(type: ServerConfigViewController.ResponseType.failure, message: "Invalid URL")
+                    localTextResponder(errorLabel, for: ResponseType.failure, with: "Invalid URL", completion: { [weak self] in
+                        self?.application_idTextField.jitter(repeatCount: 5)
+                        self?.server_urlTextField.jitter(repeatCount: 5)
+                        self?.master_keyTextField.jitter(repeatCount: 5)
+                        self?.master_keyTextField.text = ""
+                    })
                 }
             } else {
-                handleResponse(type: ServerConfigViewController.ResponseType.failure, message: "Failed to connect to Internet")
+                localTextResponder(errorLabel, for: ResponseType.failure, with: "Failed to connect to Internet", completion: { [weak self] in
+                    self?.application_idTextField.jitter(repeatCount: 5)
+                    self?.server_urlTextField.jitter(repeatCount: 5)
+                    self?.master_keyTextField.jitter(repeatCount: 5)
+                    self?.master_keyTextField.text = ""
+                })
             }
         }
     }

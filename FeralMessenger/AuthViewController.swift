@@ -24,12 +24,6 @@ class AuthViewController: UIViewController {
         case createAnAccount = "Create an Account"
     }
     
-    enum ResponseType {
-        case normal
-        case success
-        case failure
-    }
-    
     let termsUrl: String = "https://sheltered-ridge-89457.herokuapp.com/terms"
     
     var accountName: String?
@@ -57,13 +51,17 @@ class AuthViewController: UIViewController {
             if nameTextField.text != "" && passTextField.text != "" {
                 performLogin(name: nameTextField.text!, pass: passTextField.text!)
             } else {
-                handleResponse(type: AuthViewController.ResponseType.failure, message: "Fields cannot be blank")
+                localTextResponder(errorLabel, for: ResponseType.failure, with: "Fields cannot be blank", completion: { [weak self] in
+                    self?.jitterAndReset()
+                })
             }
         } else {
             if nameTextField.text != "" && emailTextField.text != "" && passTextField.text != "" {
-                performSignup(name: nameTextField.text!, email: emailTextField.text!.lowercased(), pass: passTextField.text!)
+                createUserInParse(with: nameTextField.text!, email: emailTextField.text!.lowercased(), pass: passTextField.text!)
             } else {
-                handleResponse(type: AuthViewController.ResponseType.failure, message: "Fields cannot be blank")
+                localTextResponder(errorLabel, for: ResponseType.failure, with: "Fields cannot be blank", completion: { [weak self] in
+                    self?.jitterAndReset()
+                })
             }
         }
     }
@@ -87,22 +85,11 @@ class AuthViewController: UIViewController {
         }, completion: nil)
     }
     
-    func handleResponse(type: ResponseType, message: String) {
-        if type == ResponseType.success {
-            errorLabel.textColor = UIColor.green
-            errorLabel.flash(delay: 5, message: message)
-        } else if type == ResponseType.normal {
-            errorLabel.textColor = UIColor.orange
-            errorLabel.flash(delay: 5, message: message)
-        } else if type == ResponseType.failure {
-            errorLabel.textColor = UIColor.red
-            errorLabel.flash(delay: 5, message: message)
-            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            nameTextField.jitter(repeatCount: 5)
-            emailTextField.jitter(repeatCount: 5)
-            passTextField.jitter(repeatCount: 5)
-            passTextField.text = ""
-        }
+    fileprivate func jitterAndReset() {
+        nameTextField.jitter(repeatCount: 5)
+        emailTextField.jitter(repeatCount: 5)
+        passTextField.jitter(repeatCount: 5)
+        passTextField.text = ""
     }
     
     // I should've use stackView to do this instead.
@@ -252,7 +239,7 @@ extension AuthViewController: UITextFieldDelegate {
     }
     
     func keyboardWasShown(notification: NSNotification){
-        //Need to calculate keyboard exact size due to Apple suggestions
+        // Need to calculate keyboard exact size due to Apple suggestions
         self.scrollView.isScrollEnabled = true
         var info = notification.userInfo!
         let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
@@ -271,7 +258,7 @@ extension AuthViewController: UITextFieldDelegate {
     }
     
     func keyboardWillBeHidden(notification: NSNotification){
-        //Once keyboard disappears, restore original positions
+        // Once keyboard disappears, restore original positions
         var info = notification.userInfo!
         let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
         let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardSize!.height, 0.0)
@@ -310,7 +297,7 @@ extension AuthViewController {
     
     func checkUserLoginSession() {
         fetchTokenFromKeychain(accountName: "auth_token") { (token: String) in
-            self.performLogin(token: token)
+            self.readUserInParse(with: token)
         }
     }
     
@@ -342,7 +329,7 @@ extension AuthViewController {
 
 extension AuthViewController {
     
-    fileprivate func persistUserData(pfUser: PFUser?, completion: () -> ()) {
+    fileprivate func createOrUpdateUserDataInKeychain(with pfUser: PFUser?, completion: () -> ()) {
         guard let user = pfUser, let auth_token = user.sessionToken else { return }
         storeSecretInKeychain(secret: auth_token, account: "auth_token")
         completion()
@@ -360,35 +347,37 @@ extension AuthViewController {
         if Reachability.isConnectedToNetwork() == true {
             ParseConfig.attemptToInitializeParse()
             self.activityIndicator.startAnimating()
-            // I am using email as username
             PFUser.logInWithUsername(inBackground: name, password: pass, block: { [weak self] (pfUser: PFUser?, error: Error?) in
                 self?.activityIndicator.stopAnimating()
                 self?.passTextField.text = ""
                 if error != nil {
-                    self?.handleResponse(type: AuthViewController.ResponseType.failure, message: error!.localizedDescription)
+                    self?.localTextResponder((self?.errorLabel)!, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
                 } else {
-                    self?.persistUserData(pfUser: pfUser, completion: {
+                    self?.createOrUpdateUserDataInKeychain(with: pfUser, completion: {
                         self?.presentHomeView()
                     })
                 }
             })
         } else {
-            handleResponse(type: AuthViewController.ResponseType.failure, message: "Failed to connect to Internet")
+            localTextResponder(errorLabel, for: ResponseType.failure, with: "Failed to connect to Internet", completion: { [weak self] in
+                self?.jitterAndReset()
+            })
         }
     }
     
-    // synchronize call is on the not being handled correctly - fix this
-    func performLogin(token: String) {
+    func readUserInParse(with token: String) {
         if Reachability.isConnectedToNetwork() == true {
             ParseConfig.attemptToInitializeParse()
             self.activityIndicator.startAnimating()
-            handleResponse(type: AuthViewController.ResponseType.normal, message: "Resumming to previous session")
+            localTextResponder(errorLabel, for: ResponseType.normal, with: "Resumming to previous session", completion: nil)
             UIApplication.shared.beginIgnoringInteractionEvents()
             PFUser.become(inBackground: token, block: { [weak self] (pfUser: PFUser?, error: Error?) in
                 self?.activityIndicator.stopAnimating()
                 UIApplication.shared.endIgnoringInteractionEvents()
                 if error != nil {
-                    self?.handleResponse(type: AuthViewController.ResponseType.failure, message: error!.localizedDescription)
+                    self?.localTextResponder((self?.errorLabel)!, for: ResponseType.failure, with: error!.localizedDescription, completion: { [weak self] in
+                        self?.jitterAndReset()
+                    })
                     self?.removeSecretInKeychain(account: "auth_token")
                 } else {
                     self?.storeSecretInKeychain(secret: token, account: "auth_token")
@@ -396,31 +385,36 @@ extension AuthViewController {
                 }
             })
         } else {
-            handleResponse(type: AuthViewController.ResponseType.failure, message: "Failed to connect to Internet")
+            localTextResponder(errorLabel, for: ResponseType.failure, with: "Failed to connect to Internet", completion: { [weak self] in
+                self?.jitterAndReset()
+            })
         }
     }
     
-    func performSignup(name: String, email: String, pass: String) {
+    func createUserInParse(with name: String, email: String, pass: String) {
         guard let name = nameTextField.text?.lowercased(), let email = emailTextField.text?.lowercased(), let pass = passTextField.text else { return }
         if Reachability.isConnectedToNetwork() == true {
             ParseConfig.attemptToInitializeParse()
             self.activityIndicator.startAnimating()
             let newUser = User()
             newUser.constructUserInfo(name: name, email: email, pass: pass)
-            print(newUser)
             newUser.signUpInBackground(block: { [weak self] (completed: Bool, error: Error?) in
                 self?.activityIndicator.stopAnimating()
                 self?.passTextField.text = ""
                 if error != nil {
-                    self?.handleResponse(type: AuthViewController.ResponseType.failure, message: error!.localizedDescription)
+                    self?.localTextResponder((self?.errorLabel)!, for: ResponseType.failure, with: error!.localizedDescription, completion: { [weak self] in
+                        self?.jitterAndReset()
+                    })
                 } else {
                     if completed == true {
-                        self?.handleResponse(type: AuthViewController.ResponseType.success, message: "Success! Please proceed to login")
+                        self?.localTextResponder((self?.errorLabel)!, for: ResponseType.success, with: "Success! Please proceed to login", completion: nil)
                     }
                 }
             })
         } else {
-            handleResponse(type: AuthViewController.ResponseType.failure, message: "Failed to connect to Internet")
+            localTextResponder(errorLabel, for: ResponseType.failure, with: "Failed to connect to Internet", completion: { [weak self] in
+                self?.jitterAndReset()
+            })
         }
     }
     

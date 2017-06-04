@@ -61,6 +61,17 @@ final class ChatsViewController: MasterViewController {
         }
     }
     
+    override func handleRefresh() {
+        readUserInParse { [weak self] (pfObjects: [PFObject]) in
+            self?.activityIndicator.stopAnimating()
+            self?.persistToCoreUser(with: pfObjects)
+            DispatchQueue.main.async { [weak self] in
+                self?.collectionView?.reloadData()
+                self?.refreshController.endRefreshing()
+            }
+        }
+    }
+    
 }
 
 
@@ -70,7 +81,9 @@ extension ChatsViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        downloadUserFromParse { [weak self] (pfObjects: [PFObject]) in
+        self.activityIndicator.startAnimating()
+        readUserInParse { [weak self] (pfObjects: [PFObject]) in
+            self?.activityIndicator.stopAnimating()
             self?.persistToCoreUser(with: pfObjects)
         }
     }
@@ -82,7 +95,7 @@ extension ChatsViewController {
                 return
             }
             let messageViewController = segue.destination as! MessageViewController
-            messageViewController.selectedUserName = selectedCell.usernameLabel.text!
+            messageViewController.selectedUser = selectedCell.coreUser
             messageViewController.container = container
         }
     }
