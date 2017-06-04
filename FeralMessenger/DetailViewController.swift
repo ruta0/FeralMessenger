@@ -13,12 +13,12 @@ import AVFoundation
 
 // MARK: - UI
 
-class DetailViewController: FetchedResultsCollectionViewController {
+class DetailViewController: FetchedResultsViewController {
     
     var player: AVAudioPlayer?
     
     var bottomConstraint: NSLayoutConstraint?
-    var selectedUserName: String?
+    var selectedUser: CoreUser?
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
@@ -34,12 +34,32 @@ class DetailViewController: FetchedResultsCollectionViewController {
         return view
     }()
     
-    let inputTextField: UITextField = {
+    lazy var titleButton: UIButton = {
+        let button = UIButton()
+        button.tintColor = UIColor.white
+        button.frame = CGRect(x: 0, y: 0, width: 35, height: 25)
+        return button
+    }()
+    
+    lazy var profileButton: UIButton = {
+        let button = UIButton()
+        button.tintColor = UIColor.white
+        button.setBackgroundImage(UIImage(named: "Cat")!, for: UIControlState.normal)
+        button.layer.cornerRadius = 16.5
+        button.clipsToBounds = true
+        button.addTarget(self, action: #selector(presentProfileViewController(_:)), for: UIControlEvents.touchUpInside)
+        button.contentMode = UIViewContentMode.scaleAspectFill
+        button.frame = CGRect(x: 0, y: 0, width: 33, height: 33)
+        return button
+    }()
+    
+    lazy var inputTextField: UITextField = {
         let textField = UITextField()
         textField.textColor = UIColor.white
         textField.backgroundColor = UIColor.clear
-        textField.attributedPlaceholder = NSAttributedString(string: "Enter message...", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
+        textField.attributedPlaceholder = NSAttributedString(string: "Message", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
         textField.keyboardAppearance = UIKeyboardAppearance.dark
+        textField.delegate = self
         return textField
     }()
     
@@ -90,7 +110,6 @@ class DetailViewController: FetchedResultsCollectionViewController {
         }
     }
     
-    // Although unnecessary, I explicitly marked this method as "internal" because it's made visible for obj-c #selector
     internal func handleKeyboardNotification(notification: Notification) {
         if let userInfo = notification.userInfo {
             let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
@@ -142,15 +161,18 @@ class DetailViewController: FetchedResultsCollectionViewController {
     }
     
     fileprivate func setupNavigationController() {
-        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 64, height: 32))
-        titleLabel.textAlignment = NSTextAlignment.center
-        titleLabel.text = selectedUserName!
-        titleLabel.textColor = UIColor.white
-        self.navigationItem.titleView = titleLabel
+        // title
+        navigationItem.titleView = titleButton
+        titleButton.setTitle(selectedUser?.username!, for: UIControlState.normal)
+        // rightBarButton
+        navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: profileButton)]
+        let image = UIImage(named: selectedUser!.profile_image!)
+        profileButton.setImage(image, for: UIControlState.normal)
     }
     
     fileprivate func setupCollectionView() {
-        self.collectionView?.backgroundColor = UIColor.midNightBlack()
+        guard let collectionView = collectionView else { return }
+        collectionView.backgroundColor = UIColor.midNightBlack()
     }
     
 }
@@ -160,13 +182,16 @@ class DetailViewController: FetchedResultsCollectionViewController {
 
 extension DetailViewController {
     
+    internal func presentProfileViewController(_ sender: UIButton) {
+        print("Not supported at this moment")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
         setupCollectionView()
         setupMessageInputContainerView()
         setupKeyboardNotifications()
-        setupTextFieldDelegate()
         setupCollectionViewGesture()
         setupNavigationController()
     }
@@ -187,16 +212,17 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout {
         collectionViewLayout.invalidateLayout()
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        let edgeInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+        return edgeInset
+    }
+    
 }
 
 
 // MARK: - UITextFieldDelegate
 
 extension DetailViewController: UITextFieldDelegate {
-    
-    func setupTextFieldDelegate() {
-        inputTextField.delegate = self
-    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         inputTextField.resignFirstResponder()
@@ -219,7 +245,7 @@ extension DetailViewController: UITextFieldDelegate {
 
 extension DetailViewController {
     
-    func downloadMessageFromParse(with selectedUserName: String, completion: @escaping ([PFObject]) -> Void) {
+    func readMessageInParse(with selectedUserName: String, completion: @escaping ([PFObject]) -> Void) {
         guard let query = Message.query(receiverName: selectedUserName, senderName: (PFUser.current()?.username)!) else { return }
         query.findObjectsInBackground { (pfObjects: [PFObject]?, error: Error?) in
             if error != nil {
@@ -234,12 +260,12 @@ extension DetailViewController {
         }
     }
     
-    func uploadToParse(with sms: String, completion: @escaping (Message) -> Void) {
+    func createMessageInParse(with sms: String, completion: @escaping (Message) -> Void) {
         let pfObject = Message()
         pfObject["sms"] = sms
         pfObject["image"] = ""
         pfObject["senderName"] = PFUser.current()?.username!
-        pfObject["receiverName"] = selectedUserName!
+        pfObject["receiverName"] = selectedUser?.username!
         pfObject.saveInBackground { [weak self] (completed: Bool, error: Error?) in
             if error != nil {
                 print(error!.localizedDescription)

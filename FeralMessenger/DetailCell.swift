@@ -11,7 +11,7 @@ import UIKit
 
 class DetailCell: UICollectionViewCell {
     
-    @IBOutlet weak var profileImageView: UIImageView!
+    @IBOutlet weak var wrapperView: UIView!
     @IBOutlet weak var bubbleView: UIView!
     @IBOutlet weak var messageTextView: UITextView!
     
@@ -24,22 +24,18 @@ class DetailCell: UICollectionViewCell {
     private func updateCell() {
         // STEP 1: reset any existing UI info/outlets, otherwise info will become misplaced
         messageTextView?.text = nil
-        profileImageView?.image = nil
         // STEP 2: load new info from user (if any)
         if let coreMessage = self.coreMessage {
             // implement profile_image
             messageTextView.text = coreMessage.sms
-            profileImageView.image = #imageLiteral(resourceName: "ProfileImage")
         }
     }
     
     private func setupViews() {
         // collectionViewCell
         backgroundColor = UIColor.clear
-        // profileImage
-        profileImageView.layer.cornerRadius = 15
-        profileImageView.contentMode = .scaleAspectFill
-        profileImageView.layer.masksToBounds = true
+        // wrapperView
+        wrapperView.backgroundColor = UIColor.clear
         // bubbleView
         bubbleView.backgroundColor = UIColor.miamiBlue()
         bubbleView.layer.cornerRadius = 15
@@ -56,9 +52,6 @@ class DetailCell: UICollectionViewCell {
         setupViews()
         addSubview(bubbleView)
         addSubview(messageTextView)
-        addSubview(profileImageView)
-        addConstraintsWithFormat(format: "H:|-8-[v0(30)]", views: profileImageView)
-        addConstraintsWithFormat(format: "V:[v0(30)]|", views: profileImageView)
     }
     
 }

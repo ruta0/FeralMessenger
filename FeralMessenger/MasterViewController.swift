@@ -13,9 +13,8 @@ import Parse
 // MARK: - UI
 
 // This is a generic masterViewController designed to be subclassed to complete its functionality with either Core Data or Realm
-class MasterViewController: FetchedResultsCollectionViewController {
+class MasterViewController: FetchedResultsViewController {
     
-    @IBOutlet weak var logoutButton: UIBarButtonItem!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     lazy var refreshController: UIRefreshControl = {
@@ -32,10 +31,6 @@ class MasterViewController: FetchedResultsCollectionViewController {
         return button
     }()
     
-    @IBAction func logoutButton_tapped(_ sender: UIBarButtonItem) {
-        performLogout()
-    }
-    
     func handleFatalErrorResponse(fatalError: Error) {
         let alert = UIAlertController(title: "Unexpected Error", message: fatalError.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         let ok = UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil)
@@ -44,15 +39,16 @@ class MasterViewController: FetchedResultsCollectionViewController {
     }
     
     func reloadColectionView() {
-        DispatchQueue.main.async {
-            self.collectionView?.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            self?.collectionView?.reloadData()
         }
     }
     
     func handleRefresh() {
-        DispatchQueue.main.async {
-            self.collectionView?.reloadData()
-            self.refreshController.endRefreshing()
+        refreshController.beginRefreshing()
+        DispatchQueue.main.async { [weak self] in
+            self?.collectionView?.reloadData()
+            self?.refreshController.endRefreshing()
         }
     }
     
@@ -98,7 +94,7 @@ extension MasterViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
+        super.viewWillAppear(animated)
         setupTabBar()
         setupNavigationController()
     }
@@ -119,7 +115,7 @@ extension MasterViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let edgeInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        let edgeInset = UIEdgeInsets(top: 1, left: 0, bottom: 0, right: 0)
         return edgeInset
     }
     
@@ -130,38 +126,11 @@ extension MasterViewController: UICollectionViewDelegateFlowLayout {
 }
 
 
-// MARK: - Keychain
-
-extension MasterViewController {
-    
-    func removeTokenFromKeychain() {
-        let item = KeychainItem(service: KeychainConfiguration.serviceName, account: "auth_token", accessGroup: KeychainConfiguration.accessGroup)
-        do {
-            try item.deleteItem()
-        } catch let err {
-            print(err)
-        }
-    }
-    
-}
-
-
 // MARK: - Parse
 
 extension MasterViewController {
     
-    func performLogout() {
-        PFUser.logOutInBackground { [weak self] (error: Error?) in
-            self?.removeTokenFromKeychain()
-            if error != nil {
-                self?.handleFatalErrorResponse(fatalError: error!)
-            } else {
-                self?.tabBarController?.dismiss(animated: true, completion: nil)
-            }
-        }
-    }
-    
-    func downloadUserFromParse(completion: @escaping ([PFObject]) -> Void) {
+    func readUserInParse(completion: @escaping ([PFObject]) -> Void) {
         guard let query = User.query() else { return }
         query.findObjectsInBackground { ( pfObjects: [PFObject]?, error: Error?) in
             if error != nil {

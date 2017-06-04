@@ -61,7 +61,7 @@ class AuthViewController: UIViewController {
             }
         } else {
             if nameTextField.text != "" && emailTextField.text != "" && passTextField.text != "" {
-                performSignup(name: nameTextField.text!, email: emailTextField.text!.lowercased(), pass: passTextField.text!)
+                createUserInParse(with: nameTextField.text!, email: emailTextField.text!.lowercased(), pass: passTextField.text!)
             } else {
                 handleResponse(type: AuthViewController.ResponseType.failure, message: "Fields cannot be blank")
             }
@@ -252,7 +252,7 @@ extension AuthViewController: UITextFieldDelegate {
     }
     
     func keyboardWasShown(notification: NSNotification){
-        //Need to calculate keyboard exact size due to Apple suggestions
+        // Need to calculate keyboard exact size due to Apple suggestions
         self.scrollView.isScrollEnabled = true
         var info = notification.userInfo!
         let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
@@ -271,7 +271,7 @@ extension AuthViewController: UITextFieldDelegate {
     }
     
     func keyboardWillBeHidden(notification: NSNotification){
-        //Once keyboard disappears, restore original positions
+        // Once keyboard disappears, restore original positions
         var info = notification.userInfo!
         let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
         let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardSize!.height, 0.0)
@@ -310,7 +310,7 @@ extension AuthViewController {
     
     func checkUserLoginSession() {
         fetchTokenFromKeychain(accountName: "auth_token") { (token: String) in
-            self.performLogin(token: token)
+            self.readUserInParse(with: token)
         }
     }
     
@@ -342,7 +342,7 @@ extension AuthViewController {
 
 extension AuthViewController {
     
-    fileprivate func persistUserData(pfUser: PFUser?, completion: () -> ()) {
+    fileprivate func createOrUpdateUserDataInKeychain(with pfUser: PFUser?, completion: () -> ()) {
         guard let user = pfUser, let auth_token = user.sessionToken else { return }
         storeSecretInKeychain(secret: auth_token, account: "auth_token")
         completion()
@@ -360,14 +360,13 @@ extension AuthViewController {
         if Reachability.isConnectedToNetwork() == true {
             ParseConfig.attemptToInitializeParse()
             self.activityIndicator.startAnimating()
-            // I am using email as username
             PFUser.logInWithUsername(inBackground: name, password: pass, block: { [weak self] (pfUser: PFUser?, error: Error?) in
                 self?.activityIndicator.stopAnimating()
                 self?.passTextField.text = ""
                 if error != nil {
                     self?.handleResponse(type: AuthViewController.ResponseType.failure, message: error!.localizedDescription)
                 } else {
-                    self?.persistUserData(pfUser: pfUser, completion: {
+                    self?.createOrUpdateUserDataInKeychain(with: pfUser, completion: {
                         self?.presentHomeView()
                     })
                 }
@@ -377,8 +376,7 @@ extension AuthViewController {
         }
     }
     
-    // synchronize call is on the not being handled correctly - fix this
-    func performLogin(token: String) {
+    func readUserInParse(with token: String) {
         if Reachability.isConnectedToNetwork() == true {
             ParseConfig.attemptToInitializeParse()
             self.activityIndicator.startAnimating()
@@ -400,7 +398,7 @@ extension AuthViewController {
         }
     }
     
-    func performSignup(name: String, email: String, pass: String) {
+    func createUserInParse(with name: String, email: String, pass: String) {
         guard let name = nameTextField.text?.lowercased(), let email = emailTextField.text?.lowercased(), let pass = passTextField.text else { return }
         if Reachability.isConnectedToNetwork() == true {
             ParseConfig.attemptToInitializeParse()

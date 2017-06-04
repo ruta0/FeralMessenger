@@ -30,6 +30,7 @@ class ServerConfigViewController: UIViewController {
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var defaultButton: UIButton!
     @IBOutlet weak var returnButton: UIButton!
+    @IBOutlet weak var warningLabel: UILabel!
     
     @IBAction func saveButton_tapped(_ sender: UIButton) {
         if application_idTextField.text != "" && server_urlTextField.text != "" && master_keyTextField.text != "" {
@@ -48,7 +49,7 @@ class ServerConfigViewController: UIViewController {
     @IBAction func returnButton_tapped(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
     }
-    
+        
     func handleResponse(type: ResponseType, message: String) {
         if type == ResponseType.success {
             errorLabel.textColor = UIColor.green
@@ -69,10 +70,18 @@ class ServerConfigViewController: UIViewController {
         }
     }
     
+    fileprivate func setupWarningLabelGesture() {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(enableSudo(gestureRecognizer:)))
+        gesture.numberOfTapsRequired = 49
+        warningLabel.addGestureRecognizer(gesture)
+    }
+    
     fileprivate func setupViews() {
         // scrollView
         scrollView.isScrollEnabled = false
         scrollView.backgroundColor = UIColor.midNightBlack()
+        // warningLabel
+        warningLabel.isUserInteractionEnabled = true
         // errorLabel
         errorLabel.alpha = 0.0
         // application_idTextField
@@ -100,9 +109,15 @@ class ServerConfigViewController: UIViewController {
 
 extension ServerConfigViewController {
     
+    internal func enableSudo(gestureRecognizer: UITapGestureRecognizer) {
+        handleResponse(type: ServerConfigViewController.ResponseType.success, message: "sudo enabled")
+        AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        setupWarningLabelGesture()
         setupTextFieldDelegates()
         setupScrollViewDelegate()
         setupScrollViewGesture()

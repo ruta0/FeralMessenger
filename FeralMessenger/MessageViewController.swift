@@ -16,6 +16,7 @@ import CoreData
 final class MessageViewController: DetailViewController {
     
     fileprivate let cellID = "DetailCell"
+    fileprivate let footerID = "DetailViewFooter"
     
     var container: NSPersistentContainer? = CoreDataManager.persistentContainer // default to the container from CoreDataManager
     var fetchedResultsController: NSFetchedResultsController<CoreMessage>?
@@ -57,10 +58,10 @@ final class MessageViewController: DetailViewController {
     }
     
     func performFetchFromCoreData() {
-        if let context = container?.viewContext, selectedUserName != nil {
+        if let context = container?.viewContext, selectedUser?.username! != nil {
             let request: NSFetchRequest<CoreMessage> = CoreMessage.fetchRequest()
-            let predicate = NSPredicate(format: "receiver_name == %@ AND sender_name == %@", selectedUserName!, (PFUser.current()?.username!)!)
-            let inversePredicate = NSPredicate(format: "receiver_name == %@ AND sender_name == %@", (PFUser.current()?.username!)!, selectedUserName!)
+            let predicate = NSPredicate(format: "receiver_name == %@ AND sender_name == %@", selectedUser!.username!, (PFUser.current()?.username!)!)
+            let inversePredicate = NSPredicate(format: "receiver_name == %@ AND sender_name == %@", (PFUser.current()?.username!)!, selectedUser!.username!)
             let compoundedPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [predicate, inversePredicate])
             request.sortDescriptors = [NSSortDescriptor(key: "created_at", ascending: true, selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
             request.predicate = compoundedPredicate
@@ -81,7 +82,7 @@ final class MessageViewController: DetailViewController {
     override func sendMessage() {
         super.sendMessage()
         if let sms = inputTextField.text, sms != "" {
-            uploadToParse(with: sms, completion: { [weak self] (pfObject: Message) in
+            createMessageInParse(with: sms, completion: { [weak self] (pfObject: Message) in
                 self?.activityIndicator.stopAnimating()
                 self?.insertToCoreMessage(with: pfObject)
                 self?.scrollToLastCellItem()
@@ -100,8 +101,8 @@ extension MessageViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        super.activityIndicator.startAnimating()
-        downloadMessageFromParse(with: selectedUserName!) { [weak self] (pfObjects: [PFObject]) in
+        self.activityIndicator.startAnimating()
+        readMessageInParse(with: selectedUser!.username!) { [weak self] (pfObjects: [PFObject]) in
             self?.activityIndicator.stopAnimating()
             self?.persistToCoreMessage(with: pfObjects)
         }
@@ -123,23 +124,20 @@ extension MessageViewController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! DetailCell
         if let coreMessage = fetchedResultsController?.object(at: indexPath) {
             cell.messageTextView.text = coreMessage.sms!
-            cell.profileImageView.image = #imageLiteral(resourceName: "ProfileImage")
             let size = CGSize(width: 250, height: 1000)
             let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
             let estimatedFrame = NSString(string: coreMessage.sms!).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
             // incoming message - text on the left
             if coreMessage.receiver_name == PFUser.current()!.username! {
-                cell.bubbleView.frame = CGRect(x: 8 + 30 + 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
-                cell.messageTextView.frame = CGRect(x: 8 + 30 + 8 + 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
+                cell.bubbleView.frame = CGRect(x: 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
+                cell.messageTextView.frame = CGRect(x: 8 + 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
                 cell.messageTextView.textColor = UIColor.black
-                cell.profileImageView.isHidden = false
                 cell.bubbleView.backgroundColor = UIColor.lightBlue()
             } else if coreMessage.receiver_name != PFUser.current()!.username! {
                 // outgoing message - text on the right
                 cell.bubbleView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8 - 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
                 cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
                 cell.messageTextView.textColor = UIColor.white
-                cell.profileImageView.isHidden = true
                 cell.bubbleView.backgroundColor = UIColor.mediumBlueGray()
                 cell.messageTextView.textColor = UIColor.white
             }
@@ -150,11 +148,11 @@ extension MessageViewController {
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
         case UICollectionElementKindSectionFooter:
-            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "DetailViewFooter", for: indexPath)
+            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footerID, for: indexPath) as UICollectionReusableView
             footerView.backgroundColor = UIColor.clear
             return footerView
         default:
-            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "DetailViewFooter", for: indexPath)
+            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footerID, for: indexPath) as UICollectionReusableView
             footerView.backgroundColor = UIColor.clear
             return footerView
         }

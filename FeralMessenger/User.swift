@@ -37,7 +37,8 @@ final class User: PFUser {
         self.username = name
         self.email = email
         self.password = pass
-        self["avatar"] = "default"
+        self["avatar"] = "Cat"
+        self["bio"] = "...(ツ)..."
         // device specific
         self["uuid"] = UIDevice.current.identifierForVendor!.uuidString
         self["sysVersion"] = UIDevice.current.systemVersion

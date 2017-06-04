@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		3C529BD04307FB8AEE50BBBD /* Pods_FeralMessengerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC04006C827BFC56EA402FA /* Pods_FeralMessengerTests.framework */; };
 		86AA0CE399E870ED1A13EDEE /* Pods_FeralMessenger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BD907D41C88F95D883A784D /* Pods_FeralMessenger.framework */; };
-		C510CAD11EDF8E8B007ADC92 /* StaticGroupTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C510CAD01EDF8E8B007ADC92 /* StaticGroupTableViewController.swift */; };
-		C510CAD41EDF8F94007ADC92 /* DisclosureCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C510CAD31EDF8F94007ADC92 /* DisclosureCollectionViewController.swift */; };
 		C525BC341ED02C77006BEEA3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC331ED02C77006BEEA3 /* AppDelegate.swift */; };
 		C525BC391ED02C77006BEEA3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C525BC371ED02C77006BEEA3 /* Main.storyboard */; };
 		C525BC3E1ED02C77006BEEA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C525BC3D1ED02C77006BEEA3 /* Assets.xcassets */; };
@@ -30,6 +28,7 @@
 		C53D0A5E1EDA754A0048CC44 /* CoreMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53D0A5D1EDA754A0048CC44 /* CoreMessage.swift */; };
 		C53D0A601EDA75800048CC44 /* CoreUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53D0A5F1EDA75800048CC44 /* CoreUser.swift */; };
 		C53F98401ED79BAD0085EB78 /* Feral.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C53F983E1ED79BAD0085EB78 /* Feral.xcdatamodeld */; };
+		C542416E1EE10112009B02BD /* GroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C542416D1EE10112009B02BD /* GroupViewController.swift */; };
 		C5439B6F1ED14D4D00FBD7D3 /* KeychainItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B6E1ED14D4D00FBD7D3 /* KeychainItem.swift */; };
 		C5439B711ED14D7C00FBD7D3 /* KeychainConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B701ED14D7C00FBD7D3 /* KeychainConfiguration.swift */; };
 		C5439B731ED14DB600FBD7D3 /* Keychain+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B721ED14DB600FBD7D3 /* Keychain+UIViewController.swift */; };
@@ -37,7 +36,12 @@
 		C5439B791ED24AA700FBD7D3 /* UIKit+UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B781ED24AA700FBD7D3 /* UIKit+UILabel.swift */; };
 		C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7A1ED28B3400FBD7D3 /* User.swift */; };
 		C5439B7D1ED28B5700FBD7D3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5439B7C1ED28B5700FBD7D3 /* Message.swift */; };
-		C56AD9401EDB657E00A9855B /* FetchedResultsCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56AD93F1EDB657E00A9855B /* FetchedResultsCollectionViewController.swift */; };
+		C55D62EE1EE22E3A00AEE16D /* DisclosureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D62ED1EE22E3A00AEE16D /* DisclosureViewController.swift */; };
+		C55D62F01EE23F1100AEE16D /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D62EF1EE23F1100AEE16D /* PhotoCell.swift */; };
+		C55D62F21EE29F4800AEE16D /* Avatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D62F11EE29F4800AEE16D /* Avatar.swift */; };
+		C55D62F41EE2A08000AEE16D /* Avatars.plist in Resources */ = {isa = PBXBuildFile; fileRef = C55D62F31EE2A08000AEE16D /* Avatars.plist */; };
+		C55D62F81EE3525300AEE16D /* StaticScrollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D62F71EE3525300AEE16D /* StaticScrollViewController.swift */; };
+		C56AD9401EDB657E00A9855B /* FetchedResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56AD93F1EDB657E00A9855B /* FetchedResultsController.swift */; };
 		C5C58B931EDD6D2A003E19B7 /* ChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */; };
 		C5C58B981EDD87A4003E19B7 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C58B971EDD87A4003E19B7 /* MessageViewController.swift */; };
 		C5D7C38E1ED4360B00ECE44C /* ServerConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */; };
@@ -71,8 +75,6 @@
 		A02F9F65A8E59CB2A68E8920 /* Pods-FeralMessengerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeralMessengerTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-FeralMessengerTests/Pods-FeralMessengerTests.release.xcconfig"; sourceTree = "<group>"; };
 		BC10FAB8FECDA137C6373323 /* Pods-FeralMessenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeralMessenger.release.xcconfig"; path = "Pods/Target Support Files/Pods-FeralMessenger/Pods-FeralMessenger.release.xcconfig"; sourceTree = "<group>"; };
 		BCC04006C827BFC56EA402FA /* Pods_FeralMessengerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FeralMessengerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C510CAD01EDF8E8B007ADC92 /* StaticGroupTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StaticGroupTableViewController.swift; sourceTree = "<group>"; };
-		C510CAD31EDF8F94007ADC92 /* DisclosureCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisclosureCollectionViewController.swift; sourceTree = "<group>"; };
 		C525BC301ED02C77006BEEA3 /* FeralMessenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeralMessenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C525BC331ED02C77006BEEA3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C525BC381ED02C77006BEEA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 		C53D0A5D1EDA754A0048CC44 /* CoreMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMessage.swift; sourceTree = "<group>"; };
 		C53D0A5F1EDA75800048CC44 /* CoreUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreUser.swift; sourceTree = "<group>"; };
 		C53F983F1ED79BAD0085EB78 /* Feral.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Feral.xcdatamodel; sourceTree = "<group>"; };
+		C542416D1EE10112009B02BD /* GroupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupViewController.swift; sourceTree = "<group>"; };
 		C5439B6E1ED14D4D00FBD7D3 /* KeychainItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainItem.swift; sourceTree = "<group>"; };
 		C5439B701ED14D7C00FBD7D3 /* KeychainConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainConfiguration.swift; sourceTree = "<group>"; };
 		C5439B721ED14DB600FBD7D3 /* Keychain+UIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Keychain+UIViewController.swift"; sourceTree = "<group>"; };
@@ -105,7 +108,12 @@
 		C5439B781ED24AA700FBD7D3 /* UIKit+UILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+UILabel.swift"; sourceTree = "<group>"; };
 		C5439B7A1ED28B3400FBD7D3 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		C5439B7C1ED28B5700FBD7D3 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		C56AD93F1EDB657E00A9855B /* FetchedResultsCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchedResultsCollectionViewController.swift; sourceTree = "<group>"; };
+		C55D62ED1EE22E3A00AEE16D /* DisclosureViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisclosureViewController.swift; sourceTree = "<group>"; };
+		C55D62EF1EE23F1100AEE16D /* PhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
+		C55D62F11EE29F4800AEE16D /* Avatar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Avatar.swift; sourceTree = "<group>"; };
+		C55D62F31EE2A08000AEE16D /* Avatars.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Avatars.plist; sourceTree = "<group>"; };
+		C55D62F71EE3525300AEE16D /* StaticScrollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StaticScrollViewController.swift; sourceTree = "<group>"; };
+		C56AD93F1EDB657E00A9855B /* FetchedResultsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchedResultsController.swift; sourceTree = "<group>"; };
 		C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatsViewController.swift; sourceTree = "<group>"; };
 		C5C58B971EDD87A4003E19B7 /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
 		C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConfigViewController.swift; sourceTree = "<group>"; };
@@ -163,20 +171,12 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		C510CACB1EDF8D61007ADC92 /* StaticGroup */ = {
+		C510CACB1EDF8D61007ADC92 /* Group */ = {
 			isa = PBXGroup;
 			children = (
-				C510CAD01EDF8E8B007ADC92 /* StaticGroupTableViewController.swift */,
+				C542416D1EE10112009B02BD /* GroupViewController.swift */,
 			);
-			name = StaticGroup;
-			sourceTree = "<group>";
-		};
-		C510CAD21EDF8F70007ADC92 /* Disclosure */ = {
-			isa = PBXGroup;
-			children = (
-				C510CAD31EDF8F94007ADC92 /* DisclosureCollectionViewController.swift */,
-			);
-			name = Disclosure;
+			name = Group;
 			sourceTree = "<group>";
 		};
 		C525BC271ED02C77006BEEA3 = {
@@ -238,6 +238,7 @@
 				C525BC331ED02C77006BEEA3 /* AppDelegate.swift */,
 				C525BC3D1ED02C77006BEEA3 /* Assets.xcassets */,
 				C525BC421ED02C77006BEEA3 /* Info.plist */,
+				C55D62F31EE2A08000AEE16D /* Avatars.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -249,6 +250,7 @@
 				C53D0A5D1EDA754A0048CC44 /* CoreMessage.swift */,
 				C5439B7A1ED28B3400FBD7D3 /* User.swift */,
 				C5439B7C1ED28B5700FBD7D3 /* Message.swift */,
+				C55D62F11EE29F4800AEE16D /* Avatar.swift */,
 				C53F983E1ED79BAD0085EB78 /* Feral.xcdatamodeld */,
 			);
 			name = Models;
@@ -261,6 +263,7 @@
 				C525BC3F1ED02C77006BEEA3 /* LaunchScreen.storyboard */,
 				C525BC741ED0DC47006BEEA3 /* MasterCell.swift */,
 				C525BC781ED0DCD9006BEEA3 /* DetailCell.swift */,
+				C55D62EF1EE23F1100AEE16D /* PhotoCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -268,12 +271,13 @@
 		C525BC671ED02CB7006BEEA3 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				C56AD93F1EDB657E00A9855B /* FetchedResultsCollectionViewController.swift */,
+				C55D62F71EE3525300AEE16D /* StaticScrollViewController.swift */,
+				C56AD93F1EDB657E00A9855B /* FetchedResultsController.swift */,
 				C5C58B951EDD7FC8003E19B7 /* Auth */,
 				C5C58B941EDD7FB1003E19B7 /* Master */,
 				C5C58B961EDD7FDC003E19B7 /* Detail */,
-				C510CACB1EDF8D61007ADC92 /* StaticGroup */,
-				C510CAD21EDF8F70007ADC92 /* Disclosure */,
+				C510CACB1EDF8D61007ADC92 /* Group */,
+				C55D62EC1EE22DAC00AEE16D /* Disclosure */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -341,6 +345,14 @@
 				C5439B721ED14DB600FBD7D3 /* Keychain+UIViewController.swift */,
 			);
 			name = Keychain;
+			sourceTree = "<group>";
+		};
+		C55D62EC1EE22DAC00AEE16D /* Disclosure */ = {
+			isa = PBXGroup;
+			children = (
+				C55D62ED1EE22E3A00AEE16D /* DisclosureViewController.swift */,
+			);
+			name = Disclosure;
 			sourceTree = "<group>";
 		};
 		C5C58B941EDD7FB1003E19B7 /* Master */ = {
@@ -495,6 +507,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C525BC411ED02C77006BEEA3 /* LaunchScreen.storyboard in Resources */,
+				C55D62F41EE2A08000AEE16D /* Avatars.plist in Resources */,
 				C525BC3E1ED02C77006BEEA3 /* Assets.xcassets in Resources */,
 				C525BC391ED02C77006BEEA3 /* Main.storyboard in Resources */,
 			);
@@ -662,29 +675,32 @@
 				C525BC801ED134D9006BEEA3 /* UIKit+UIView.swift in Sources */,
 				C5439B6F1ED14D4D00FBD7D3 /* KeychainItem.swift in Sources */,
 				C5439B7D1ED28B5700FBD7D3 /* Message.swift in Sources */,
+				C55D62F81EE3525300AEE16D /* StaticScrollViewController.swift in Sources */,
 				C525BC341ED02C77006BEEA3 /* AppDelegate.swift in Sources */,
 				C5C58B981EDD87A4003E19B7 /* MessageViewController.swift in Sources */,
 				C53D0A5C1EDA2BE10048CC44 /* CoreDataStack.swift in Sources */,
-				C56AD9401EDB657E00A9855B /* FetchedResultsCollectionViewController.swift in Sources */,
-				C510CAD11EDF8E8B007ADC92 /* StaticGroupTableViewController.swift in Sources */,
+				C56AD9401EDB657E00A9855B /* FetchedResultsController.swift in Sources */,
 				C53D0A5E1EDA754A0048CC44 /* CoreMessage.swift in Sources */,
 				C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */,
 				C525BC6D1ED0D2F3006BEEA3 /* ParseServerConfigs.swift in Sources */,
 				C53F98401ED79BAD0085EB78 /* Feral.xcdatamodeld in Sources */,
-				C510CAD41EDF8F94007ADC92 /* DisclosureCollectionViewController.swift in Sources */,
 				C525BC711ED0D488006BEEA3 /* Reachability.swift in Sources */,
 				C525BC7E1ED0FF25006BEEA3 /* UIKit+UIColor.swift in Sources */,
 				C5439B731ED14DB600FBD7D3 /* Keychain+UIViewController.swift in Sources */,
 				C53D0A591EDA13050048CC44 /* Secret.swift in Sources */,
 				C5439B791ED24AA700FBD7D3 /* UIKit+UILabel.swift in Sources */,
 				C5C58B931EDD6D2A003E19B7 /* ChatsViewController.swift in Sources */,
+				C55D62F21EE29F4800AEE16D /* Avatar.swift in Sources */,
+				C542416E1EE10112009B02BD /* GroupViewController.swift in Sources */,
 				C525BC751ED0DC47006BEEA3 /* MasterCell.swift in Sources */,
 				C525BC6B1ED0C5E5006BEEA3 /* MasterViewController.swift in Sources */,
 				C5439B711ED14D7C00FBD7D3 /* KeychainConfiguration.swift in Sources */,
 				C525BC791ED0DCD9006BEEA3 /* DetailCell.swift in Sources */,
 				C525BC771ED0DC8E006BEEA3 /* DetailViewController.swift in Sources */,
 				C53D0A601EDA75800048CC44 /* CoreUser.swift in Sources */,
+				C55D62EE1EE22E3A00AEE16D /* DisclosureViewController.swift in Sources */,
 				C5D7C38E1ED4360B00ECE44C /* ServerConfigViewController.swift in Sources */,
+				C55D62F01EE23F1100AEE16D /* PhotoCell.swift in Sources */,
 				C5439B751ED2094500FBD7D3 /* AuthViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

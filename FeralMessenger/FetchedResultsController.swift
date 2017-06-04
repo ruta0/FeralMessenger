@@ -10,10 +10,10 @@ import UIKit
 import CoreData
 
 
-class FetchedResultsCollectionViewController: UICollectionViewController, NSFetchedResultsControllerDelegate {
+class FetchedResultsViewController: UICollectionViewController, NSFetchedResultsControllerDelegate {
     
     // MARK: - NSFetchedResultsControllerDelegate
-    
+        
     public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         print("controller will change content")
     }
