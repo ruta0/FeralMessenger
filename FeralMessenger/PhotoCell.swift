@@ -40,7 +40,7 @@ class PhotoCell: UICollectionViewCell {
     
     override var isSelected: Bool {
         didSet {
-            backgroundColor = isSelected ? UIColor.miamiBlue() : UIColor.clear
+            backgroundColor = isSelected ? UIColor.orange : UIColor.clear
         }
     }
     

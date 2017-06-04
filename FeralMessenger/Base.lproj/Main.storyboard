@@ -159,7 +159,7 @@
                                                                 </connections>
                                                             </button>
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="l48-go-Man">
-                                                                <rect key="frame" x="80" y="0.0" width="224" height="136.5"/>
+                                                                <rect key="frame" x="80" y="0.0" width="224" height="166.5"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="usernameLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2VG-OA-CaU">
                                                                         <rect key="frame" x="0.0" y="0.0" width="224" height="19.5"/>
@@ -176,10 +176,10 @@
                                                                         </constraints>
                                                                     </view>
                                                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="qY5-8a-tfV">
-                                                                        <rect key="frame" x="0.0" y="36.5" width="224" height="100"/>
+                                                                        <rect key="frame" x="0.0" y="36.5" width="224" height="130"/>
                                                                         <color key="backgroundColor" red="1" green="0.5966554798" blue="0.36645119920000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <constraints>
-                                                                            <constraint firstAttribute="height" constant="100" id="6uf-3M-BFf"/>
+                                                                            <constraint firstAttribute="height" constant="130" id="6uf-3M-BFf"/>
                                                                         </constraints>
                                                                         <mutableString key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</mutableString>
                                                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -267,6 +267,7 @@
                         <outlet property="activityIndicator" destination="cWt-Db-9wk" id="Rjd-rT-tDM"/>
                         <outlet property="avatarButton" destination="uzg-Sd-U8P" id="rh1-q1-TBm"/>
                         <outlet property="bioTextView" destination="qY5-8a-tfV" id="l6K-uU-fNm"/>
+                        <outlet property="contentView" destination="Eew-Tx-VJK" id="far-sU-Epm"/>
                         <outlet property="dividerView" destination="g2s-jS-3Fx" id="bz2-0G-3za"/>
                         <outlet property="editButton" destination="nGH-cG-9do" id="8v5-UH-grl"/>
                         <outlet property="headerLabel" destination="itw-tg-0HX" id="jqO-vr-ogG"/>
@@ -1448,7 +1449,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yoW-lY-Jam" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1911.2" y="-508.69565217391306"/>
+            <point key="canvasLocation" x="1909" y="-99"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="VPl-Vu-wvR">
@@ -1466,7 +1467,7 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Z0C-wd-tgS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2814" y="-510"/>
+            <point key="canvasLocation" x="2792" y="-98"/>
         </scene>
         <!--Chats-->
         <scene sceneID="VIz-hb-Z7t">
@@ -2537,7 +2538,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7lG-Ph-ruM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1911" y="268"/>
+            <point key="canvasLocation" x="1909" y="824"/>
         </scene>
         <!--Settings-->
         <scene sceneID="C7l-Pe-ubu">

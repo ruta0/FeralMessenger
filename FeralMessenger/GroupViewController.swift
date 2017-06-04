@@ -13,6 +13,7 @@ import Parse
 class GroupViewController: UIViewController {
     
     @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var headerLabel: UILabel!
     @IBOutlet weak var logoutButton: UIBarButtonItem!
@@ -35,13 +36,6 @@ class GroupViewController: UIViewController {
         } else if sender.title == "Edit" {
             animateEditBio()
         }
-    }
-    
-    func handleFatalErrorResponse(fatalError: Error) {
-        let alert = UIAlertController(title: "Unexpected Error", message: fatalError.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
-        let ok = UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil)
-        alert.addAction(ok)
-        self.present(alert, animated: true, completion: nil)
     }
     
     private func animateEditBio() {
@@ -93,6 +87,8 @@ class GroupViewController: UIViewController {
         view.backgroundColor = UIColor.midNightBlack()
         // scrollView
         scrollView.backgroundColor = UIColor.midNightBlack()
+        // contentView
+        contentView.backgroundColor = UIColor.midNightBlack()
         // headerView
         headerView.backgroundColor = UIColor.clear
         // headerLabel
@@ -172,7 +168,7 @@ extension GroupViewController {
             self?.activityIndicator.stopAnimating()
             self?.removeTokenFromKeychain()
             if error != nil {
-                self?.handleFatalErrorResponse(fatalError: error!)
+                self?.localTextResponder((self?.headerLabel)!, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
             } else {
                 self?.dismissTabBar()
             }
@@ -186,13 +182,11 @@ extension GroupViewController {
         user.saveInBackground { [weak self] (completed: Bool, error: Error?) in
             self?.activityIndicator.stopAnimating()
             if error != nil {
-                print("uploadBioToParse - Failed to save newBio to Parse")
+                self?.localTextResponder((self?.headerLabel)!, for: ResponseType.failure, with: (error?.localizedDescription)!, completion: nil)
                 return
             } else {
                 if completed == true {
-                    print("uploadBioToParse - successfully saved to Parse")
-                } else {
-                    print("uploadBioToParse - failed to complete upload")
+                    self?.localTextResponder((self?.headerLabel)!, for: ResponseType.success, with: "Saved", completion: nil)
                 }
             }
         }
@@ -210,7 +204,7 @@ extension GroupViewController {
         do {
             try item.deleteItem()
         } catch let err {
-            print(err)
+            localTextResponder(headerLabel, for: ResponseType.failure, with: err.localizedDescription, completion: nil)
         }
     }
     

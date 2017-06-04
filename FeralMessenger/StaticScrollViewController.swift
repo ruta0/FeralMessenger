@@ -56,7 +56,7 @@ open class StaticScrollViewController: UIViewController, UIScrollViewDelegate, S
         var aRect : CGRect = self.view.frame
         aRect.size.height -= keyboardSize!.height
         
-        // Depending on whether it is a UITextField or UITextView, it scrolls to the visible last UIView...thing...
+        // Depending on whether it is a UITextField or UITextView, it scrolls to the visible last UIView...thing
         if let activeField = self.lastTextField {
             if (!aRect.contains(activeField.frame.origin)){
                 self.scrollView.scrollRectToVisible(activeField.frame, animated: true)

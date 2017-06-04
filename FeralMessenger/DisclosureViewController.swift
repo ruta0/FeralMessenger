@@ -24,6 +24,14 @@ class DisclosureViewController: UICollectionViewController {
         }
     }
     
+    fileprivate func animateSaveAvatar() {
+        DispatchQueue.main.async { [weak self] in
+            if self?.saveButton.tintColor == UIColor.orange {
+                self?.saveButton.tintColor = UIColor.white
+            }
+        }
+    }
+    
     fileprivate func fetchAvatarsFromPropertyList(for resource: String, of type: String) {
         var items = [Avatar]()
         guard let inputFile = Bundle.main.path(forResource: resource, ofType: type) else {
@@ -105,6 +113,9 @@ extension DisclosureViewController {
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedAvatarName = avatars?[indexPath.item].name
+        DispatchQueue.main.async { [weak self] in
+            self?.saveButton.tintColor = UIColor.orange
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -144,9 +155,8 @@ extension DisclosureViewController {
             } else {
                 if completed == true {
                     print("updateAvatarInParse - successfully saved to Parse")
+                    self?.animateSaveAvatar()
                     self?.popViewController()
-                } else {
-                    print("updateAvatarInParse - failed to complete upload")
                 }
             }
         }
