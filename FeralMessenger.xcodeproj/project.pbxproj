@@ -39,6 +39,7 @@
 		C55D62F41EE2A08000AEE16D /* Avatars.plist in Resources */ = {isa = PBXBuildFile; fileRef = C55D62F31EE2A08000AEE16D /* Avatars.plist */; };
 		C55D62F81EE3525300AEE16D /* StaticScrollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D62F71EE3525300AEE16D /* StaticScrollViewController.swift */; };
 		C55D62FA1EE3D40800AEE16D /* ApplicationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D62F91EE3D40800AEE16D /* ApplicationViewController.swift */; };
+		C55D62FF1EE51BDC00AEE16D /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D62FE1EE51BDC00AEE16D /* NotificationsViewController.swift */; };
 		C56AD9401EDB657E00A9855B /* FetchedResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56AD93F1EDB657E00A9855B /* FetchedResultsController.swift */; };
 		C5C58B931EDD6D2A003E19B7 /* ChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */; };
 		C5C58B981EDD87A4003E19B7 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C58B971EDD87A4003E19B7 /* MessageViewController.swift */; };
@@ -109,6 +110,7 @@
 		C55D62F31EE2A08000AEE16D /* Avatars.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Avatars.plist; sourceTree = "<group>"; };
 		C55D62F71EE3525300AEE16D /* StaticScrollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StaticScrollViewController.swift; sourceTree = "<group>"; };
 		C55D62F91EE3D40800AEE16D /* ApplicationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationViewController.swift; sourceTree = "<group>"; };
+		C55D62FE1EE51BDC00AEE16D /* NotificationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
 		C56AD93F1EDB657E00A9855B /* FetchedResultsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchedResultsController.swift; sourceTree = "<group>"; };
 		C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatsViewController.swift; sourceTree = "<group>"; };
 		C5C58B971EDD87A4003E19B7 /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
@@ -274,6 +276,7 @@
 				C5C58B951EDD7FC8003E19B7 /* Auth */,
 				C5C58B941EDD7FB1003E19B7 /* Master */,
 				C5C58B961EDD7FDC003E19B7 /* Detail */,
+				C55D62FD1EE51BAE00AEE16D /* Notifications */,
 				C510CACB1EDF8D61007ADC92 /* Group */,
 				C55D62EC1EE22DAC00AEE16D /* Disclosure */,
 			);
@@ -339,6 +342,14 @@
 				C55D62ED1EE22E3A00AEE16D /* DisclosureViewController.swift */,
 			);
 			name = Disclosure;
+			sourceTree = "<group>";
+		};
+		C55D62FD1EE51BAE00AEE16D /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				C55D62FE1EE51BDC00AEE16D /* NotificationsViewController.swift */,
+			);
+			name = Notifications;
 			sourceTree = "<group>";
 		};
 		C5C58B941EDD7FB1003E19B7 /* Master */ = {
@@ -684,6 +695,7 @@
 				C53D0A601EDA75800048CC44 /* CoreUser.swift in Sources */,
 				C55D62EE1EE22E3A00AEE16D /* DisclosureViewController.swift in Sources */,
 				C5D7C38E1ED4360B00ECE44C /* ServerConfigViewController.swift in Sources */,
+				C55D62FF1EE51BDC00AEE16D /* NotificationsViewController.swift in Sources */,
 				C55D62F01EE23F1100AEE16D /* PhotoCell.swift in Sources */,
 				C5439B751ED2094500FBD7D3 /* AuthViewController.swift in Sources */,
 			);

@@ -166,8 +166,9 @@ class DetailViewController: FetchedResultsViewController {
         titleButton.setTitle(selectedUser?.username!, for: UIControlState.normal)
         // rightBarButton
         navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: profileButton)]
-        let image = UIImage(named: selectedUser!.profile_image!)
-        profileButton.setImage(image, for: UIControlState.normal)
+        if let profileImage = selectedUser?.profile_image, let image = UIImage(named: profileImage) {
+            profileButton.setImage(image, for: UIControlState.normal)
+        }
     }
     
     fileprivate func setupCollectionView() {

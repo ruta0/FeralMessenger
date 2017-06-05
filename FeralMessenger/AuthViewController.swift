@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 import AudioToolbox
-import CoreData
+//import CoreData
 
 
 class AuthViewController: UIViewController {

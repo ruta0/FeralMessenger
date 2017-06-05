@@ -14,8 +14,10 @@ class GroupViewController: UIViewController {
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
+    
     @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var headerLabel: UILabel!
+    
     @IBOutlet weak var logoutButton: UIBarButtonItem!
     @IBOutlet weak var editButton: UIBarButtonItem!
     @IBOutlet weak var profileContainerView: UIView!
@@ -24,6 +26,9 @@ class GroupViewController: UIViewController {
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var dividerView: UIView!
     @IBOutlet weak var bioTextView: UITextView!
+    
+    @IBOutlet weak var mpcContainerView: UIView!
+    @IBOutlet weak var mpcImageView: UIImageView!
     
     @IBAction func logoutButton_tapped(_ sender: UIBarButtonItem) {
         performLogout()
@@ -37,6 +42,14 @@ class GroupViewController: UIViewController {
             animateEditBio()
         }
     }
+    
+    lazy var titleButton: UIButton = {
+        let button = UIButton()
+        button.tintColor = UIColor.white
+        button.setTitle("Settings", for: UIControlState.normal)
+        button.frame = CGRect(x: 0, y: 0, width: 35, height: 21)
+        return button
+    }()
     
     private func animateEditBio() {
         DispatchQueue.main.async { [weak self] in
@@ -66,6 +79,12 @@ class GroupViewController: UIViewController {
         }
     }
     
+    fileprivate func setupMpcImageViewGesture() {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(presentMpcView(gestureRecognizer:)))
+        gesture.numberOfTapsRequired = 14
+        mpcImageView.addGestureRecognizer(gesture)
+    }
+    
     fileprivate func setupTabBar() {
         guard let tabBar = tabBarController?.tabBar else { return }
         tabBar.tintColor = UIColor.candyWhite()
@@ -80,6 +99,7 @@ class GroupViewController: UIViewController {
         navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
         navigationController.navigationBar.tintColor = UIColor.white
         navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+        navigationItem.titleView = titleButton
     }
     
     fileprivate func setupViews() {
@@ -113,6 +133,14 @@ class GroupViewController: UIViewController {
         bioTextView.textContainerInset = UIEdgeInsets.zero
         bioTextView.textContainer.lineFragmentPadding = 0
         bioTextView.text = getCurrentUserBioInParse()
+        // mpcContainerView
+        mpcContainerView.backgroundColor = UIColor.clear
+        // mpcImageView
+        let originalImage = UIImage(named: "MPC")
+        let tinitedImage = originalImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        mpcImageView.image = tinitedImage
+        mpcImageView.tintColor = UIColor.clear
+        mpcImageView.isUserInteractionEnabled = true
     }
 
 }
@@ -125,12 +153,22 @@ extension GroupViewController {
     func dismissTabBar() {
         self.tabBarController?.dismiss(animated: true, completion: nil)
     }
+    
+    func presentMpcView(gestureRecognizer: UITapGestureRecognizer) {
+        print("implement this with Lotti")
+        if mpcImageView.tintColor == UIColor.clear {
+            DispatchQueue.main.async { [weak self] in
+                self?.mpcImageView.tintColor = UIColor.white
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
         setupNavigationController()
         setupViews()
+        setupMpcImageViewGesture()
     }
     
 }
