@@ -73,7 +73,13 @@ extension DisclosureViewController {
         super.viewDidLoad()
         setupTabBar()
         setupCollectionView()
-        fetchAvatarsFromPropertyList(for: "Avatars", of: "plist")
+        var fileName = String()
+        if isSudoGranted == true {
+            fileName = "SpecialAvatars"
+        } else {
+            fileName = "Avatars"
+        }
+        fetchAvatarsFromPropertyList(for: fileName, of: "plist")
     }
     
 }
@@ -147,16 +153,16 @@ extension DisclosureViewController {
         guard let currentUser = PFUser.current() else { return }
         currentUser["avatar"] = newAvatarName
         activityIndicator.startAnimating()
-        currentUser.saveInBackground { [weak self] (completed: Bool, error: Error?) in
-            self?.activityIndicator.stopAnimating()
+        currentUser.saveInBackground { [unowned self] (completed: Bool, error: Error?) in
+            self.activityIndicator.stopAnimating()
             if error != nil {
                 print("updateAvatarInParse - failed to update avatar name To Parse")
                 return
             } else {
                 if completed == true {
                     print("updateAvatarInParse - successfully saved to Parse")
-                    self?.animateSaveAvatar()
-                    self?.popViewController()
+                    self.animateSaveAvatar()
+                    self.popViewController()
                 }
             }
         }

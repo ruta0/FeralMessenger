@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AudioToolbox
 
 
 public protocol StaticScrollViewControllerDelegate : class, UIScrollViewDelegate {
@@ -23,7 +24,7 @@ extension StaticScrollViewControllerDelegate {
     
     @available(iOS 10.0, *)
     func registerLastTextViewOnView(_ lastTextView: UITextView) { }
-
+    
 }
 
 /*
@@ -108,6 +109,8 @@ open class StaticScrollViewController: UIViewController, UIScrollViewDelegate, S
 }
 
 
+// MARK: - UITextFieldDelegate
+
 extension StaticScrollViewController: UITextFieldDelegate {
     
     public func textFieldShouldClear(_ textField: UITextField) -> Bool {
@@ -122,6 +125,8 @@ extension StaticScrollViewController: UITextFieldDelegate {
 }
 
 
+// MARK: - UITextViewDelegate
+
 extension StaticScrollViewController: UITextViewDelegate {
     
     public func textViewDidEndEditing(_ textView: UITextView) {
@@ -131,7 +136,38 @@ extension StaticScrollViewController: UITextViewDelegate {
 }
 
 
+// MARK: - CompletionCorrespondence
 
+extension StaticScrollViewController {
+    
+    // The handler will display a dynamic message while the responder will perform animation, vibration, sounds, etc.
+    // In case of success, responderTextFields will be cleared; in case of failure, responderTextFields will be cleared and perform jitter while in UIColor.red; in case or normal, it depends...
+    func completionWithResponder(_ handler: UILabel, with responders: [UITextField]?, for type: ResponseType, with message: String, completion: (() -> Void)? = nil) {
+        print("localTextResponder - type \(type): \(message)")
+        switch type {
+        case .success:
+            handler.flash(delay: 5, duration: 0.3, message: message, color: UIColor.green)
+            if let responders = responders {
+                for responder in responders {
+                    responder.text = ""
+                }
+            }
+        case .failure:
+            handler.flash(delay: 5, duration: 0.3, message: message, color: UIColor.red)
+            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+            if let responders = responders {
+                for responder in responders {
+                    responder.text = ""
+                    responder.jitter(repeatCount: 5)
+                }
+            }
+        case .normal:
+            handler.flash(delay: 7, duration: 0.3, message: message, color: UIColor.orange)
+        }
+        completion?()
+    }
+    
+}
 
 
 

@@ -10,7 +10,11 @@ import UIKit
 import UserNotifications
 import Parse
 import CoreData
+import Locksmith
 
+
+var isParseInitialized: Bool = false
+var isSudoGranted: Bool = false
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,26 +22,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        isParseInitialized = false
         application.applicationIconBadgeNumber = 0 // clears the badge on app launch
-        
-        // check if this app is launch via notification
-        if let notification = launchOptions?[UIApplicationLaunchOptionsKey.remoteNotification] as? [String : AnyObject] {
-            let aps = notification["aps"] as? [String : AnyObject]
-            // parse and create the APNS item
-            let titleAndBody = createNewAPNSItemInNotificationsMVC(aps: aps)
-            print(titleAndBody)
-            // add an new item in notificationViewController in the background
-            // add a badge to the tabbar
-        }
-        
-        checkOrRegisterForAPNS(application: application)
+        registerForAPNS(with: application)
         CoreDataManager.emptyPersistentContainer() // In order to be in sync with what I have in the database, I need to empty the database on start. Note: I can afford to do this because this app is currently only a pure text messenger. [development]
-        
-        
-        
-        
-        
         return true
     }
 
@@ -88,15 +75,18 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         // fetch notification in the background from death
         let aps = userInfo["aps"] as! [String : AnyObject]
         if (aps["content-available"] as? NSString)?.integerValue == 1 {
-            
+            // implement this!
         }
-        
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         // user granted for apns
         if application.currentUserNotificationSettings?.types != .none {
-            checkOrInstallAPNSInParse(with: deviceToken)
+            ParseServerManager.shared.saveDeviceToken(with: deviceToken, completion: { (completed: Bool) in
+                if completed {
+                    KeychainManager.shared.persistDeviceToken(with: deviceToken)
+                }
+            })
         }
     }
     
@@ -104,7 +94,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         print("Failed to register APNS: ", error.localizedDescription)
     }
     
-    func checkOrRegisterForAPNS(application: UIApplication) {
+    func registerForAPNS(with application: UIApplication) {
         if #available(iOS 10.0, *) {
             let center = UNUserNotificationCenter.current()
             center.delegate = self
@@ -119,56 +109,20 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         }
     }
     
-    fileprivate func createNewAPNSItemInNotificationsMVC(aps: [String : AnyObject]?) -> (String, String) {
-        let alert = aps?["alert"] as? [String : AnyObject]
-        let title = alert?["title"] as? String
-        let body = alert?["body"] as? String
-        return (title ?? "Feral Messenger", body ?? "You have received a notification")
-    }
-    
-    private func checkOrPersistAPNS(with deviceToken: String) {
-        if let apns_token = UserDefaults.standard.string(forKey: "apns_token") {
-            print("APNS devicetoken have been created in parse and persisted locally for key == apns_token: ", apns_token)
-        } else {
-            UserDefaults.standard.set(deviceToken, forKey: "apns_token")
-        }
-    }
-    
-    fileprivate func checkOrInstallAPNSInParse(with deviceToken: Data) {
-        if let installation = PFInstallation.current(), installation.deviceToken == nil {
-            installation.setDeviceTokenFrom(deviceToken)
-            installation.saveInBackground(block: { [weak self] (completed: Bool, error: Error?) in
-                if error != nil {
-                    print(error!.localizedDescription)
-                } else {
-                    if completed {
-                        self?.checkOrPersistAPNS(with: (installation.deviceToken)!)
-                    }
-                }
-            })
-        } else {
-            // already registered apns to Parse. No need to do it again.
-            print("APNS deviceToken already registered: ", PFInstallation.current()!.deviceToken!)
-        }
-    }
-    
 }
 
 
-// MARK: - Parse lifecycle
 
-extension AppDelegate {
-    
-    func attemptToInitializeParse() {
-        if isParseInitialized == false {
-            Parse.initialize(with: ParseConfig.config)
-            isParseInitialized = true
-        } else {
-            // Parse has already been initialized
-        }
-    }
-    
-}
+
+
+
+
+
+
+
+
+
+
 
 
 

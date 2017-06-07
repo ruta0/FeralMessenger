@@ -12,7 +12,12 @@ import Parse
 
 // MARK: - UI
 
-class NotificationsViewController: UICollectionViewController {
+class MPCViewController: UITableViewController {
+    
+    fileprivate let cellID = "MPCCell"
+    fileprivate let headerID = "MPCViewHeader" // could add group count
+    
+    var mpcManager: MPCManager!
 
     lazy var refreshController: UIRefreshControl = {
         let control = UIRefreshControl()
@@ -24,7 +29,7 @@ class NotificationsViewController: UICollectionViewController {
     lazy var titleButton: UIButton = {
         let button = UIButton()
         button.tintColor = UIColor.white
-        button.setTitle("Notifications", for: UIControlState.normal)
+        button.setTitle("Proximity", for: UIControlState.normal)
         button.frame = CGRect(x: 0, y: 0, width: 35, height: 21)
         return button
     }()
@@ -32,14 +37,14 @@ class NotificationsViewController: UICollectionViewController {
     func handleRefresh() {
         refreshController.beginRefreshing()
         DispatchQueue.main.async { [weak self] in
-            self?.collectionView?.reloadData()
+            self?.tableView?.reloadData()
             self?.refreshController.endRefreshing()
         }
     }
     
     func reloadColectionView() {
         DispatchQueue.main.async { [weak self] in
-            self?.collectionView?.reloadData()
+            self?.tableView?.reloadData()
         }
     }
     
@@ -51,10 +56,9 @@ class NotificationsViewController: UICollectionViewController {
         navigationItem.titleView = titleButton
     }
     
-    fileprivate func setupCollectionView() {
-        guard let collectionView = collectionView else { return }
-        collectionView.backgroundColor = UIColor.midNightBlack()
-        collectionView.addSubview(refreshController)
+    fileprivate func setupTableView() {
+        tableView.backgroundColor = UIColor.midNightBlack()
+        tableView.addSubview(refreshController)
     }
     
     fileprivate func setupTabBar() {
@@ -70,12 +74,13 @@ class NotificationsViewController: UICollectionViewController {
 
 // MARK: - Lifecycle
 
-extension NotificationsViewController {
+extension MPCViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupCollectionView()
+        setupTableView()
         setupNavigationController()
+        mpcManager = MPCManager()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -90,35 +95,33 @@ extension NotificationsViewController {
 }
 
 
-// MARK: - UICollectionViewDelegateFlowLayout
+// MARK: - UITableViewLayout
 
-extension NotificationsViewController: UICollectionViewDelegateFlowLayout {
+extension MPCViewController {
     
-    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
-        collectionViewLayout.invalidateLayout()
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return CGFloat.leastNonzeroMagnitude
     }
-    
-    
     
 }
 
 
-// MARK: - UICollectionViewDataSource
+// MARK: - UITableViewDataSource
 
-extension NotificationsViewController {
+extension MPCViewController {
     
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 0
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
     }
     
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 0
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
     }
     
-//    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
-//        return cell
-//    }
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! MPCCell
+        return cell
+    }
     
 }
 

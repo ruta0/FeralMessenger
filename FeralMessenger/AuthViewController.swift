@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 import AudioToolbox
-//import CoreData
+import Locksmith
 
 
 class AuthViewController: UIViewController {
@@ -49,7 +49,12 @@ class AuthViewController: UIViewController {
     @IBAction func authButton_tapped(_ sender: UIButton) {
         if sender.titleLabel?.text == AuthButtonType.login.rawValue {
             if nameTextField.text != "" && passTextField.text != "" {
-                performLogin(name: nameTextField.text!, pass: passTextField.text!)
+                performLogin(name: nameTextField.text!, pass: passTextField.text!, completion: { [weak self] (pfUser: PFUser?) in
+                    if pfUser != nil {
+                        KeychainManager.shared.persistAuthToken(with: (pfUser?.sessionToken!)!)
+                        self?.presentMasterView()
+                    }
+                })
             } else {
                 localTextResponder(errorLabel, for: ResponseType.failure, with: "Fields cannot be blank", completion: { [weak self] in
                     self?.jitterAndReset()
@@ -170,11 +175,16 @@ class AuthViewController: UIViewController {
 extension AuthViewController {
     
     internal func presentServerConfigView(gestureRecognizer: UITapGestureRecognizer) {
+        if logoImageView.tintColor != UIColor.metallicGold() {
+            DispatchQueue.main.async {
+                self.logoImageView.tintColor = UIColor.metallicGold()
+            }
+        }
         self.performSegue(withIdentifier: "ServerConfigViewControllerSegue", sender: self)
     }
     
-    fileprivate func presentHomeView() {
-        self.performSegue(withIdentifier: "HomeViewControllerSegue", sender: self)
+    fileprivate func presentMasterView() {
+        self.performSegue(withIdentifier: "ChatsViewControllerSegue", sender: self)
     }
     
     fileprivate func redirectToBrowserForTerms() {
@@ -193,7 +203,11 @@ extension AuthViewController {
         setupTextFieldDelegates()
         setupScrollViewDelegate()
         setupScrollViewGesture()
-        checkUserLoginSession()
+        KeychainManager.shared.loadAuthToken { [weak self] (token: String?) in
+            if token != nil {
+                self?.performLogin(token: token!)
+            }
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -291,71 +305,24 @@ extension AuthViewController: UIScrollViewDelegate {
 }
 
 
-// MARK: - Keychain
-
-extension AuthViewController {
-    
-    func checkUserLoginSession() {
-        fetchTokenFromKeychain(accountName: "auth_token") { (token: String) in
-            self.readUserInParse(with: token)
-        }
-    }
-    
-    fileprivate func storeSecretInKeychain(secret: String, account: String) {
-        do {
-            self.accountName = account
-            if let originalAccountName = self.accountName {
-                var passwordItem = KeychainItem(service: KeychainConfiguration.serviceName, account: originalAccountName, accessGroup: KeychainConfiguration.accessGroup)
-                try passwordItem.renameAccount(account)
-                try passwordItem.savePassword(secret)
-            } else {
-                // if this is a new account, create a new keychain item
-                let tokenItem = KeychainItem(service: KeychainConfiguration.serviceName, account: account, accessGroup: KeychainConfiguration.accessGroup)
-                try tokenItem.savePassword(secret)
-            }
-        } catch {
-            fatalError("Error updating keychain = \(error)")
-        }
-    }
-    
-    fileprivate func removeSecretInKeychain(account: String) {
-        print(account)
-    }
-    
-}
-
-
-// MARK: - Core Data
-
-extension AuthViewController {
-    
-    fileprivate func createOrUpdateUserDataInKeychain(with pfUser: PFUser?, completion: () -> ()) {
-        guard let user = pfUser, let auth_token = user.sessionToken else { return }
-        storeSecretInKeychain(secret: auth_token, account: "auth_token")
-        completion()
-    }
-    
-}
-
-
 // MARK: - Parse
 
 extension AuthViewController {
     
-    func performLogin(name: String, pass: String) {
+    func performLogin(name: String, pass: String, completion: @escaping (PFUser?) -> Void) {
         guard let name = nameTextField.text?.lowercased(), let pass = passTextField.text else { return }
         if Reachability.isConnectedToNetwork() == true {
-            ParseConfig.attemptToInitializeParse()
+            ParseServerManager.shared.attemptToInitializeParse()
             self.activityIndicator.startAnimating()
+            UIApplication.shared.beginIgnoringInteractionEvents()
             PFUser.logInWithUsername(inBackground: name, password: pass, block: { [weak self] (pfUser: PFUser?, error: Error?) in
                 self?.activityIndicator.stopAnimating()
+                UIApplication.shared.endIgnoringInteractionEvents()
                 self?.passTextField.text = ""
                 if error != nil {
                     self?.localTextResponder((self?.errorLabel)!, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
                 } else {
-                    self?.createOrUpdateUserDataInKeychain(with: pfUser, completion: {
-                        self?.presentHomeView()
-                    })
+                    completion(pfUser)
                 }
             })
         } else {
@@ -365,9 +332,9 @@ extension AuthViewController {
         }
     }
     
-    func readUserInParse(with token: String) {
+    func performLogin(token: String) {
         if Reachability.isConnectedToNetwork() == true {
-            ParseConfig.attemptToInitializeParse()
+            ParseServerManager.shared.attemptToInitializeParse()
             self.activityIndicator.startAnimating()
             localTextResponder(errorLabel, for: ResponseType.normal, with: "Resumming to previous session", completion: nil)
             UIApplication.shared.beginIgnoringInteractionEvents()
@@ -378,10 +345,10 @@ extension AuthViewController {
                     self?.localTextResponder((self?.errorLabel)!, for: ResponseType.failure, with: error!.localizedDescription, completion: { [weak self] in
                         self?.jitterAndReset()
                     })
-                    self?.removeSecretInKeychain(account: "auth_token")
+                    KeychainManager.shared.deleteAuthToken(in: KeychainConfiguration.accountType.auth_token.rawValue)
                 } else {
-                    self?.storeSecretInKeychain(secret: token, account: "auth_token")
-                    self?.presentHomeView()
+                    KeychainManager.shared.persistAuthToken(with: token)
+                    self?.presentMasterView()
                 }
             })
         } else {
@@ -394,11 +361,13 @@ extension AuthViewController {
     func createUserInParse(with name: String, email: String, pass: String) {
         guard let name = nameTextField.text?.lowercased(), let email = emailTextField.text?.lowercased(), let pass = passTextField.text else { return }
         if Reachability.isConnectedToNetwork() == true {
-            ParseConfig.attemptToInitializeParse()
+            ParseServerManager.shared.attemptToInitializeParse()            
             self.activityIndicator.startAnimating()
+            UIApplication.shared.beginIgnoringInteractionEvents()
             let newUser = User()
             newUser.constructUserInfo(name: name, email: email, pass: pass)
             newUser.signUpInBackground(block: { [weak self] (completed: Bool, error: Error?) in
+                UIApplication.shared.endIgnoringInteractionEvents()
                 self?.activityIndicator.stopAnimating()
                 self?.passTextField.text = ""
                 if error != nil {

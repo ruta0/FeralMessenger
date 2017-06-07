@@ -8,6 +8,7 @@
 
 import UIKit
 import Parse
+import Locksmith
 
 
 class GroupViewController: UIViewController {
@@ -27,11 +28,17 @@ class GroupViewController: UIViewController {
     @IBOutlet weak var dividerView: UIView!
     @IBOutlet weak var bioTextView: UITextView!
     
-    @IBOutlet weak var mpcContainerView: UIView!
-    @IBOutlet weak var mpcImageView: UIImageView!
-    
     @IBAction func logoutButton_tapped(_ sender: UIBarButtonItem) {
-        performLogout()
+        let alert = UIAlertController(title: "What would you like to do?", message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+        let logout = UIAlertAction(title: "Logout", style: UIAlertActionStyle.destructive) { (action: UIAlertAction) in
+            self.performLogout()
+        }
+        let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
+        alert.addAction(logout)
+        alert.addAction(cancel)
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     @IBAction func editButton(_ sender: UIBarButtonItem) {
@@ -77,12 +84,6 @@ class GroupViewController: UIViewController {
                 }
             }
         }
-    }
-    
-    fileprivate func setupMpcImageViewGesture() {
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(presentMpcView(gestureRecognizer:)))
-        gesture.numberOfTapsRequired = 14
-        mpcImageView.addGestureRecognizer(gesture)
     }
     
     fileprivate func setupTabBar() {
@@ -133,14 +134,6 @@ class GroupViewController: UIViewController {
         bioTextView.textContainerInset = UIEdgeInsets.zero
         bioTextView.textContainer.lineFragmentPadding = 0
         bioTextView.text = getCurrentUserBioInParse()
-        // mpcContainerView
-        mpcContainerView.backgroundColor = UIColor.clear
-        // mpcImageView
-        let originalImage = UIImage(named: "MPC")
-        let tinitedImage = originalImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-        mpcImageView.image = tinitedImage
-        mpcImageView.tintColor = UIColor.clear
-        mpcImageView.isUserInteractionEnabled = true
     }
 
 }
@@ -153,22 +146,12 @@ extension GroupViewController {
     func dismissTabBar() {
         self.tabBarController?.dismiss(animated: true, completion: nil)
     }
-    
-    func presentMpcView(gestureRecognizer: UITapGestureRecognizer) {
-        print("implement this with Lotti")
-        if mpcImageView.tintColor == UIColor.clear {
-            DispatchQueue.main.async { [weak self] in
-                self?.mpcImageView.tintColor = UIColor.white
-            }
-        }
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
         setupNavigationController()
         setupViews()
-        setupMpcImageViewGesture()
     }
     
 }
@@ -204,7 +187,7 @@ extension GroupViewController {
         self.activityIndicator.startAnimating()
         PFUser.logOutInBackground { [weak self] (error: Error?) in
             self?.activityIndicator.stopAnimating()
-            self?.removeTokenFromKeychain()
+            self?.removeAuthTokenInKeychain(account: KeychainConfiguration.accountType.auth_token.rawValue)
             if error != nil {
                 self?.localTextResponder((self?.headerLabel)!, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
             } else {
@@ -237,10 +220,9 @@ extension GroupViewController {
 
 extension GroupViewController {
     
-    func removeTokenFromKeychain() {
-        let item = KeychainItem(service: KeychainConfiguration.serviceName, account: "auth_token", accessGroup: KeychainConfiguration.accessGroup)
+    fileprivate func removeAuthTokenInKeychain(account: String) {
         do {
-            try item.deleteItem()
+            try Locksmith.deleteDataForUserAccount(userAccount: KeychainConfiguration.accountType.auth_token.rawValue, inService: KeychainConfiguration.serviceName)
         } catch let err {
             localTextResponder(headerLabel, for: ResponseType.failure, with: err.localizedDescription, completion: nil)
         }

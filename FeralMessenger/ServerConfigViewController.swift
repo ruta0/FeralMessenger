@@ -28,6 +28,7 @@ class ServerConfigViewController: UIViewController {
     
     @IBAction func saveButton_tapped(_ sender: UIButton) {
         if application_idTextField.text != "" && server_urlTextField.text != "" && master_keyTextField.text != "" {
+            
             attemptToInitiateParse(appId: application_idTextField.text!, serverUrl: server_urlTextField.text!, masterKey: master_keyTextField.text!)
         } else {
             localTextResponder(errorLabel, for: ResponseType.failure, with: "Fields cannot be blank", completion: { [weak self] in
@@ -40,9 +41,9 @@ class ServerConfigViewController: UIViewController {
     }
     
     @IBAction func defaultButton_tapped(_ sender: UIButton) {
-        self.application_idTextField.text = ParseConfig.heroku_app_id
-        self.server_urlTextField.text = ParseConfig.heroku_server_url
-        self.master_keyTextField.text = ParseConfig.heroku_master_key
+        self.application_idTextField.text = ParseConfiguration.heroku_app_id
+        self.server_urlTextField.text = ParseConfiguration.heroku_server_url
+        self.master_keyTextField.text = ParseConfiguration.heroku_master_key
     }
     
     @IBAction func returnButton_tapped(_ sender: UIButton) {
@@ -90,7 +91,11 @@ extension ServerConfigViewController {
     
     internal func enableSudo(gestureRecognizer: UITapGestureRecognizer) {
         localTextResponder(errorLabel, for: ResponseType.success, with: "sudo granted") {
+            isSudoGranted = true
             AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+        }
+        DispatchQueue.main.async {
+            self.warningLabel.textColor = UIColor.green
         }
     }
     
@@ -205,10 +210,7 @@ extension ServerConfigViewController {
             if Reachability.isConnectedToNetwork() == true {
                 guard let url: URL = URL(string: serverUrl) else { return }
                 if UIApplication.shared.canOpenURL(url) == true {
-                    ParseConfig.heroku_app_id = appId
-                    ParseConfig.heroku_server_url = serverUrl
-                    ParseConfig.heroku_master_key = masterKey
-                    ParseConfig.attemptToInitializeParse()
+                    ParseServerManager.shared.attemptToInitializeParse()
                     localTextResponder(errorLabel, for: ResponseType.success, with: "Server initialized with provided credentials", completion: { [weak self] in
                         self?.master_keyTextField.text = ""
                         self?.server_urlTextField.text = ""
