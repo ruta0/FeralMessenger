@@ -132,7 +132,7 @@ extension MessageViewController {
                 cell.bubbleView.frame = CGRect(x: 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
                 cell.messageTextView.frame = CGRect(x: 8 + 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
                 cell.messageTextView.textColor = UIColor.black
-                cell.bubbleView.backgroundColor = UIColor.lightBlue()
+                cell.bubbleView.backgroundColor = UIColor.lightGray
             } else if coreMessage.receiver_name != PFUser.current()!.username! {
                 // outgoing message - text on the right
                 cell.bubbleView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8 - 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)

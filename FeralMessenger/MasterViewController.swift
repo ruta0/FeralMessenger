@@ -15,6 +15,19 @@ import Parse
 // This is a generic masterViewController designed to be subclassed to complete its functionality with either Core Data or Realm
 class MasterViewController: FetchedResultsViewController {
     
+    fileprivate var users = [Array<User>]()
+    
+    private var lastQuery: String? // query itself might change if the user becomes impatient and immediately decides to query with a different keyword
+    
+    var searchText: String? {
+        didSet {
+            users.removeAll()
+            collectionView?.reloadData()
+            searchForUsers()
+            title = searchText
+        }
+    }
+    
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     lazy var refreshController: UIRefreshControl = {
@@ -27,15 +40,26 @@ class MasterViewController: FetchedResultsViewController {
     lazy var titleButton: UIButton = {
         let button = UIButton()
         button.tintColor = UIColor.white
+        button.setTitle("Chats", for: UIControlState.normal)
         button.frame = CGRect(x: 0, y: 0, width: 35, height: 21)
         return button
     }()
-    
-    func handleFatalErrorResponse(fatalError: Error) {
-        let alert = UIAlertController(title: "Unexpected Error", message: fatalError.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
-        let ok = UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil)
-        alert.addAction(ok)
-        self.present(alert, animated: true, completion: nil)
+
+    func searchForUsers() {
+        if let query = searchText, !query.isEmpty {
+            lastQuery = query
+            let predicate = NSPredicate(format: "username = %@", searchText!)
+            readUserInParse(with: predicate, completion: { [weak self] (pfObjects: [PFObject]?) in
+                DispatchQueue.main.async {
+                    if query == self?.lastQuery {
+                        print(pfObjects!)
+                        // insert into the collectionView starting from the top
+                        self?.users.insert(pfObjects as! [User], at: 0)
+                        self?.collectionView?.insertSections([0])
+                    }
+                }
+            })
+        }
     }
     
     func reloadColectionView() {
@@ -65,14 +89,7 @@ class MasterViewController: FetchedResultsViewController {
         navigationController.navigationBar.isTranslucent = false
         navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
         navigationController.navigationBar.tintColor = UIColor.white
-        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
         navigationItem.titleView = titleButton
-        // setting the title of the navigationItem
-        guard let username = PFUser.current()?.username else {
-            print("setupNavigationController - PFUser.current()?.username is nil")
-            return
-        }
-        titleButton.setTitle(username, for: UIControlState.normal)
     }
     
     fileprivate func setupCollectionView() {
@@ -91,12 +108,12 @@ extension MasterViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
+        setupNavigationController()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupTabBar()
-        setupNavigationController()
     }
     
 }
@@ -129,6 +146,17 @@ extension MasterViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - Parse
 
 extension MasterViewController {
+    
+    func readUserInParse(with predicate: NSPredicate?, completion: @escaping ([PFObject]?) -> Void) {
+        guard let predicate = predicate, let query = User.query(with: predicate) else { return }
+        query.findObjectsInBackground { (users: [PFObject]?, error: Error?) in
+            if error != nil {
+                print(error!.localizedDescription)
+            } else {
+                completion(users)
+            }
+        }
+    }
     
     func readUserInParse(completion: @escaping ([PFObject]) -> Void) {
         guard let query = User.query() else { return }

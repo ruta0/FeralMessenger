@@ -55,3 +55,24 @@ class DetailCell: UICollectionViewCell {
     }
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

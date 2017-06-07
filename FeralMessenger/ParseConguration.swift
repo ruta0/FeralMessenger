@@ -9,9 +9,7 @@
 import Parse
 
 
-var isParseInitialized: Bool?
-
-public class ParseConfig {
+public class ParseConfiguration {
     
     // MARK: - mLab db configs
     
@@ -34,21 +32,6 @@ public class ParseConfig {
     }
     
 }
-
-
-// MARK: - Parse lifecycle
-
-extension ParseConfig {
-    
-    class func attemptToInitializeParse() {
-        if isParseInitialized == false {
-            Parse.initialize(with: ParseConfig.config)
-            isParseInitialized = true
-        }
-    }
-    
-}
-
 
 
 

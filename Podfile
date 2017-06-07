@@ -7,6 +7,7 @@ target 'FeralMessenger' do
 
   # Pods for FeralMessenger
     pod 'Parse'
+    pod 'Locksmith'
 
   target 'FeralMessengerTests' do
     inherit! :search_paths

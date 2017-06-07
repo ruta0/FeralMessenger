@@ -18,8 +18,9 @@ enum ResponseType {
 
 extension UIViewController {
     
+    // I should add an optional array parameters to store textFieldFlashers and textFieldJiterers
     func localTextResponder(_ responder: UILabel, for type: ResponseType, with message: String, completion: (() -> Void)? = nil) {
-        print("\(type): \(message)")
+        print("localTextResponder - type \(type): \(message)")
         switch type {
         case .success:
             responder.textColor = UIColor.green
@@ -40,6 +41,7 @@ extension UIViewController {
 
 extension UILabel {
     
+    // I should add a flashing colour parameter into this
     func flash(delay: TimeInterval, message: String) {
         self.text = message
         UILabel.animate(withDuration: 0.3, delay: 0, options: UIViewAnimationOptions.curveEaseIn, animations: {
@@ -47,6 +49,21 @@ extension UILabel {
         }) { (completed: Bool) in
             if completed == true {
                 UILabel.animate(withDuration: 0.3, delay: delay, options: UIViewAnimationOptions.curveEaseOut, animations: {
+                    self.alpha = 0.0
+                }, completion: nil)
+            }
+        }
+    }
+    
+    // Call this method with your handler: UILabel
+    func flash(delay: TimeInterval, duration: TimeInterval, message: String, color: UIColor) {
+        self.text = message
+        self.textColor = color
+        UILabel.animate(withDuration: duration, delay: 0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+            self.alpha = 1.0
+        }) { (completed: Bool) in
+            if completed == true {
+                UILabel.animate(withDuration: duration, delay: delay, options: UIViewAnimationOptions.curveEaseOut, animations: {
                     self.alpha = 0.0
                 }, completion: nil)
             }
@@ -71,6 +88,16 @@ extension UIView {
     func jitter(repeatCount: Float) {
         let animation = CABasicAnimation(keyPath: "position")
         animation.duration = 0.03
+        animation.repeatCount = repeatCount
+        animation.autoreverses = true
+        animation.fromValue = NSValue(cgPoint: CGPoint.init(x: self.center.x - 5.0, y: self.center.y))
+        animation.toValue = NSValue(cgPoint: CGPoint.init(x: self.center.x + 5.0, y: self.center.y))
+        layer.add(animation, forKey: "position")
+    }
+    
+    func jitter(repeatCount: Float, duration: TimeInterval) {
+        let animation = CABasicAnimation(keyPath: "position")
+        animation.duration = duration
         animation.repeatCount = repeatCount
         animation.autoreverses = true
         animation.fromValue = NSValue(cgPoint: CGPoint.init(x: self.center.x - 5.0, y: self.center.y))

@@ -1,15 +1,18 @@
 PODS:
   - Bolts/Tasks (1.8.4)
+  - Locksmith (3.0.0)
   - Parse (1.14.4):
     - Bolts/Tasks (~> 1.8)
 
 DEPENDENCIES:
+  - Locksmith
   - Parse
 
 SPEC CHECKSUMS:
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
+  Locksmith: 310b4cc5031af5728bf4db5d4de547a5100c6a3b
   Parse: b0aa91d2c435e53d4a9af26e741e014c9b35c42e
 
-PODFILE CHECKSUM: a50e351b563f6b5672f85bb3bcfa2d0adf85b938
+PODFILE CHECKSUM: 41fd660e46ea29d59b6acc240fb0a764a9a2e7a7
 
 COCOAPODS: 1.2.1

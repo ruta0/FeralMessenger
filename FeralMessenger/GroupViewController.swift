@@ -8,14 +8,17 @@
 
 import UIKit
 import Parse
+import Locksmith
 
 
 class GroupViewController: UIViewController {
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
+    
     @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var headerLabel: UILabel!
+    
     @IBOutlet weak var logoutButton: UIBarButtonItem!
     @IBOutlet weak var editButton: UIBarButtonItem!
     @IBOutlet weak var profileContainerView: UIView!
@@ -26,7 +29,16 @@ class GroupViewController: UIViewController {
     @IBOutlet weak var bioTextView: UITextView!
     
     @IBAction func logoutButton_tapped(_ sender: UIBarButtonItem) {
-        performLogout()
+        let alert = UIAlertController(title: "What would you like to do?", message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+        let logout = UIAlertAction(title: "Logout", style: UIAlertActionStyle.destructive) { (action: UIAlertAction) in
+            self.performLogout()
+        }
+        let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
+        alert.addAction(logout)
+        alert.addAction(cancel)
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     @IBAction func editButton(_ sender: UIBarButtonItem) {
@@ -37,6 +49,14 @@ class GroupViewController: UIViewController {
             animateEditBio()
         }
     }
+    
+    lazy var titleButton: UIButton = {
+        let button = UIButton()
+        button.tintColor = UIColor.white
+        button.setTitle("Settings", for: UIControlState.normal)
+        button.frame = CGRect(x: 0, y: 0, width: 35, height: 21)
+        return button
+    }()
     
     private func animateEditBio() {
         DispatchQueue.main.async { [weak self] in
@@ -80,6 +100,7 @@ class GroupViewController: UIViewController {
         navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
         navigationController.navigationBar.tintColor = UIColor.white
         navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+        navigationItem.titleView = titleButton
     }
     
     fileprivate func setupViews() {
@@ -166,7 +187,7 @@ extension GroupViewController {
         self.activityIndicator.startAnimating()
         PFUser.logOutInBackground { [weak self] (error: Error?) in
             self?.activityIndicator.stopAnimating()
-            self?.removeTokenFromKeychain()
+            self?.removeAuthTokenInKeychain(account: KeychainConfiguration.accountType.auth_token.rawValue)
             if error != nil {
                 self?.localTextResponder((self?.headerLabel)!, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
             } else {
@@ -199,10 +220,9 @@ extension GroupViewController {
 
 extension GroupViewController {
     
-    func removeTokenFromKeychain() {
-        let item = KeychainItem(service: KeychainConfiguration.serviceName, account: "auth_token", accessGroup: KeychainConfiguration.accessGroup)
+    fileprivate func removeAuthTokenInKeychain(account: String) {
         do {
-            try item.deleteItem()
+            try Locksmith.deleteDataForUserAccount(userAccount: KeychainConfiguration.accountType.auth_token.rawValue, inService: KeychainConfiguration.serviceName)
         } catch let err {
             localTextResponder(headerLabel, for: ResponseType.failure, with: err.localizedDescription, completion: nil)
         }
