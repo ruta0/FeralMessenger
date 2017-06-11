@@ -27,7 +27,7 @@ extension StaticScrollViewControllerDelegate {
     
 }
 
-/*
+/**
  StaticScrollViewController conforms to StaticScrollViewControllerDelegate.
  Either lastTextField or lastTextView can be instantiated but not at the same time.
  */

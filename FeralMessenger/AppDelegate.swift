@@ -9,7 +9,6 @@
 import UIKit
 import UserNotifications
 import Parse
-import CoreData
 import Locksmith
 
 
@@ -20,11 +19,13 @@ var isSudoGranted: Bool = false
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
+    var mpcManager: MPCManager!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         application.applicationIconBadgeNumber = 0 // clears the badge on app launch
         registerForAPNS(with: application)
-        CoreDataManager.emptyPersistentContainer() // In order to be in sync with what I have in the database, I need to empty the database on start. Note: I can afford to do this because this app is currently only a pure text messenger. [development]
+        // CoreDataManager.emptyPersistentContainer() // [development]
+        setupMPCManager()
         return true
     }
 
@@ -112,7 +113,15 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 }
 
 
+// MARK: - MPC
 
+extension AppDelegate {
+    
+    func setupMPCManager() {
+        mpcManager = MPCManager()
+    }
+    
+}
 
 
 

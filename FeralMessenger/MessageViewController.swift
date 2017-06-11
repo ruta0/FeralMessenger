@@ -16,13 +16,14 @@ import CoreData
 final class MessageViewController: DetailViewController {
     
     fileprivate let cellID = "DetailCell"
-    fileprivate let footerID = "DetailViewFooter"
+    fileprivate let segueID = "SettingsViewControllerSegue"
     
-    var container: NSPersistentContainer? = CoreDataManager.persistentContainer // default to the container from CoreDataManager
+    var container: NSPersistentContainer? = CoreDataManager.persistentContainer // default container
+    var selectedUser: CoreUser?
     var fetchedResultsController: NSFetchedResultsController<CoreMessage>?
     
     func insertToCoreMessage(with pfObject: Message) {
-        if let context = container?.newBackgroundContext() {
+        self.container?.performBackgroundTask { context in
             let newCoreMessage = CoreMessage(context: context)
             newCoreMessage.created_at = pfObject.createdAt! as NSDate
             newCoreMessage.sms = pfObject["sms"] as? String
@@ -34,7 +35,7 @@ final class MessageViewController: DetailViewController {
         }
     }
     
-    func persistToCoreMessage(with pfObjects: [PFObject]) {
+    func updateCoreMessage(with pfObjects: [PFObject]) {
         self.container?.performBackgroundTask { [weak self] context in
             for pfObject in pfObjects {
                 _ = try? CoreMessage.findOrCreateCoreMessage(matching: pfObject, in: context)
@@ -42,52 +43,56 @@ final class MessageViewController: DetailViewController {
             do {
                 try context.save()
             } catch let err {
-                print("updateCoreMessageFromParse - Failed to save context", err)
+                print("updateCoreMessageFromParse - Failed to save context: ", err)
             }
             self?.performFetchFromCoreData()
+            self?.printDatabaseStats()
         }
     }
     
     private func printDatabaseStats() {
         guard let context = container?.viewContext else { return }
         context.perform {
-            if let userCount = try? context.count(for: CoreMessage.fetchRequest()) {
-                print(userCount, "users in the core data store")
+            if let messageCount = try? context.count(for: CoreMessage.fetchRequest()) {
+                print(messageCount, "messages in the core data store")
             }
         }
     }
     
-    func performFetchFromCoreData() {
-        if let context = container?.viewContext, selectedUser?.username! != nil {
-            let request: NSFetchRequest<CoreMessage> = CoreMessage.fetchRequest()
-            let predicate = NSPredicate(format: "receiver_name == %@ AND sender_name == %@", selectedUser!.username!, (PFUser.current()?.username!)!)
-            let inversePredicate = NSPredicate(format: "receiver_name == %@ AND sender_name == %@", (PFUser.current()?.username!)!, selectedUser!.username!)
-            let compoundedPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [predicate, inversePredicate])
-            request.sortDescriptors = [NSSortDescriptor(key: "created_at", ascending: true, selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
-            request.predicate = compoundedPredicate
-            fetchedResultsController = NSFetchedResultsController<CoreMessage>(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-            fetchedResultsController?.delegate = self
-            context.perform {
-                do {
-                    try self.fetchedResultsController?.performFetch()
-                    self.collectionView?.reloadData()
-                    self.scrollToLastCellItem()
-                } catch let err {
-                    print("performFetch failed to fetch: - \(err)")
-                }
+    private func performFetchFromCoreData() {
+        guard let context = container?.viewContext, let senderName = selectedUser?.username, let receiver = PFUser.current()?.username else { return }
+        context.perform {
+            let request: NSFetchRequest<CoreMessage> = CoreMessage.defaultFetchRequest(from: senderName, to: receiver)
+            self.fetchedResultsController = NSFetchedResultsController<CoreMessage>(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+            self.fetchedResultsController?.delegate = self
+            do {
+                try self.fetchedResultsController?.performFetch()
+                self.tableView.reloadData()
+                self.scrollToLastCellItem()
+            } catch let err {
+                print("performFetch failed to fetch: \(err)")
             }
         }
     }
     
-    override func sendMessage() {
-        super.sendMessage()
-        if let sms = inputTextField.text, sms != "" {
-            createMessageInParse(with: sms, completion: { [weak self] (pfObject: Message) in
-                self?.activityIndicator.stopAnimating()
-                self?.insertToCoreMessage(with: pfObject)
+    override func setupNavigationController() {
+        super.setupNavigationController()
+        profileButton.addTarget(self, action: #selector(presentProfileViewController(_:)), for: UIControlEvents.touchUpInside)
+        if let username = selectedUser?.username {
+            titleButton.setTitle(username, for: UIControlState.normal)
+        }
+    }
+    
+    override func sendButton_tapped(_ sender: UIButton) {
+        beginRefresh()
+        if let sms = messageTextField.text, !sms.isEmpty, let receiverName = selectedUser?.username {
+            createMessageInParse(with: sms, receiverName: receiverName, completion: { [weak self] (message: Message) in
+                self?.insertToCoreMessage(with: message)
                 self?.scrollToLastCellItem()
-                self?.inputTextField.text = ""
-                self?.performFetchFromCoreData() // I should insert the next object into the last indexPath! instead of a full fetch. Well YOLO.
+                self?.messageTextField.text = ""
+                // insert new coreMessage to CoreData
+//                self?.performFetchFromCoreData()
+                self?.endRefresh()
             })
         }
     }
@@ -99,70 +104,72 @@ final class MessageViewController: DetailViewController {
 
 extension MessageViewController {
     
+    func presentProfileViewController(_ sender: UIButton) {
+        // perform segue to settings
+        print("Not supported at this moment")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.activityIndicator.startAnimating()
-        readMessageInParse(with: selectedUser!.username!) { [weak self] (pfObjects: [PFObject]) in
-            self?.activityIndicator.stopAnimating()
-            self?.persistToCoreMessage(with: pfObjects)
+        beginRefresh()
+        if let username = selectedUser?.username {
+            readMessageInParse(with: username) { [weak self] (messages: [PFObject]?) in
+                guard let messages = messages else {
+                    print("readMessageInParse: returned nil messages from Parse")
+                    return
+                }
+                self?.updateCoreMessage(with: messages)
+                self?.endRefresh()
+            }
+        } else {
+            print("selectedUser is nil")
         }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == segueID {
+            print("segueID is registered")
+        }
     }
     
 }
 
 
-// MARK: - UICollectionViewDataSource
+// MARK: - UITableViewDataSource
 
-extension MessageViewController {
+extension MessageViewController: UITableViewDataSource {
     
     /// Note: notice that there is a footer in the storyboard to offer the additional space offset for the textfield
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! DetailCell
-        if let coreMessage = fetchedResultsController?.object(at: indexPath) {
-            cell.messageTextView.text = coreMessage.sms!
-            let size = CGSize(width: 250, height: 1000)
-            let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
-            let estimatedFrame = NSString(string: coreMessage.sms!).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
-            // incoming message - text on the left
-            if coreMessage.receiver_name == PFUser.current()!.username! {
-                cell.bubbleView.frame = CGRect(x: 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
-                cell.messageTextView.frame = CGRect(x: 8 + 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
-                cell.messageTextView.textColor = UIColor.black
-                cell.bubbleView.backgroundColor = UIColor.lightGray
-            } else if coreMessage.receiver_name != PFUser.current()!.username! {
-                // outgoing message - text on the right
-                cell.bubbleView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8 - 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
-                cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
-                cell.messageTextView.textColor = UIColor.white
-                cell.bubbleView.backgroundColor = UIColor.mediumBlueGray()
-                cell.messageTextView.textColor = UIColor.white
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? DetailCell {
+            if let coreMessage = fetchedResultsController?.object(at: indexPath) {
+                cell.messageTextView.text = coreMessage.sms!
+                let size = CGSize(width: 250, height: 300)
+                let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
+                let estimatedFrame = NSString(string: coreMessage.sms!).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
+                // outgoing message
+                if coreMessage.sender_name == PFUser.current()!.username! {
+                    cell.messageTextView.backgroundColor = UIColor.miamiBlue()
+                    cell.messageTextView.textColor = UIColor.black
+                    cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8 - 8, y: estimatedFrame.width + 16 + 8, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
+                } else if coreMessage.receiver_name == PFUser.current()!.username! {
+                    // incoming message
+                    cell.messageTextView.backgroundColor = UIColor.mediumBlueGray()
+                    cell.messageTextView.textColor = UIColor.white
+                    cell.messageTextView.frame = CGRect(x: 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
+                }
             }
-        }
-        return cell
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        switch kind {
-        case UICollectionElementKindSectionFooter:
-            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footerID, for: indexPath) as UICollectionReusableView
-            footerView.backgroundColor = UIColor.clear
-            return footerView
-        default:
-            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footerID, for: indexPath) as UICollectionReusableView
-            footerView.backgroundColor = UIColor.clear
-            return footerView
+            return cell
+        } else {
+            return UITableViewCell()
         }
     }
     
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return fetchedResultsController?.sections?.count ?? 1
     }
     
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if let sections = fetchedResultsController?.sections, sections.count > 0 {
             return sections[section].numberOfObjects
         } else {
@@ -173,24 +180,58 @@ extension MessageViewController {
 }
 
 
-// MARK: - UICollectionViewDelegateFlowLayout
+// MARK: - UITableViewDelegate
 
 extension MessageViewController {
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if let sms = fetchedResultsController?.object(at: indexPath).sms {
-            let size = CGSize(width: 250, height: 1000)
+            let size = CGSize(width: 250, height: 300)
             let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
             let estimatedFrame = NSString(string: sms).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
-            return CGSize(width: view.frame.width, height: estimatedFrame.height+20)
+            return estimatedFrame.height + 20
         }
-        return CGSize(width: view.frame.width, height: 84)
+        return CGFloat(84)
     }
     
 }
 
 
+// MARK: - NSFetchedResultsControllerDelegate
 
+extension MessageViewController: NSFetchedResultsControllerDelegate {
+    
+    public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.beginUpdates()
+    }
+    
+    public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.endUpdates()
+    }
+    
+    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+        switch type {
+        case .insert: tableView.insertSections([sectionIndex], with: .fade)
+        case .delete: tableView.deleteSections([sectionIndex], with: .fade)
+        default: break
+        }
+    }
+    
+    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            tableView.insertRows(at: [newIndexPath!], with: .fade)
+        case .delete:
+            tableView.deleteRows(at: [indexPath!], with: .fade)
+        case .update:
+            tableView.reloadRows(at: [indexPath!], with: .fade)
+        case .move:
+            tableView.deleteRows(at: [indexPath!], with: .fade)
+            tableView.insertRows(at: [newIndexPath!], with: .fade)
+        }
+    }
+    
+}
 
 
 
