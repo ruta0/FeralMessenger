@@ -20,7 +20,7 @@ final class ChatsViewController: MasterViewController {
     
     var container: NSPersistentContainer? = CoreDataManager.persistentContainer // default container
     
-    lazy var fetchedResultsController: NSFetchedResultsController<CoreUser> = {
+    lazy fileprivate var fetchedResultsController: NSFetchedResultsController<CoreUser> = {
         let frc = NSFetchedResultsController(fetchRequest: CoreUser.defaultFetchRequest(with: nil), managedObjectContext: CoreDataManager.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         frc.delegate = self
         return frc
@@ -58,10 +58,10 @@ final class ChatsViewController: MasterViewController {
         context.perform {
             do {
                 try self.fetchedResultsController.performFetch()
-                self.tableView.reloadData()
             } catch let err {
                 print("performFetchFromCoreData failed to fetch: - \(err)")
             }
+            self.tableView.reloadData()
         }
     }
     
@@ -117,11 +117,10 @@ extension ChatsViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let sections = fetchedResultsController.sections, sections.count > 0 {
-            return sections[section].numberOfObjects
-        } else {
+        guard let sections = fetchedResultsController.sections, sections.count > 0 else {
             return 0
         }
+        return sections[section].numberOfObjects
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -141,34 +140,51 @@ extension ChatsViewController {
 
 extension ChatsViewController: NSFetchedResultsControllerDelegate {
     
-    public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.beginUpdates()
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        self.tableView.beginUpdates()
     }
     
-    public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.endUpdates()
-    }
-    
-    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        switch type {
-        case .insert: tableView.insertSections([sectionIndex], with: .fade)
-        case .delete: tableView.deleteSections([sectionIndex], with: .fade)
-        default: break
-        }
-    }
-    
-    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         switch type {
         case .insert:
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
+            self.tableView.insertSections([sectionIndex], with: UITableViewRowAnimation.fade)
         case .delete:
-            tableView.deleteRows(at: [indexPath!], with: .fade)
-        case .update:
-            tableView.reloadRows(at: [indexPath!], with: .fade)
-        case .move:
-            tableView.deleteRows(at: [indexPath!], with: .fade)
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
+            self.tableView.deleteSections([sectionIndex], with: UITableViewRowAnimation.fade)
+        default:
+            break
         }
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            if let indexPath = newIndexPath {
+                self.tableView.insertRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            }
+            break
+        case .delete:
+            if let indexPath = indexPath {
+                self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            }
+            break
+        case .update:
+            if let indexPath = indexPath {
+                self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            }
+            break
+        case .move:
+            if let indexPath = indexPath {
+                self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            }
+            if let newIndexPath = newIndexPath {
+                self.tableView.insertRows(at: [newIndexPath], with: UITableViewRowAnimation.fade)
+            }
+            break
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        self.tableView.endUpdates()
     }
     
 }

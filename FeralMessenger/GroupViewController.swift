@@ -154,6 +154,11 @@ extension GroupViewController {
         setupViews()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        avatarButton.setBackgroundImage(UIImage(named: getCurrentUserAvatarName()!), for: UIControlState.normal)
+    }
+    
 }
 
 
@@ -189,7 +194,7 @@ extension GroupViewController {
             self?.activityIndicator.stopAnimating()
             self?.removeAuthTokenInKeychain(account: KeychainConfiguration.accountType.auth_token.rawValue)
             if error != nil {
-                self?.localTextResponder((self?.headerLabel)!, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
+                self?.alertRespond((self?.headerLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
             } else {
                 self?.dismissTabBar()
             }
@@ -203,11 +208,10 @@ extension GroupViewController {
         user.saveInBackground { [weak self] (completed: Bool, error: Error?) in
             self?.activityIndicator.stopAnimating()
             if error != nil {
-                self?.localTextResponder((self?.headerLabel)!, for: ResponseType.failure, with: (error?.localizedDescription)!, completion: nil)
-                return
+                self?.alertRespond((self?.headerLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
             } else {
                 if completed == true {
-                    self?.localTextResponder((self?.headerLabel)!, for: ResponseType.success, with: "Saved", completion: nil)
+                    self?.alertRespond((self?.headerLabel)!, with: nil, for: ResponseType.success, with: "Saved", completion: nil)
                 }
             }
         }
@@ -224,7 +228,7 @@ extension GroupViewController {
         do {
             try Locksmith.deleteDataForUserAccount(userAccount: KeychainConfiguration.accountType.auth_token.rawValue, inService: KeychainConfiguration.serviceName)
         } catch let err {
-            localTextResponder(headerLabel, for: ResponseType.failure, with: err.localizedDescription, completion: nil)
+            alertRespond(headerLabel, with: nil, for: ResponseType.failure, with: err.localizedDescription, completion: nil)
         }
     }
     

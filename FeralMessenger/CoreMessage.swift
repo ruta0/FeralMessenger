@@ -13,22 +13,22 @@ import Parse
 class CoreMessage: NSManagedObject {
     
     static let entityName = String(describing: CoreMessage.self)
-    static let createdSortDescriptor = NSSortDescriptor(key: "created_at", ascending: true, selector: nil)
+    static let createdSortDescriptor = NSSortDescriptor(key: "created_at", ascending: true)
     
-    /// A compound predicate and a descriptor are both provided by default. This is being set across the whole app.
+    /// A compound predicate and a descriptor are both provided by default. This is being set across the whole app
     class func defaultFetchRequest(from sender: String, to receiver: String) -> NSFetchRequest<CoreMessage> {
-        let request: NSFetchRequest<CoreMessage> = self.fetchRequest()
+        let request: NSFetchRequest<CoreMessage> = CoreMessage.fetchRequest()
         request.fetchLimit = 300
         request.sortDescriptors = [createdSortDescriptor]
         // settting up a compound predicate
         let predicate = NSPredicate(format: "receiver_name == %@ AND sender_name == %@", receiver, sender)
         let inversePredicate = NSPredicate(format: "receiver_name == %@ AND sender_name == %@", sender, receiver)
-        let compoundedPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [predicate, inversePredicate])
-        request.predicate = compoundedPredicate
+        let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [predicate, inversePredicate])
+        request.predicate = compoundPredicate
         return request
     }
     
-    // create or update a single record in CoreMessage
+    /// create or update a single record in CoreMessage
     class func updateCoreMessage() {
         
     }
@@ -42,8 +42,8 @@ class CoreMessage: NSManagedObject {
             let matches = try context.fetch(request) // returning as [CoreMessage]
             if matches.count > 0 {
                 assert(matches.count == 1, "CoreMessage.findOrCreateCoreMessage - database inconsistency")
-                let messageUpdateAt = pfObject.updatedAt! as NSDate
-                if matches[0].updated_at == messageUpdateAt {
+                let result = matches[0].updated_at?.compare(pfObject.updatedAt!)
+                if result == ComparisonResult.orderedSame {
                     return matches[0]
                 } else {
                     configure(coreMessage: matches[0], with: pfObject)

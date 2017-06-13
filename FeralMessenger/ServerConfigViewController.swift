@@ -28,14 +28,10 @@ class ServerConfigViewController: UIViewController {
     
     @IBAction func saveButton_tapped(_ sender: UIButton) {
         if application_idTextField.text != "" && server_urlTextField.text != "" && master_keyTextField.text != "" {
-            
             attemptToInitiateParse(appId: application_idTextField.text!, serverUrl: server_urlTextField.text!, masterKey: master_keyTextField.text!)
         } else {
-            localTextResponder(errorLabel, for: ResponseType.failure, with: "Fields cannot be blank", completion: { [weak self] in
-                self?.application_idTextField.jitter(repeatCount: 5)
-                self?.server_urlTextField.jitter(repeatCount: 5)
-                self?.master_keyTextField.jitter(repeatCount: 5)
-                self?.master_keyTextField.text = ""
+            alertRespond(errorLabel, with: [application_idTextField, server_urlTextField, master_keyTextField], for: ResponseType.failure, with: "Fields cannot be blank", completion: { 
+                self.master_keyTextField.text?.removeAll()
             })
         }
     }
@@ -90,13 +86,13 @@ class ServerConfigViewController: UIViewController {
 extension ServerConfigViewController {
     
     internal func enableSudo(gestureRecognizer: UITapGestureRecognizer) {
-        localTextResponder(errorLabel, for: ResponseType.success, with: "sudo granted") {
-            isSudoGranted = true
+        alertRespond(errorLabel, with: nil, for: ResponseType.success, with: "sudo granted", completion: {
             AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-        }
-        DispatchQueue.main.async {
-            self.warningLabel.textColor = UIColor.green
-        }
+            isSudoGranted = true
+            DispatchQueue.main.async {
+                self.warningLabel.textColor = UIColor.green
+            }
+        })
     }
     
     override func viewDidLoad() {
@@ -205,31 +201,24 @@ extension ServerConfigViewController {
     
     fileprivate func attemptToInitiateParse(appId: String, serverUrl: String, masterKey: String) {
         if isParseInitialized == true {
-            localTextResponder(errorLabel, for: ResponseType.normal, with: "Restart the app to setup a new server configuration", completion: nil)
+            alertRespond(errorLabel, with: nil, for: ResponseType.normal, with: "Restart the app to setup a new server configuration", completion: nil)
         } else {
             if Reachability.isConnectedToNetwork() == true {
                 guard let url: URL = URL(string: serverUrl) else { return }
                 if UIApplication.shared.canOpenURL(url) == true {
                     ParseServerManager.shared.attemptToInitializeParse()
-                    localTextResponder(errorLabel, for: ResponseType.success, with: "Server initialized with provided credentials", completion: { [weak self] in
-                        self?.master_keyTextField.text = ""
-                        self?.server_urlTextField.text = ""
+                    alertRespond(errorLabel, with: nil, for: ResponseType.success, with: "Server initialized with provided credentials", completion: {
+                        self.master_keyTextField.text?.removeAll()
+                        self.server_urlTextField.text?.removeAll()
                     })
                 } else {
-                    localTextResponder(errorLabel, for: ResponseType.failure, with: "Invalid URL", completion: { [weak self] in
-                        self?.application_idTextField.jitter(repeatCount: 5)
-                        self?.server_urlTextField.jitter(repeatCount: 5)
-                        self?.master_keyTextField.jitter(repeatCount: 5)
-                        self?.master_keyTextField.text = ""
+                    alertRespond(errorLabel, with: [application_idTextField, server_urlTextField, master_keyTextField], for: ResponseType.failure, with: "Invalid URL", completion: {
+                        self.server_urlTextField.text?.removeAll()
                     })
                 }
             } else {
-                localTextResponder(errorLabel, for: ResponseType.failure, with: "Failed to connect to Internet", completion: { [weak self] in
-                    self?.application_idTextField.jitter(repeatCount: 5)
-                    self?.server_urlTextField.jitter(repeatCount: 5)
-                    self?.master_keyTextField.jitter(repeatCount: 5)
-                    self?.master_keyTextField.text = ""
-                })
+                alertRespond(errorLabel, with: [application_idTextField, server_urlTextField, master_keyTextField], for: ResponseType.failure, with: "Failed to connect to the Internet", completion: nil)
+
             }
         }
     }

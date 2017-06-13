@@ -56,16 +56,16 @@ class AuthViewController: UIViewController {
                     }
                 })
             } else {
-                localTextResponder(errorLabel, for: ResponseType.failure, with: "Fields cannot be blank", completion: { [weak self] in
-                    self?.jitterAndReset()
+                alertRespond(errorLabel, with: [emailTextField, passTextField], for: ResponseType.failure, with: "Fields cannot be blank", completion: {
+                    self.passTextField.text?.removeAll()
                 })
             }
         } else {
             if nameTextField.text != "" && emailTextField.text != "" && passTextField.text != "" {
                 createUserInParse(with: nameTextField.text!, email: emailTextField.text!.lowercased(), pass: passTextField.text!)
             } else {
-                localTextResponder(errorLabel, for: ResponseType.failure, with: "Fields cannot be blank", completion: { [weak self] in
-                    self?.jitterAndReset()
+                alertRespond(errorLabel, with: [nameTextField, emailTextField, passTextField], for: ResponseType.failure, with: "Fields cannot be blank", completion: { 
+                    self.passTextField.text?.removeAll()
                 })
             }
         }
@@ -88,13 +88,6 @@ class AuthViewController: UIViewController {
             self.changeAuthButtonTitle(sender: self.authButton)
             self.changeToggleButtonTitle(sender: self.toggleButton)
         }, completion: nil)
-    }
-    
-    fileprivate func jitterAndReset() {
-        nameTextField.jitter(repeatCount: 5)
-        emailTextField.jitter(repeatCount: 5)
-        passTextField.jitter(repeatCount: 5)
-        passTextField.text = ""
     }
     
     // I should've use stackView to do this instead.
@@ -320,15 +313,15 @@ extension AuthViewController {
                 UIApplication.shared.endIgnoringInteractionEvents()
                 self?.passTextField.text = ""
                 if error != nil {
-                    self?.localTextResponder((self?.errorLabel)!, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
+                    self?.alertRespond((self?.errorLabel)!, with: [(self?.nameTextField)!, (self?.passTextField)!], for: ResponseType.failure, with: error!.localizedDescription, completion: {
+                        self?.passTextField.text?.removeAll()
+                    })
                 } else {
                     completion(pfUser)
                 }
             })
         } else {
-            localTextResponder(errorLabel, for: ResponseType.failure, with: "Failed to connect to Internet", completion: { [weak self] in
-                self?.jitterAndReset()
-            })
+            alertRespond(errorLabel, with: [nameTextField, passTextField], for: ResponseType.failure, with: "Failed to connect to Internet", completion: nil)
         }
     }
     
@@ -336,14 +329,14 @@ extension AuthViewController {
         if Reachability.isConnectedToNetwork() == true {
             ParseServerManager.shared.attemptToInitializeParse()
             self.activityIndicator.startAnimating()
-            localTextResponder(errorLabel, for: ResponseType.normal, with: "Resumming to previous session", completion: nil)
+            alertRespond(errorLabel, with: nil, for: ResponseType.normal, with: "Resumming to previous session", completion: nil)
             UIApplication.shared.beginIgnoringInteractionEvents()
             PFUser.become(inBackground: token, block: { [weak self] (pfUser: PFUser?, error: Error?) in
                 self?.activityIndicator.stopAnimating()
                 UIApplication.shared.endIgnoringInteractionEvents()
                 if error != nil {
-                    self?.localTextResponder((self?.errorLabel)!, for: ResponseType.failure, with: error!.localizedDescription, completion: { [weak self] in
-                        self?.jitterAndReset()
+                    self?.alertRespond((self?.errorLabel)!, with: [(self?.nameTextField)!, (self?.passTextField)!], for: ResponseType.failure, with: error!.localizedDescription, completion: { 
+                        self?.passTextField.text?.removeAll()
                     })
                     KeychainManager.shared.deleteAuthToken(in: KeychainConfiguration.accountType.auth_token.rawValue)
                 } else {
@@ -352,9 +345,7 @@ extension AuthViewController {
                 }
             })
         } else {
-            localTextResponder(errorLabel, for: ResponseType.failure, with: "Failed to connect to Internet", completion: { [weak self] in
-                self?.jitterAndReset()
-            })
+            alertRespond(errorLabel, with: [nameTextField, passTextField], for: ResponseType.failure, with: "Failed to connect to Internet", completion: nil)
         }
     }
     
@@ -366,24 +357,22 @@ extension AuthViewController {
             UIApplication.shared.beginIgnoringInteractionEvents()
             let newUser = User()
             newUser.constructUserInfo(name: name, email: email, pass: pass)
-            newUser.signUpInBackground(block: { [weak self] (completed: Bool, error: Error?) in
+            newUser.signUpInBackground(block: { [unowned self] (completed: Bool, error: Error?) in
                 UIApplication.shared.endIgnoringInteractionEvents()
-                self?.activityIndicator.stopAnimating()
-                self?.passTextField.text = ""
+                self.activityIndicator.stopAnimating()
+                self.passTextField.text = ""
                 if error != nil {
-                    self?.localTextResponder((self?.errorLabel)!, for: ResponseType.failure, with: error!.localizedDescription, completion: { [weak self] in
-                        self?.jitterAndReset()
+                    self.alertRespond(self.errorLabel, with: [self.nameTextField, self.emailTextField, self.passTextField], for: ResponseType.failure, with: error!.localizedDescription, completion: {
+                        self.passTextField.text?.removeAll()
                     })
                 } else {
                     if completed == true {
-                        self?.localTextResponder((self?.errorLabel)!, for: ResponseType.success, with: "Success! Please proceed to login", completion: nil)
+                        self.alertRespond(self.errorLabel, with: [self.nameTextField, self.emailTextField, self.passTextField], for: ResponseType.success, with: "Success. Please proceed to login", completion: nil)
                     }
                 }
             })
         } else {
-            localTextResponder(errorLabel, for: ResponseType.failure, with: "Failed to connect to Internet", completion: { [weak self] in
-                self?.jitterAndReset()
-            })
+            alertRespond(errorLabel, with: [nameTextField, emailTextField, passTextField], for: ResponseType.failure, with: "Failed to connect to Internet", completion: nil)
         }
     }
     

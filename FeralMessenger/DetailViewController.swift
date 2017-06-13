@@ -13,7 +13,7 @@ import AVFoundation
 
 // MARK: - UI
 
-class DetailViewController: UIViewController, UITableViewDelegate {
+class DetailViewController: UIViewController {
     
     var player: AVAudioPlayer?
     
@@ -23,6 +23,9 @@ class DetailViewController: UIViewController, UITableViewDelegate {
     @IBOutlet weak var dividerView: UIView!
     @IBOutlet weak var messageTextField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
+    
+    @IBOutlet weak var footerView: UIView!
+    @IBOutlet weak var footerTextField: UITextField!
     
     @IBOutlet weak var heightContraint: NSLayoutConstraint!
     
@@ -78,6 +81,12 @@ class DetailViewController: UIViewController, UITableViewDelegate {
     func endRefresh() {
         DispatchQueue.main.async { [weak self] in
             self?.refreshControl.endRefreshing()
+        }
+    }
+    
+    func clearMessageTextField() {
+        DispatchQueue.main.async {
+            self.messageTextField.text?.removeAll()
         }
     }
     
@@ -138,7 +147,7 @@ class DetailViewController: UIViewController, UITableViewDelegate {
         // inputContainerView
         inputContainerView.backgroundColor = UIColor.midNightBlack()
         // dividerView
-        dividerView.backgroundColor = UIColor.miamiBlue()
+        dividerView.backgroundColor = UIColor.mediumBlueGray()
         // messageTextField
         messageTextField.backgroundColor = UIColor.clear
         messageTextField.attributedPlaceholder = NSAttributedString(string: "Message", attributes: [NSForegroundColorAttributeName: UIColor.darkGray])
@@ -147,10 +156,15 @@ class DetailViewController: UIViewController, UITableViewDelegate {
         sendButton.backgroundColor = UIColor.clear
     }
     
+    fileprivate func setupFooterView() {
+        // footerView
+        footerView.backgroundColor = UIColor.midNightBlack()
+        // footerTextField
+        footerTextField.backgroundColor = UIColor.midNightBlack()
+    }
+    
     fileprivate func setupTableView() {
         tableView.delegate = self
-        tableView.estimatedRowHeight = tableView.rowHeight
-        tableView.rowHeight = UITableViewAutomaticDimension
         tableView.backgroundColor = UIColor.midNightBlack()
         let gesture = UITapGestureRecognizer(target: self, action: #selector(tableViewTapped(recognizer:)))
         tableView.addGestureRecognizer(gesture)
@@ -172,6 +186,7 @@ extension DetailViewController {
         setupTableView()
         setupInputContainerView()
         setupNavigationController()
+        setupFooterView()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -187,6 +202,21 @@ extension DetailViewController {
 }
 
 
+// MARK: - UITableViewDelegate
+
+extension DetailViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return nil
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return CGFloat(84)
+    }
+    
+}
+
+
 // MARK: - UITextFieldDelegate
 
 extension DetailViewController: UITextFieldDelegate {
@@ -194,6 +224,25 @@ extension DetailViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+    
+}
+
+
+// MARK: - UITableViewDataSource
+
+extension DetailViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 0
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 0
     }
     
 }

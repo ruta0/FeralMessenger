@@ -18,9 +18,9 @@ final class MessageViewController: DetailViewController {
     fileprivate let cellID = "DetailCell"
     fileprivate let segueID = "SettingsViewControllerSegue"
     
-    var container: NSPersistentContainer? = CoreDataManager.persistentContainer // default container
+    var container: NSPersistentContainer? = CoreDataManager.persistentContainer
     var selectedUser: CoreUser?
-    var fetchedResultsController: NSFetchedResultsController<CoreMessage>?
+    fileprivate var fetchedResultsController: NSFetchedResultsController<CoreMessage>?
     
     func insertToCoreMessage(with pfObject: Message) {
         self.container?.performBackgroundTask { context in
@@ -31,7 +31,11 @@ final class MessageViewController: DetailViewController {
             newCoreMessage.sender_name = pfObject["senderName"] as? String
             newCoreMessage.receiver_name = pfObject["receiverName"] as? String
             newCoreMessage.id = pfObject.objectId!
-            try? context.save()
+            do {
+                try context.save()
+            } catch let err {
+                print("failed to save new message to coredata: ", err.localizedDescription)
+            }
         }
     }
     
@@ -43,10 +47,9 @@ final class MessageViewController: DetailViewController {
             do {
                 try context.save()
             } catch let err {
-                print("updateCoreMessageFromParse - Failed to save context: ", err)
+                print("updateCoreMessageFromParse - Failed to save context: ", err.localizedDescription)
             }
             self?.performFetchFromCoreData()
-            self?.printDatabaseStats()
         }
     }
     
@@ -63,6 +66,8 @@ final class MessageViewController: DetailViewController {
         guard let context = container?.viewContext, let senderName = selectedUser?.username, let receiver = PFUser.current()?.username else { return }
         context.perform {
             let request: NSFetchRequest<CoreMessage> = CoreMessage.defaultFetchRequest(from: senderName, to: receiver)
+            request.fetchLimit = 200
+            request.fetchBatchSize = 5
             self.fetchedResultsController = NSFetchedResultsController<CoreMessage>(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
             self.fetchedResultsController?.delegate = self
             do {
@@ -70,7 +75,7 @@ final class MessageViewController: DetailViewController {
                 self.tableView.reloadData()
                 self.scrollToLastCellItem()
             } catch let err {
-                print("performFetch failed to fetch: \(err)")
+                print("performFetch failed to fetch: \(err.localizedDescription)")
             }
         }
     }
@@ -84,14 +89,15 @@ final class MessageViewController: DetailViewController {
     }
     
     override func sendButton_tapped(_ sender: UIButton) {
+        // clearing out messageTextField immediately
+        let message = messageTextField.text
+        clearMessageTextField()
+        // handle sending message
         beginRefresh()
-        if let sms = messageTextField.text, !sms.isEmpty, let receiverName = selectedUser?.username {
+        if let sms = message, !sms.isEmpty, let receiverName = selectedUser?.username {
             createMessageInParse(with: sms, receiverName: receiverName, completion: { [weak self] (message: Message) in
                 self?.insertToCoreMessage(with: message)
-                self?.scrollToLastCellItem()
-                self?.messageTextField.text = ""
-                // insert new coreMessage to CoreData
-//                self?.performFetchFromCoreData()
+                self?.performFetchFromCoreData() // not what I wanted, but ok...
                 self?.endRefresh()
             })
         }
@@ -137,10 +143,10 @@ extension MessageViewController {
 
 // MARK: - UITableViewDataSource
 
-extension MessageViewController: UITableViewDataSource {
+extension MessageViewController {
     
     /// Note: notice that there is a footer in the storyboard to offer the additional space offset for the textfield
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? DetailCell {
             if let coreMessage = fetchedResultsController?.object(at: indexPath) {
                 cell.messageTextView.text = coreMessage.sms!
@@ -150,13 +156,11 @@ extension MessageViewController: UITableViewDataSource {
                 // outgoing message
                 if coreMessage.sender_name == PFUser.current()!.username! {
                     cell.messageTextView.backgroundColor = UIColor.miamiBlue()
-                    cell.messageTextView.textColor = UIColor.black
-                    cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8 - 8, y: estimatedFrame.width + 16 + 8, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
+                    cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8, y: 8, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
                 } else if coreMessage.receiver_name == PFUser.current()!.username! {
                     // incoming message
                     cell.messageTextView.backgroundColor = UIColor.mediumBlueGray()
-                    cell.messageTextView.textColor = UIColor.white
-                    cell.messageTextView.frame = CGRect(x: 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 20)
+                    cell.messageTextView.frame = CGRect(x: 8, y: 8, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
                 }
             }
             return cell
@@ -165,11 +169,11 @@ extension MessageViewController: UITableViewDataSource {
         }
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return fetchedResultsController?.sections?.count ?? 1
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return fetchedResultsController?.sections?.count ?? 0
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if let sections = fetchedResultsController?.sections, sections.count > 0 {
             return sections[section].numberOfObjects
         } else {
@@ -184,12 +188,20 @@ extension MessageViewController: UITableViewDataSource {
 
 extension MessageViewController {
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard let section = fetchedResultsController?.sections?[section] else {
+            print("fetchedResultsController?.sections?[section] is nil")
+            return nil
+        }
+        return section.name
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if let sms = fetchedResultsController?.object(at: indexPath).sms {
             let size = CGSize(width: 250, height: 300)
             let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
             let estimatedFrame = NSString(string: sms).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
-            return estimatedFrame.height + 20
+            return estimatedFrame.height + 16 + 16
         }
         return CGFloat(84)
     }
@@ -201,33 +213,49 @@ extension MessageViewController {
 
 extension MessageViewController: NSFetchedResultsControllerDelegate {
     
-    public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.beginUpdates()
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        self.tableView.beginUpdates()
     }
     
-    public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.endUpdates()
-    }
-    
-    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         switch type {
-        case .insert: tableView.insertSections([sectionIndex], with: .fade)
-        case .delete: tableView.deleteSections([sectionIndex], with: .fade)
-        default: break
+        case .insert:
+            self.tableView.insertSections([sectionIndex], with: UITableViewRowAnimation.fade)
+        case .delete:
+            self.tableView.deleteSections([sectionIndex], with: UITableViewRowAnimation.fade)
+        default:
+            break
         }
     }
     
-    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
         case .insert:
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
+            if let indexPath = newIndexPath {
+                self.tableView.insertRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            }
         case .delete:
-            tableView.deleteRows(at: [indexPath!], with: .fade)
+            if let indexPath = indexPath {
+                self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            }
         case .update:
-            tableView.reloadRows(at: [indexPath!], with: .fade)
+            if let indexPath = indexPath {
+                self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            }
         case .move:
-            tableView.deleteRows(at: [indexPath!], with: .fade)
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
+            if let indexPath = indexPath {
+                self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            }
+            if let newIndexPath = newIndexPath {
+                self.tableView.insertRows(at: [newIndexPath], with: UITableViewRowAnimation.fade)
+            }
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        self.tableView.endUpdates()
+        if let lol = fetchedResultsController?.fetchedObjects {
+            print(lol)
         }
     }
     

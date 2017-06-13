@@ -38,8 +38,8 @@ class DetailCell: UITableViewCell {
         messageTextView.textColor = UIColor.white // deafult
         messageTextView.backgroundColor = UIColor.miamiBlue() // default
         messageTextView.font = UIFont.systemFont(ofSize: 14)
-        messageTextView.layer.cornerRadius = 15
-        messageTextView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        messageTextView.layer.cornerRadius = 10
+        messageTextView.textContainerInset.left = 3
     }
     
     override func awakeFromNib() {

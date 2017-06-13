@@ -10,6 +10,7 @@ import UIKit
 import Parse
 import CoreData
 import MultipeerConnectivity
+import AudioToolbox
 
 
 // MARK: - UI
@@ -80,15 +81,10 @@ class MPCMasterViewController: UITableViewController {
         }
     }
     
-    func reloadColectionView() {
+    func reloadTableView() {
         DispatchQueue.main.async { [weak self] in
             self?.tableView?.reloadData()
         }
-    }
-    
-    fileprivate func setupMPCManager() {
-        appDelegate.mpcManager.delegate = self
-        appDelegate.mpcManager.serviceBrowser.startBrowsingForPeers()
     }
     
     fileprivate func setupNavigationController() {
@@ -142,12 +138,18 @@ extension MPCMasterViewController {
         super.viewDidLoad()
         setupViews()
         setupNavigationController()
-        setupMPCManager()
+        appDelegate.mpcManager.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        appDelegate.mpcManager.serviceBrowser.startBrowsingForPeers()
         setupTabBar()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        appDelegate.mpcManager.serviceBrowser.stopBrowsingForPeers()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -214,6 +216,7 @@ extension MPCMasterViewController: MPCManagerDelegate {
     }
     
     func didReceivedInvitation(fromPeer: String, group: String) {
+        AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
         let alert = UIAlertController(title: "", message: "\(group) wants to chat with you", preferredStyle: UIAlertControllerStyle.alert)
         let accept = UIAlertAction(title: "Accept", style: UIAlertActionStyle.default) { (action: UIAlertAction) in
             self.appDelegate.mpcManager.invitationHandler(true, self.appDelegate.mpcManager.session)

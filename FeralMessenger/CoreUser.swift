@@ -26,11 +26,6 @@ class CoreUser: NSManagedObject {
         return request
     }
     
-    /// 1. compare ID for match
-    /// * if id matched: compare updated_at
-    /// * - if updated_at the same -> return coreUser
-    /// * - else -> update set the record to the new PFObject
-    /// 2. no matched: create a new record in CoreData
     class func findOrCreateCoreUser(matching pfObject: PFObject, in context: NSManagedObjectContext) throws -> CoreUser {
         let request: NSFetchRequest<CoreUser> = CoreUser.fetchRequest()
         request.predicate = NSPredicate(format: "id = %@", pfObject.objectId!)
@@ -38,11 +33,14 @@ class CoreUser: NSManagedObject {
             let matches = try context.fetch(request) // returning as [CoreUser]
             if matches.count > 0 {
                 assert(matches.count == 1, "CoreMessage.findOrCreateCoreMessage - database inconsistency")
-                let userUpdatedAt = pfObject.updatedAt! as NSDate
-                if matches[0].updated_at == userUpdatedAt {
+                let result = matches[0].updated_at?.compare(pfObject.updatedAt!)
+                if result == ComparisonResult.orderedSame {
                     return matches[0]
                 } else {
+                    print(matches[0].updated_at!, matches[0].profile_image!)
+                    print(pfObject.updatedAt!, pfObject["avatar"]!)
                     configure(coreUser: matches[0], with: pfObject)
+                    print(matches[0])
                     return matches[0]
                 }
             }

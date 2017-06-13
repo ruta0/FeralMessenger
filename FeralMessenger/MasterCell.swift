@@ -61,12 +61,11 @@ class MasterCell: UITableViewCell {
         subtitleLabel.text = "bio"
     }
     
-    // this is not working?
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        if highlighted {
-            self.wrapperView.backgroundColor = UIColor.miamiBlue()
+        if highlighted == true {
+            wrapperView.backgroundColor = UIColor.miamiBlue()
         } else {
-            self.wrapperView.backgroundColor = UIColor.mediumBlueGray()
+            wrapperView.backgroundColor = UIColor.mediumBlueGray()
         }
     }
     
