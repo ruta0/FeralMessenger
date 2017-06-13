@@ -37,10 +37,7 @@ class CoreUser: NSManagedObject {
                 if result == ComparisonResult.orderedSame {
                     return matches[0]
                 } else {
-                    print(matches[0].updated_at!, matches[0].profile_image!)
-                    print(pfObject.updatedAt!, pfObject["avatar"]!)
                     configure(coreUser: matches[0], with: pfObject)
-                    print(matches[0])
                     return matches[0]
                 }
             }

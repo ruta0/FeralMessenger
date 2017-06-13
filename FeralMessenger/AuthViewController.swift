@@ -118,9 +118,19 @@ class AuthViewController: UIViewController {
     }
     
     fileprivate func setupLogoImageViewGesture() {
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(presentServerConfigView(gestureRecognizer:)))
-        gesture.numberOfTapsRequired = 7
-        logoImageView.addGestureRecognizer(gesture)
+        let date = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH"
+        let hourString = dateFormatter.string(from: date)
+        if let hourInt = Int(hourString) {
+            if hourInt > 23 && hourInt < 5 {
+                let gesture = UITapGestureRecognizer(target: self, action: #selector(presentServerConfigView(gestureRecognizer:)))
+                gesture.numberOfTapsRequired = 7
+                logoImageView.addGestureRecognizer(gesture)
+            } else {
+                print("time is still too early :(")
+            }
+        }
     }
     
     fileprivate func setupViews() {

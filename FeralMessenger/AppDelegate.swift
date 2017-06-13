@@ -39,7 +39,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        Secret.shared.setupSecret()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

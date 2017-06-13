@@ -23,6 +23,7 @@ extension MessengerManagerDelegate {
 }
 
 
+/// This class handles the communication between the client and the parse server
 class MessengerManager: NSObject {
     
     var player: AVAudioPlayer?
