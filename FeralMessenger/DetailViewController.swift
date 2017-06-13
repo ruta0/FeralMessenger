@@ -25,8 +25,8 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var sendButton: UIButton!
     
     @IBOutlet weak var footerView: UIView!
-    @IBOutlet weak var footerTextField: UITextField!
-    
+    @IBOutlet weak var footerLabel: UILabel!
+
     @IBOutlet weak var heightContraint: NSLayoutConstraint!
     
     lazy var refreshControl: UIRefreshControl = {
@@ -160,7 +160,7 @@ class DetailViewController: UIViewController {
         // footerView
         footerView.backgroundColor = UIColor.midNightBlack()
         // footerTextField
-        footerTextField.backgroundColor = UIColor.midNightBlack()
+        footerLabel.backgroundColor = UIColor.midNightBlack()
     }
     
     fileprivate func setupTableView() {
@@ -168,10 +168,6 @@ class DetailViewController: UIViewController {
         tableView.backgroundColor = UIColor.midNightBlack()
         let gesture = UITapGestureRecognizer(target: self, action: #selector(tableViewTapped(recognizer:)))
         tableView.addGestureRecognizer(gesture)
-    }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        tableView.invalidateIntrinsicContentSize()
     }
     
 }

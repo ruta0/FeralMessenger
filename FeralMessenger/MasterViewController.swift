@@ -54,12 +54,9 @@ class MasterViewController: UITableViewController {
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.backgroundColor = UIColor.midNightBlack()
+        tableView.refreshControl?.tintColor = UIColor.candyWhite()
     }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        tableView.invalidateIntrinsicContentSize()
-    }
-    
+
 }
 
 

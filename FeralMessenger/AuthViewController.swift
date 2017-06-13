@@ -93,9 +93,11 @@ class AuthViewController: UIViewController {
     // I should've use stackView to do this instead.
     fileprivate func changeEmailTextFieldAlpha(sender: UITextField) {
         if sender.alpha == 0.0 {
+            // show
             dividerViewOne.alpha = 1.0
             sender.alpha = 1.0
         } else {
+            // hide
             sender.alpha = 0.0
             dividerViewOne.alpha = 0.0
         }
@@ -123,7 +125,7 @@ class AuthViewController: UIViewController {
         dateFormatter.dateFormat = "HH"
         let hourString = dateFormatter.string(from: date)
         if let hourInt = Int(hourString) {
-            if hourInt > 23 && hourInt < 5 {
+            if hourInt >= 23 || hourInt < 3 {
                 let gesture = UITapGestureRecognizer(target: self, action: #selector(presentServerConfigView(gestureRecognizer:)))
                 gesture.numberOfTapsRequired = 7
                 logoImageView.addGestureRecognizer(gesture)
@@ -314,76 +316,64 @@ extension AuthViewController {
     
     func performLogin(name: String, pass: String, completion: @escaping (PFUser?) -> Void) {
         guard let name = nameTextField.text?.lowercased(), let pass = passTextField.text else { return }
-        if Reachability.isConnectedToNetwork() == true {
-            ParseServerManager.shared.attemptToInitializeParse()
-            self.activityIndicator.startAnimating()
-            UIApplication.shared.beginIgnoringInteractionEvents()
-            PFUser.logInWithUsername(inBackground: name, password: pass, block: { [weak self] (pfUser: PFUser?, error: Error?) in
-                self?.activityIndicator.stopAnimating()
-                UIApplication.shared.endIgnoringInteractionEvents()
-                self?.passTextField.text = ""
-                if error != nil {
-                    self?.alertRespond((self?.errorLabel)!, with: [(self?.nameTextField)!, (self?.passTextField)!], for: ResponseType.failure, with: error!.localizedDescription, completion: {
-                        self?.passTextField.text?.removeAll()
-                    })
-                } else {
-                    completion(pfUser)
-                }
-            })
-        } else {
-            alertRespond(errorLabel, with: [nameTextField, passTextField], for: ResponseType.failure, with: "Failed to connect to Internet", completion: nil)
-        }
+        ParseServerManager.shared.attemptToInitializeParse()
+        self.activityIndicator.startAnimating()
+        UIApplication.shared.beginIgnoringInteractionEvents()
+        PFUser.logInWithUsername(inBackground: name, password: pass, block: { [weak self] (pfUser: PFUser?, error: Error?) in
+            self?.activityIndicator.stopAnimating()
+            UIApplication.shared.endIgnoringInteractionEvents()
+            self?.passTextField.text = ""
+            if error != nil {
+                self?.alertRespond((self?.errorLabel)!, with: [(self?.nameTextField)!, (self?.passTextField)!], for: ResponseType.failure, with: error!.localizedDescription, completion: {
+                    self?.passTextField.text?.removeAll()
+                })
+            } else {
+                completion(pfUser)
+            }
+        })
     }
     
     func performLogin(token: String) {
-        if Reachability.isConnectedToNetwork() == true {
-            ParseServerManager.shared.attemptToInitializeParse()
-            self.activityIndicator.startAnimating()
-            alertRespond(errorLabel, with: nil, for: ResponseType.normal, with: "Resumming to previous session", completion: nil)
-            UIApplication.shared.beginIgnoringInteractionEvents()
-            PFUser.become(inBackground: token, block: { [weak self] (pfUser: PFUser?, error: Error?) in
-                self?.activityIndicator.stopAnimating()
-                UIApplication.shared.endIgnoringInteractionEvents()
-                if error != nil {
-                    self?.alertRespond((self?.errorLabel)!, with: [(self?.nameTextField)!, (self?.passTextField)!], for: ResponseType.failure, with: error!.localizedDescription, completion: { 
-                        self?.passTextField.text?.removeAll()
-                    })
-                    KeychainManager.shared.deleteAuthToken(in: KeychainConfiguration.accountType.auth_token.rawValue)
-                } else {
-                    KeychainManager.shared.persistAuthToken(with: token)
-                    self?.presentMasterView()
-                }
-            })
-        } else {
-            alertRespond(errorLabel, with: [nameTextField, passTextField], for: ResponseType.failure, with: "Failed to connect to Internet", completion: nil)
-        }
+        ParseServerManager.shared.attemptToInitializeParse()
+        self.activityIndicator.startAnimating()
+        alertRespond(errorLabel, with: nil, for: ResponseType.normal, with: "Resumming to previous session", completion: nil)
+        UIApplication.shared.beginIgnoringInteractionEvents()
+        PFUser.become(inBackground: token, block: { [weak self] (pfUser: PFUser?, error: Error?) in
+            self?.activityIndicator.stopAnimating()
+            UIApplication.shared.endIgnoringInteractionEvents()
+            if error != nil {
+                self?.alertRespond((self?.errorLabel)!, with: [(self?.nameTextField)!, (self?.passTextField)!], for: ResponseType.failure, with: error!.localizedDescription, completion: {
+                    self?.passTextField.text?.removeAll()
+                })
+                KeychainManager.shared.deleteAuthToken(in: KeychainConfiguration.accountType.auth_token.rawValue)
+            } else {
+                KeychainManager.shared.persistAuthToken(with: token)
+                self?.presentMasterView()
+            }
+        })
     }
     
     func createUserInParse(with name: String, email: String, pass: String) {
         guard let name = nameTextField.text?.lowercased(), let email = emailTextField.text?.lowercased(), let pass = passTextField.text else { return }
-        if Reachability.isConnectedToNetwork() == true {
-            ParseServerManager.shared.attemptToInitializeParse()            
-            self.activityIndicator.startAnimating()
-            UIApplication.shared.beginIgnoringInteractionEvents()
-            let newUser = User()
-            newUser.constructUserInfo(name: name, email: email, pass: pass)
-            newUser.signUpInBackground(block: { [unowned self] (completed: Bool, error: Error?) in
-                UIApplication.shared.endIgnoringInteractionEvents()
-                self.activityIndicator.stopAnimating()
-                self.passTextField.text = ""
-                if error != nil {
-                    self.alertRespond(self.errorLabel, with: [self.nameTextField, self.emailTextField, self.passTextField], for: ResponseType.failure, with: error!.localizedDescription, completion: {
-                        self.passTextField.text?.removeAll()
-                    })
-                } else {
-                    if completed == true {
-                        self.alertRespond(self.errorLabel, with: [self.nameTextField, self.emailTextField, self.passTextField], for: ResponseType.success, with: "Success. Please proceed to login", completion: nil)
-                    }
+        ParseServerManager.shared.attemptToInitializeParse()
+        self.activityIndicator.startAnimating()
+        UIApplication.shared.beginIgnoringInteractionEvents()
+        let newUser = User()
+        newUser.constructUserInfo(name: name, email: email, pass: pass)
+        newUser.signUpInBackground(block: { [unowned self] (completed: Bool, error: Error?) in
+            UIApplication.shared.endIgnoringInteractionEvents()
+            self.activityIndicator.stopAnimating()
+            self.passTextField.text = ""
+            if error != nil {
+                self.alertRespond(self.errorLabel, with: [self.nameTextField, self.emailTextField, self.passTextField], for: ResponseType.failure, with: error!.localizedDescription, completion: {
+                    self.passTextField.text?.removeAll()
+                })
+            } else {
+                if completed == true {
+                    self.alertRespond(self.errorLabel, with: [self.nameTextField, self.emailTextField, self.passTextField], for: ResponseType.success, with: "Success. Please proceed to login", completion: nil)
                 }
-            })
-        } else {
-            alertRespond(errorLabel, with: [nameTextField, emailTextField, passTextField], for: ResponseType.failure, with: "Failed to connect to Internet", completion: nil)
-        }
+            }
+        })
     }
     
 }

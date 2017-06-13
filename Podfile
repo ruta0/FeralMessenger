@@ -12,11 +12,15 @@ target 'FeralMessenger' do
   target 'FeralMessengerTests' do
     inherit! :search_paths
     # Pods for testing
+    pod 'Parse'
+    pod 'Locksmith'
   end
 
   target 'FeralMessengerUITests' do
     inherit! :search_paths
     # Pods for testing
+    pod 'Parse'
+    pod 'Locksmith'
   end
 
 end

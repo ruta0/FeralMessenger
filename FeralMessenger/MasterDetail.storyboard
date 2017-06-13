@@ -175,20 +175,19 @@
                                     <rect key="frame" x="0.0" y="179" width="375" height="50"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
-                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="¯\_(ツ)_/¯" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hvM-Dz-go5">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="¯\_(ツ)_/¯" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9j2-uM-GXz">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                            <textInputTraits key="textInputTraits"/>
-                                        </textField>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                     <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                     <constraints>
-                                        <constraint firstAttribute="trailing" secondItem="hvM-Dz-go5" secondAttribute="trailing" id="Nh8-XJ-1uZ"/>
-                                        <constraint firstItem="hvM-Dz-go5" firstAttribute="top" secondItem="pXk-1L-GFX" secondAttribute="top" id="Sps-ES-vhI"/>
-                                        <constraint firstItem="hvM-Dz-go5" firstAttribute="leading" secondItem="pXk-1L-GFX" secondAttribute="leading" id="V1i-Zq-fCT"/>
-                                        <constraint firstAttribute="bottom" secondItem="hvM-Dz-go5" secondAttribute="bottom" id="wWZ-iC-Mjp"/>
+                                        <constraint firstItem="9j2-uM-GXz" firstAttribute="leading" secondItem="pXk-1L-GFX" secondAttribute="leading" id="8Bn-cj-TMB"/>
+                                        <constraint firstItem="9j2-uM-GXz" firstAttribute="top" secondItem="pXk-1L-GFX" secondAttribute="top" id="AZF-j6-aNb"/>
+                                        <constraint firstAttribute="trailing" secondItem="9j2-uM-GXz" secondAttribute="trailing" id="OqQ-R9-TEt"/>
+                                        <constraint firstAttribute="bottom" secondItem="9j2-uM-GXz" secondAttribute="bottom" id="PwM-0z-Cek"/>
                                     </constraints>
                                 </view>
                                 <prototypes>
@@ -253,7 +252,7 @@
                     <navigationItem key="navigationItem" title="Message" id="Leb-PE-x9W"/>
                     <connections>
                         <outlet property="dividerView" destination="Nag-5i-Ctg" id="69j-ND-qwy"/>
-                        <outlet property="footerTextField" destination="hvM-Dz-go5" id="2bL-XY-G92"/>
+                        <outlet property="footerLabel" destination="9j2-uM-GXz" id="LDW-iK-XK8"/>
                         <outlet property="footerView" destination="pXk-1L-GFX" id="Z0Z-49-l4M"/>
                         <outlet property="heightContraint" destination="qp3-e1-dnd" id="FVr-LB-9x4"/>
                         <outlet property="inputContainerView" destination="kNk-KU-V3S" id="TcZ-bM-pVR"/>

@@ -56,10 +56,6 @@ class WalletViewController: UIViewController {
         tableView.backgroundColor = UIColor.midNightBlack()
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        tableView.invalidateIntrinsicContentSize()
-    }
-    
 }
 
 

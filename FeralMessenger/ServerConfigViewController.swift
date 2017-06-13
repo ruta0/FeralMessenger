@@ -203,22 +203,17 @@ extension ServerConfigViewController {
         if isParseInitialized == true {
             alertRespond(errorLabel, with: nil, for: ResponseType.normal, with: "Restart the app to setup a new server configuration", completion: nil)
         } else {
-            if Reachability.isConnectedToNetwork() == true {
-                guard let url: URL = URL(string: serverUrl) else { return }
-                if UIApplication.shared.canOpenURL(url) == true {
-                    ParseServerManager.shared.attemptToInitializeParse()
-                    alertRespond(errorLabel, with: nil, for: ResponseType.success, with: "Server initialized with provided credentials", completion: {
-                        self.master_keyTextField.text?.removeAll()
-                        self.server_urlTextField.text?.removeAll()
-                    })
-                } else {
-                    alertRespond(errorLabel, with: [application_idTextField, server_urlTextField, master_keyTextField], for: ResponseType.failure, with: "Invalid URL", completion: {
-                        self.server_urlTextField.text?.removeAll()
-                    })
-                }
+            guard let url: URL = URL(string: serverUrl) else { return }
+            if UIApplication.shared.canOpenURL(url) == true {
+                ParseServerManager.shared.attemptToInitializeParse()
+                alertRespond(errorLabel, with: nil, for: ResponseType.success, with: "Server initialized with provided credentials", completion: {
+                    self.master_keyTextField.text?.removeAll()
+                    self.server_urlTextField.text?.removeAll()
+                })
             } else {
-                alertRespond(errorLabel, with: [application_idTextField, server_urlTextField, master_keyTextField], for: ResponseType.failure, with: "Failed to connect to the Internet", completion: nil)
-
+                alertRespond(errorLabel, with: [application_idTextField, server_urlTextField, master_keyTextField], for: ResponseType.failure, with: "Invalid URL", completion: {
+                    self.server_urlTextField.text?.removeAll()
+                })
             }
         }
     }
