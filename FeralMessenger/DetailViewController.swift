@@ -11,13 +11,11 @@ import Parse
 import AVFoundation
 
 
-// MARK: - UI
-
 class DetailViewController: UIViewController {
     
-    var player: AVAudioPlayer?
+    // MARK: - UI
     
-    @IBOutlet weak var tableView: UITableView!
+    var player: AVAudioPlayer?
     
     @IBOutlet weak var inputContainerView: UIView!
     @IBOutlet weak var dividerView: UIView!
@@ -54,7 +52,14 @@ class DetailViewController: UIViewController {
         return button
     }()
     
-    @IBAction func sendButton_tapped(_ sender: UIButton) { }
+    @IBAction func sendButton_tapped(_ sender: UIButton) {
+        let message = messageTextField.text
+        clearMessageTextField()
+        // handle sending message
+        if let sms = message, !sms.isEmpty, let receiverName = receiverName {
+            manager?.createMessageInParse(with: sms, receiverName: receiverName)
+        }
+    }
     
     func playSound() {
         guard let sound = NSDataAsset(name: "sent") else {
@@ -89,6 +94,129 @@ class DetailViewController: UIViewController {
             self.messageTextField.text?.removeAll()
         }
     }
+    
+    func setupNavigationController() {
+        // title
+        navigationItem.titleView = titleButton
+        // rightBarButton
+        navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: profileButton)]
+    }
+    
+    fileprivate func setupInputContainerView() {
+        // inputContainerView
+        inputContainerView.backgroundColor = UIColor.midNightBlack()
+        // dividerView
+        dividerView.backgroundColor = UIColor.mediumBlueGray()
+        // messageTextField
+        messageTextField.backgroundColor = UIColor.clear
+        messageTextField.attributedPlaceholder = NSAttributedString(string: "Message", attributes: [NSForegroundColorAttributeName: UIColor.darkGray])
+        messageTextField.delegate = self
+        // sendButton
+        sendButton.backgroundColor = UIColor.clear
+    }
+    
+    fileprivate func setupFooterView() {
+        // footerView
+        footerView.backgroundColor = UIColor.midNightBlack()
+        // footerTextField
+        footerLabel.backgroundColor = UIColor.midNightBlack()
+    }
+    
+    fileprivate func setupTableView() {
+        tableView.delegate = self
+        tableView.backgroundColor = UIColor.midNightBlack()
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(tableViewTapped(recognizer:)))
+        tableView.addGestureRecognizer(gesture)
+    }
+    
+    // MARK: - Lifecycle
+    
+    @IBOutlet weak var tableView: UITableView!
+    
+    var receiverName: String?
+    
+    var parseMessages = [PFObject]()
+    
+    var manager: ParseManager?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupTableView()
+        setupInputContainerView()
+        setupNavigationController()
+        setupFooterView()
+        manager = ParseManager()
+        if let receiverName = receiverName {
+            manager?.readMessagesInParse(with: receiverName, completion: { [weak self] (messages: [PFObject]?) in
+                guard let messages = messages else { return }
+                self?.parseMessages = messages
+            })
+        } else {
+            print("receiverName is nil")
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        setupKeyboardNotifications()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        removeKeyboardNotifications()
+    }
+    
+}
+
+
+// MARK: - UITableViewDelegate
+
+extension DetailViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return nil
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return CGFloat(84)
+    }
+    
+}
+
+
+// MARK: - UITableViewDataSource
+
+extension DetailViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 0
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 0
+    }
+    
+}
+
+// MARK: - UITextFieldDelegate
+
+extension DetailViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+}
+
+
+// MARK: - Keyboard
+
+extension DetailViewController {
     
     func scrollToLastCellItem() {
         let numberOfRows = tableView.numberOfRows(inSection: 0)
@@ -134,151 +262,6 @@ class DetailViewController: UIViewController {
     fileprivate func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-    }
-    
-    func setupNavigationController() {
-        // title
-        navigationItem.titleView = titleButton
-        // rightBarButton
-        navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: profileButton)]
-    }
-    
-    fileprivate func setupInputContainerView() {
-        // inputContainerView
-        inputContainerView.backgroundColor = UIColor.midNightBlack()
-        // dividerView
-        dividerView.backgroundColor = UIColor.mediumBlueGray()
-        // messageTextField
-        messageTextField.backgroundColor = UIColor.clear
-        messageTextField.attributedPlaceholder = NSAttributedString(string: "Message", attributes: [NSForegroundColorAttributeName: UIColor.darkGray])
-        messageTextField.delegate = self
-        // sendButton
-        sendButton.backgroundColor = UIColor.clear
-    }
-    
-    fileprivate func setupFooterView() {
-        // footerView
-        footerView.backgroundColor = UIColor.midNightBlack()
-        // footerTextField
-        footerLabel.backgroundColor = UIColor.midNightBlack()
-    }
-    
-    fileprivate func setupTableView() {
-        tableView.delegate = self
-        tableView.backgroundColor = UIColor.midNightBlack()
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(tableViewTapped(recognizer:)))
-        tableView.addGestureRecognizer(gesture)
-    }
-    
-}
-
-
-// MARK: - Lifecycle
-
-extension DetailViewController {
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupTableView()
-        setupInputContainerView()
-        setupNavigationController()
-        setupFooterView()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        setupKeyboardNotifications()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        removeKeyboardNotifications()
-    }
-    
-}
-
-
-// MARK: - UITableViewDelegate
-
-extension DetailViewController: UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return nil
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return CGFloat(84)
-    }
-    
-}
-
-
-// MARK: - UITextFieldDelegate
-
-extension DetailViewController: UITextFieldDelegate {
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-    
-}
-
-
-// MARK: - UITableViewDataSource
-
-extension DetailViewController: UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 0
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
-    }
-    
-}
-
-
-// MARK: - Parse
-
-extension DetailViewController {
-    
-    func readMessageInParse(with selectedUserName: String, completion: @escaping ([PFObject]?) -> Void) {
-        guard let query = Message.query(receiverName: selectedUserName, senderName: (PFUser.current()?.username)!) else {
-            print("query is nil")
-            return
-        }
-        query.findObjectsInBackground { (messages: [PFObject]?, error: Error?) in
-            if error != nil {
-                print(error!.localizedDescription)
-            } else {
-                completion(messages)
-            }
-        }
-    }
-    
-    // only text for now. I will support images later
-    func createMessageInParse(with sms: String, receiverName: String, completion: @escaping (Message) -> Void) {
-        let message = Message()
-        message["sms"] = sms
-        message["image"] = ""
-        message["senderName"] = PFUser.current()?.username!
-        message["receiverName"] = receiverName
-        message.saveInBackground { [weak self] (completed: Bool, error: Error?) in
-            if error != nil {
-                print(error!.localizedDescription)
-            } else {
-                if completed == true {
-                    completion(message)
-                    self?.playSound()
-                }
-            }
-        }
     }
     
 }

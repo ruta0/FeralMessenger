@@ -267,10 +267,10 @@ extension AuthViewController: UITextFieldDelegate {
         self.scrollView.contentInset = contentInsets
         self.scrollView.scrollIndicatorInsets = contentInsets
         
-        var aRect : CGRect = self.view.frame
+        var aRect: CGRect = self.view.frame
         aRect.size.height -= keyboardSize!.height
         if let activeField = self.passTextField {
-            if (!aRect.contains(activeField.frame.origin)){
+            if (!aRect.contains(activeField.frame.origin)) {
                 self.scrollView.scrollRectToVisible(activeField.frame, animated: true)
             }
         }
@@ -318,10 +318,10 @@ extension AuthViewController {
         guard let name = nameTextField.text?.lowercased(), let pass = passTextField.text else { return }
         ParseServerManager.shared.attemptToInitializeParse()
         self.activityIndicator.startAnimating()
-        UIApplication.shared.beginIgnoringInteractionEvents()
+        authButton.isEnabled = false
         PFUser.logInWithUsername(inBackground: name, password: pass, block: { [weak self] (pfUser: PFUser?, error: Error?) in
             self?.activityIndicator.stopAnimating()
-            UIApplication.shared.endIgnoringInteractionEvents()
+            self?.authButton.isEnabled = true
             self?.passTextField.text = ""
             if error != nil {
                 self?.alertRespond((self?.errorLabel)!, with: [(self?.nameTextField)!, (self?.passTextField)!], for: ResponseType.failure, with: error!.localizedDescription, completion: {
@@ -337,10 +337,10 @@ extension AuthViewController {
         ParseServerManager.shared.attemptToInitializeParse()
         self.activityIndicator.startAnimating()
         alertRespond(errorLabel, with: nil, for: ResponseType.normal, with: "Resumming to previous session", completion: nil)
-        UIApplication.shared.beginIgnoringInteractionEvents()
+        authButton.isEnabled = false
         PFUser.become(inBackground: token, block: { [weak self] (pfUser: PFUser?, error: Error?) in
             self?.activityIndicator.stopAnimating()
-            UIApplication.shared.endIgnoringInteractionEvents()
+            self?.authButton.isEnabled = true
             if error != nil {
                 self?.alertRespond((self?.errorLabel)!, with: [(self?.nameTextField)!, (self?.passTextField)!], for: ResponseType.failure, with: error!.localizedDescription, completion: {
                     self?.passTextField.text?.removeAll()
@@ -357,11 +357,11 @@ extension AuthViewController {
         guard let name = nameTextField.text?.lowercased(), let email = emailTextField.text?.lowercased(), let pass = passTextField.text else { return }
         ParseServerManager.shared.attemptToInitializeParse()
         self.activityIndicator.startAnimating()
-        UIApplication.shared.beginIgnoringInteractionEvents()
+        authButton.isEnabled = false
         let newUser = User()
         newUser.constructUserInfo(name: name, email: email, pass: pass)
         newUser.signUpInBackground(block: { [unowned self] (completed: Bool, error: Error?) in
-            UIApplication.shared.endIgnoringInteractionEvents()
+            self.authButton.isEnabled = true
             self.activityIndicator.stopAnimating()
             self.passTextField.text = ""
             if error != nil {

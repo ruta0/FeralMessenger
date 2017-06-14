@@ -8,11 +8,12 @@
 
 import UIKit
 import Parse
+import AVFoundation
 
-
-// MARK: - UI
 
 class MasterViewController: UITableViewController {
+    
+    // MARK: - UI
     
     lazy var titleButton: UIButton = {
         let button = UIButton()
@@ -26,12 +27,23 @@ class MasterViewController: UITableViewController {
         DispatchQueue.main.async { [weak self] in
             self?.tableView.refreshControl?.beginRefreshing()
         }
+        tableView.refreshControl?.layoutIfNeeded()
     }
     
     func endRefresh() {
         DispatchQueue.main.async { [weak self] in
             self?.tableView.refreshControl?.endRefreshing()
         }
+    }
+    
+    @IBAction func refresh(_ sender: UIRefreshControl) {
+        beginRefresh()
+        manager?.readUsersInParse(with: nil, completion: { [weak self] (users: [PFObject]?) in
+            if let users = users {
+                self?.parseUsers = users
+                self?.endRefresh()
+            }
+        })
     }
     
     fileprivate func setupTabBar() {
@@ -56,44 +68,29 @@ class MasterViewController: UITableViewController {
         tableView.backgroundColor = UIColor.midNightBlack()
         tableView.refreshControl?.tintColor = UIColor.candyWhite()
     }
-
-}
-
-
-// MARK: - Lifecycle
-
-extension MasterViewController {
     
+    // MARK: - Lifecycle
+    
+    var parseUsers = [PFObject]()
+    
+    var manager: ParseManager?
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
         setupNavigationController()
+        beginRefresh()
+        manager = ParseManager()
+        manager?.readUsersInParse(with: nil, completion: { [weak self] (users: [PFObject]?) in
+            guard let users = users else { return }
+            self?.parseUsers = users
+            self?.endRefresh()
+        })
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupTabBar()
-    }
-    
-}
-
-
-// MARK: - Parse
-
-extension MasterViewController {
-    
-    func readUserInParse(with predicate: NSPredicate?, completion: @escaping ([PFObject]?) -> Void) {
-        guard let query = User.query(with: predicate) else {
-            print("query is nil")
-            return
-        }
-        query.findObjectsInBackground { (users: [PFObject]?, error: Error?) in
-            if error != nil {
-                print(error!.localizedDescription)
-            } else {
-                completion(users)
-            }
-        }
     }
     
 }

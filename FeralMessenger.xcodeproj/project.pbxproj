@@ -25,7 +25,7 @@
 		C537FB8E1EE8B39B00556AF2 /* MPCGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C537FB8D1EE8B39B00556AF2 /* MPCGroup.swift */; };
 		C537FB911EE8B82100556AF2 /* MPCDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C537FB901EE8B82100556AF2 /* MPCDetailViewController.swift */; };
 		C537FB931EE8B99F00556AF2 /* MPCDetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C537FB921EE8B99F00556AF2 /* MPCDetailCell.swift */; };
-		C53D058F1EEF1D4D00D93787 /* MessengerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53D058E1EEF1D4D00D93787 /* MessengerManager.swift */; };
+		C53D058F1EEF1D4D00D93787 /* ParseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53D058E1EEF1D4D00D93787 /* ParseManager.swift */; };
 		C53D0A5C1EDA2BE10048CC44 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53D0A5B1EDA2BE10048CC44 /* CoreDataManager.swift */; };
 		C53D0A5E1EDA754A0048CC44 /* CoreMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53D0A5D1EDA754A0048CC44 /* CoreMessage.swift */; };
 		C53D0A601EDA75800048CC44 /* CoreUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53D0A5F1EDA75800048CC44 /* CoreUser.swift */; };
@@ -50,6 +50,7 @@
 		C55D62FF1EE51BDC00AEE16D /* MPCMasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D62FE1EE51BDC00AEE16D /* MPCMasterViewController.swift */; };
 		C5C58B931EDD6D2A003E19B7 /* ChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */; };
 		C5C58B981EDD87A4003E19B7 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C58B971EDD87A4003E19B7 /* MessageViewController.swift */; };
+		C5C9AFA11EEFE9DF005A905F /* InputContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C9AFA01EEFE9DF005A905F /* InputContainerView.swift */; };
 		C5D33B8A1EE610B50078ED01 /* MasterDetail.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5D33B891EE610B50078ED01 /* MasterDetail.storyboard */; };
 		C5D33B8E1EE61C1E0078ED01 /* MPCMasterMPCDetail.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5D33B8D1EE61C1E0078ED01 /* MPCMasterMPCDetail.storyboard */; };
 		C5D33B901EE61C550078ED01 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5D33B8F1EE61C550078ED01 /* Settings.storyboard */; };
@@ -107,7 +108,7 @@
 		C537FB8D1EE8B39B00556AF2 /* MPCGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPCGroup.swift; sourceTree = "<group>"; };
 		C537FB901EE8B82100556AF2 /* MPCDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPCDetailViewController.swift; sourceTree = "<group>"; };
 		C537FB921EE8B99F00556AF2 /* MPCDetailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPCDetailCell.swift; sourceTree = "<group>"; };
-		C53D058E1EEF1D4D00D93787 /* MessengerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessengerManager.swift; sourceTree = "<group>"; };
+		C53D058E1EEF1D4D00D93787 /* ParseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseManager.swift; sourceTree = "<group>"; };
 		C53D0A5B1EDA2BE10048CC44 /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		C53D0A5D1EDA754A0048CC44 /* CoreMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMessage.swift; sourceTree = "<group>"; };
 		C53D0A5F1EDA75800048CC44 /* CoreUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreUser.swift; sourceTree = "<group>"; };
@@ -133,6 +134,7 @@
 		C55D62FE1EE51BDC00AEE16D /* MPCMasterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPCMasterViewController.swift; sourceTree = "<group>"; };
 		C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatsViewController.swift; sourceTree = "<group>"; };
 		C5C58B971EDD87A4003E19B7 /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
+		C5C9AFA01EEFE9DF005A905F /* InputContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputContainerView.swift; sourceTree = "<group>"; };
 		C5D33B891EE610B50078ED01 /* MasterDetail.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MasterDetail.storyboard; sourceTree = "<group>"; };
 		C5D33B8D1EE61C1E0078ED01 /* MPCMasterMPCDetail.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MPCMasterMPCDetail.storyboard; sourceTree = "<group>"; };
 		C5D33B8F1EE61C550078ED01 /* Settings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
@@ -315,6 +317,7 @@
 		C525BC681ED02CC0006BEEA3 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				C5C9AF9F1EEFE9C0005A905F /* Keyboard */,
 				C537FB8A1EE8616E00556AF2 /* MPC */,
 				C543931E1EE7D09F006B73C3 /* Keychain */,
 				C53D0A5A1EDA2BC60048CC44 /* CoreData */,
@@ -326,7 +329,7 @@
 		C525BC6F1ED0D442006BEEA3 /* ParseServer */ = {
 			isa = PBXGroup;
 			children = (
-				C53D058E1EEF1D4D00D93787 /* MessengerManager.swift */,
+				C53D058E1EEF1D4D00D93787 /* ParseManager.swift */,
 				C543931C1EE7CE04006B73C3 /* ParseServerManager.swift */,
 				C525BC6C1ED0D2F3006BEEA3 /* ParseConguration.swift */,
 			);
@@ -402,6 +405,14 @@
 				C5439B741ED2094500FBD7D3 /* AuthViewController.swift */,
 			);
 			name = "Auth & Server";
+			sourceTree = "<group>";
+		};
+		C5C9AF9F1EEFE9C0005A905F /* Keyboard */ = {
+			isa = PBXGroup;
+			children = (
+				C5C9AFA01EEFE9DF005A905F /* InputContainerView.swift */,
+			);
+			name = Keyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -718,8 +729,9 @@
 				C53D0A5E1EDA754A0048CC44 /* CoreMessage.swift in Sources */,
 				C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */,
 				C537FB911EE8B82100556AF2 /* MPCDetailViewController.swift in Sources */,
+				C5C9AFA11EEFE9DF005A905F /* InputContainerView.swift in Sources */,
 				C525BC6D1ED0D2F3006BEEA3 /* ParseConguration.swift in Sources */,
-				C53D058F1EEF1D4D00D93787 /* MessengerManager.swift in Sources */,
+				C53D058F1EEF1D4D00D93787 /* ParseManager.swift in Sources */,
 				C53F98401ED79BAD0085EB78 /* Feral.xcdatamodeld in Sources */,
 				C5C58B931EDD6D2A003E19B7 /* ChatsViewController.swift in Sources */,
 				C55D62F21EE29F4800AEE16D /* Avatar.swift in Sources */,

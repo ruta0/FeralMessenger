@@ -26,8 +26,9 @@ final class User: PFUser {
     
     func query() -> PFQuery<PFObject>? {
         let query = PFQuery(className: User.parseClassName())
+        let usernameSortDescriptor = NSSortDescriptor(key: "username", ascending: true, selector: nil)
         query.includeKey("User")
-        query.order(byAscending: "created_at")
+        query.order(by: [usernameSortDescriptor])
         return query
     }
     

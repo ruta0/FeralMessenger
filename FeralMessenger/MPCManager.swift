@@ -11,12 +11,10 @@ import MultipeerConnectivity
 
 
 protocol MPCManagerDelegate {
-    
     func foundPeer()
     func lostPeer()
     func didReceivedInvitation(fromPeer: String, group: String)
     func didConnect(fromPeer: MCPeerID, group: String)
-    
 }
 
 

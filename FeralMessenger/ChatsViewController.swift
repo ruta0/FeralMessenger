@@ -11,11 +11,14 @@ import Parse
 import CoreData
 
 
-// MARK: - Core Data
-
 final class ChatsViewController: MasterViewController {
+        
+    private func setupDelegates() {
+        manager?.userDelegate = self
+    }
     
-    fileprivate let masterCellID = "MasterCell"
+    // MARK: - Lifecycle
+    
     fileprivate let segueID = "DetailViewControllerSegue"
     
     var container: NSPersistentContainer? = CoreDataManager.persistentContainer // default container
@@ -23,94 +26,32 @@ final class ChatsViewController: MasterViewController {
     lazy fileprivate var fetchedResultsController: NSFetchedResultsController<CoreUser> = {
         let frc = NSFetchedResultsController(fetchRequest: CoreUser.defaultFetchRequest(with: nil), managedObjectContext: CoreDataManager.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         frc.delegate = self
-        return frc
+        return frc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
     }()
-    
-    @IBAction func refresh(_ sender: UIRefreshControl) {
-        beginRefresh()
-        readUserInParse(with: nil) { [weak self] (users: [PFObject]?) in
-            guard let users = users else {
-                print("readUserInParse: returned nil users from Parse")
-                return
-            }
-            self?.updateCoreUser(with: users)
-            self?.endRefresh()
-        }
-    }
-    
-    func updateCoreUser(with pfObjects: [PFObject]) {
-        self.container?.performBackgroundTask { [weak self] context in
-            for pfObject in pfObjects {
-                _ = try? CoreUser.findOrCreateCoreUser(matching: pfObject, in: context)
-            }
-            do {
-                try context.save()
-            } catch let err {
-                print("updateCoreUserFromParse - Failed to save context", err)
-            }
-            self?.performFetchFromCoreData()
-            // self?.printDatabaseStats()
-        }
-    }
-    
-    private func performFetchFromCoreData() {
-        guard let context = container?.viewContext else { return }
-        context.perform {
-            do {
-                try self.fetchedResultsController.performFetch()
-            } catch let err {
-                print("performFetchFromCoreData failed to fetch: - \(err)")
-            }
-            self.tableView.reloadData()
-        }
-    }
-    
-    private func printDatabaseStats() {
-        guard let context = container?.viewContext else { return }
-        context.perform {
-            if let userCount = try? context.count(for: CoreUser.fetchRequest()) {
-                print(userCount, "users in the core data store")
-            }
-        }
-    }
-    
-}
-
-
-// MARK: - Lifecycle
-
-extension ChatsViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        beginRefresh()
-        readUserInParse(with: nil) { [weak self] (users: [PFObject]?) in
-            guard let users = users else {
-                print("readUserInParse: returned nil users from Parse")
-                return
-            }
-            self?.updateCoreUser(with: users)
-            self?.endRefresh()
-        }
+        setupDelegates()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == segueID {
-            guard let selectedCell = sender as? MasterCell, let messageViewController = segue.destination as? MessageViewController else {
-                print("unexpected sender of cell")
-                return
+            if let selectedCell = sender as? MasterCell {
+                guard let messageViewController = segue.destination as? MessageViewController else {
+                    print("unexpected sender of cell")
+                    return
+                }
+                let receiverName = selectedCell.coreUser?.username
+                messageViewController.receiverName = receiverName
+                messageViewController.selectedCoreUser = selectedCell.coreUser
+                messageViewController.container = container
             }
-            messageViewController.selectedUser = selectedCell.coreUser
-            messageViewController.container = container
         }
     }
     
-}
-
-
-// MARK: - UITableViewDataSource
-
-extension ChatsViewController {
+    // MARK: - UITableViewDataSource
+    
+    fileprivate let masterCellID = "MasterCell"
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return fetchedResultsController.sections?.count ?? 1
@@ -131,6 +72,53 @@ extension ChatsViewController {
         } else {
             return UITableViewCell()
         }
+    }
+    
+}
+
+
+// MARK: - ParseUserManagerDelegate
+
+extension ChatsViewController: ParseUsersManagerDelegate {
+    
+    private func performFetchFromCoreData() {
+        guard let context = container?.viewContext else { return }
+        context.perform {
+            do {
+                try self.fetchedResultsController.performFetch()
+            } catch let err {
+                print("performFetchFromCoreData failed to fetch: - \(err)")
+            }
+            self.tableView.reloadData()
+        }
+    }
+    
+    func updateCoreUser(with pfObjects: [PFObject]) {
+        self.container?.performBackgroundTask { [weak self] context in
+            for pfObject in pfObjects {
+                _ = try? CoreUser.findOrCreateCoreUser(matching: pfObject, in: context)
+            }
+            do {
+                try context.save()
+            } catch let err {
+                print("updateCoreUserFromParse - Failed to save context", err)
+            }
+            self?.performFetchFromCoreData()
+            // self?.printDatabaseStats()
+        }
+    }
+    
+    private func printDatabaseStats() {
+        guard let context = container?.viewContext else { return }
+        context.perform {
+            if let userCount = try? context.count(for: CoreUser.fetchRequest()) {
+                print(userCount, "users in the core data store")
+            }
+        }
+    }
+    
+    func didReceiveUsers(with users: [PFObject]) {
+        updateCoreUser(with: users)
     }
     
 }

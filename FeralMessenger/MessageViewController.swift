@@ -11,19 +11,18 @@ import Parse
 import CoreData
 
 
-// MARK: - Core Data
-
 final class MessageViewController: DetailViewController {
     
-    fileprivate let cellID = "DetailCell"
-    fileprivate let segueID = "SettingsViewControllerSegue"
+    // MARK: - Core Data
     
     var container: NSPersistentContainer? = CoreDataManager.persistentContainer
-    var selectedUser: CoreUser?
+    
+    var selectedCoreUser: CoreUser?
+    
     fileprivate var fetchedResultsController: NSFetchedResultsController<CoreMessage>?
     
     func insertToCoreMessage(with pfObject: Message) {
-        self.container?.performBackgroundTask { context in
+        if let context = container?.viewContext {
             let newCoreMessage = CoreMessage(context: context)
             newCoreMessage.created_at = pfObject.createdAt! as NSDate
             newCoreMessage.sms = pfObject["sms"] as? String
@@ -39,97 +38,36 @@ final class MessageViewController: DetailViewController {
         }
     }
     
-    func updateCoreMessage(with pfObjects: [PFObject]) {
-        self.container?.performBackgroundTask { [weak self] context in
-            for pfObject in pfObjects {
-                _ = try? CoreMessage.findOrCreateCoreMessage(matching: pfObject, in: context)
-            }
-            do {
-                try context.save()
-            } catch let err {
-                print("updateCoreMessageFromParse - Failed to save context: ", err.localizedDescription)
-            }
-            self?.performFetchFromCoreData()
-        }
-    }
-    
-    private func printDatabaseStats() {
-        guard let context = container?.viewContext else { return }
-        context.perform {
-            if let messageCount = try? context.count(for: CoreMessage.fetchRequest()) {
-                print(messageCount, "messages in the core data store")
-            }
-        }
-    }
-    
-    private func performFetchFromCoreData() {
-        guard let context = container?.viewContext, let senderName = selectedUser?.username, let receiver = PFUser.current()?.username else { return }
-        context.perform {
-            let request: NSFetchRequest<CoreMessage> = CoreMessage.defaultFetchRequest(from: senderName, to: receiver)
-            request.fetchLimit = 200
-            request.fetchBatchSize = 5
-            self.fetchedResultsController = NSFetchedResultsController<CoreMessage>(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-            self.fetchedResultsController?.delegate = self
-            do {
-                try self.fetchedResultsController?.performFetch()
-                self.tableView.reloadData()
-                self.scrollToLastCellItem()
-            } catch let err {
-                print("performFetch failed to fetch: \(err.localizedDescription)")
-            }
-        }
+    func setupDelegates() {
+        manager?.messengerDelegate = self
     }
     
     override func setupNavigationController() {
         super.setupNavigationController()
-        profileButton.addTarget(self, action: #selector(presentProfileViewController(_:)), for: UIControlEvents.touchUpInside)
-        if let username = selectedUser?.username {
+        // rendering the correct avatar
+        profileButton.addTarget(self, action: #selector(showProfileViewController(_:)), for: UIControlEvents.touchUpInside)
+        if let avatarName = selectedCoreUser?.profile_image, let image = UIImage(named: avatarName) {
+            profileButton.setBackgroundImage(image, for: UIControlState.normal)
+        }
+        // titleButton
+        if let username = selectedCoreUser?.username {
             titleButton.setTitle(username, for: UIControlState.normal)
         }
     }
     
-    override func sendButton_tapped(_ sender: UIButton) {
-        // clearing out messageTextField immediately
-        let message = messageTextField.text
-        clearMessageTextField()
-        // handle sending message
-        beginRefresh()
-        if let sms = message, !sms.isEmpty, let receiverName = selectedUser?.username {
-            createMessageInParse(with: sms, receiverName: receiverName, completion: { [weak self] (message: Message) in
-                self?.insertToCoreMessage(with: message)
-                self?.performFetchFromCoreData() // not what I wanted, but ok...
-                self?.endRefresh()
-            })
-        }
-    }
+    // MARK: - Lifecycle
     
-}
-
-
-// MARK: - Lifecycle
-
-extension MessageViewController {
+    fileprivate let segueID = "SettingsViewControllerSegue"
     
-    func presentProfileViewController(_ sender: UIButton) {
+    func showProfileViewController(_ sender: UIButton) {
         // perform segue to settings
         print("Not supported at this moment")
     }
     
     override func viewDidLoad() {
-        super.viewDidLoad()
         beginRefresh()
-        if let username = selectedUser?.username {
-            readMessageInParse(with: username) { [weak self] (messages: [PFObject]?) in
-                guard let messages = messages else {
-                    print("readMessageInParse: returned nil messages from Parse")
-                    return
-                }
-                self?.updateCoreMessage(with: messages)
-                self?.endRefresh()
-            }
-        } else {
-            print("selectedUser is nil")
-        }
+        super.viewDidLoad()
+        setupDelegates()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -138,12 +76,9 @@ extension MessageViewController {
         }
     }
     
-}
-
-
-// MARK: - UITableViewDataSource
-
-extension MessageViewController {
+    // MARK: - UITableViewDataSource
+    
+    fileprivate let cellID = "DetailCell"
     
     /// Note: notice that there is a footer in the storyboard to offer the additional space offset for the textfield
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -181,12 +116,7 @@ extension MessageViewController {
         }
     }
     
-}
-
-
-// MARK: - UITableViewDelegate
-
-extension MessageViewController {
+    // MARK: - UITableViewDelegate
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let section = fetchedResultsController?.sections?[section] else {
@@ -204,6 +134,76 @@ extension MessageViewController {
             return estimatedFrame.height + 16 + 16
         }
         return CGFloat(84)
+    }
+    
+}
+
+
+// MARK: - ParseMessengerManagerDelegate
+
+extension MessageViewController: ParseMessengerManagerDelegate {
+    
+    func updateCoreMessage(with pfObjects: [PFObject]) {
+        self.container?.performBackgroundTask { [weak self] context in
+            for pfObject in pfObjects {
+                _ = try? CoreMessage.findOrCreateCoreMessage(matching: pfObject, in: context)
+            }
+            do {
+                try context.save()
+            } catch let err {
+                print("updateCoreMessageFromParse - Failed to save context: ", err.localizedDescription)
+            }
+            self?.performFetchFromCoreData()
+        }
+    }
+    
+    private func performFetchFromCoreData() {
+        guard let context = container?.viewContext, let senderName = selectedCoreUser?.username, let receiver = PFUser.current()?.username else { return }
+        context.perform {
+            let request: NSFetchRequest<CoreMessage> = CoreMessage.defaultFetchRequest(from: senderName, to: receiver)
+            request.fetchLimit = 200
+            request.fetchBatchSize = 5
+            self.fetchedResultsController = NSFetchedResultsController<CoreMessage>(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+            self.fetchedResultsController?.delegate = self
+            do {
+                try self.fetchedResultsController?.performFetch()
+                self.tableView.reloadData()
+                self.scrollToLastCellItem()
+            } catch let err {
+                print("performFetch failed to fetch: \(err.localizedDescription)")
+            }
+        }
+    }
+    
+    private func printDatabaseStats() {
+        guard let context = container?.viewContext else { return }
+        context.perform {
+            if let messageCount = try? context.count(for: CoreMessage.fetchRequest()) {
+                print(messageCount, "messages in the core data store")
+            }
+        }
+    }
+    
+    func didReceiveMessages(with messages: [PFObject]) {
+        updateCoreMessage(with: messages)
+        endRefresh()
+    }
+    
+    func didReceiveMessage(with message: Message) {
+        insertToCoreMessage(with: message)
+    }
+    
+    func didSendMessage(with message: Message) {
+        playSound()
+        insertToCoreMessage(with: message)
+    }
+    
+    func registerForLocalNotifications() {
+        // implement this
+    }
+    
+    func unregisterForLocalNotifications() {
+        // implement this
     }
     
 }
@@ -231,12 +231,13 @@ extension MessageViewController: NSFetchedResultsControllerDelegate {
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
         case .insert:
-            if let indexPath = newIndexPath {
-                self.tableView.insertRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            if let newIndexPath = newIndexPath {
+                self.tableView.insertRows(at: [newIndexPath], with: UITableViewRowAnimation.fade)
             }
         case .delete:
             if let indexPath = indexPath {
                 self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+
             }
         case .update:
             if let indexPath = indexPath {
@@ -248,15 +249,17 @@ extension MessageViewController: NSFetchedResultsControllerDelegate {
             }
             if let newIndexPath = newIndexPath {
                 self.tableView.insertRows(at: [newIndexPath], with: UITableViewRowAnimation.fade)
+
             }
         }
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         self.tableView.endUpdates()
-        if let lol = fetchedResultsController?.fetchedObjects {
-            print(lol)
-        }
+        
+        // a little too expensive, think of something better!
+        self.tableView.reloadData()
+        self.scrollToLastCellItem()
     }
     
 }
