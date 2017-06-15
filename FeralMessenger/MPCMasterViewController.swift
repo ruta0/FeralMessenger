@@ -62,28 +62,28 @@ class MPCMasterViewController: UITableViewController {
     }
     
     func beginRefresh() {
-        DispatchQueue.main.async { [weak self] in
-            self?.tableView.refreshControl?.beginRefreshing()
+        DispatchQueue.main.async {
+            self.tableView.refreshControl?.beginRefreshing()
         }
     }
     
     func endRefresh() {
-        DispatchQueue.main.async { [weak self] in
-            self?.tableView.refreshControl?.endRefreshing()
+        DispatchQueue.main.async {
+            self.tableView.refreshControl?.endRefreshing()
         }
     }
     
     func handleRefresh() {
         refreshController.beginRefreshing()
-        DispatchQueue.main.async { [weak self] in
-            self?.tableView?.reloadData()
-            self?.refreshController.endRefreshing()
+        DispatchQueue.main.async {
+            self.tableView?.reloadData()
+            self.refreshController.endRefreshing()
         }
     }
     
     func reloadTableView() {
-        DispatchQueue.main.async { [weak self] in
-            self?.tableView?.reloadData()
+        DispatchQueue.main.async {
+            self.tableView?.reloadData()
         }
     }
     

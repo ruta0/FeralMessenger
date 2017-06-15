@@ -15,7 +15,7 @@ class ParseServerManager: NSObject {
     
     func attemptToInitializeParse() {
         if isParseInitialized == false {
-            Parse.initialize(with: ParseConfiguration.config)
+            Parse.initialize(with: ParseServerConfiguration.config)
             isParseInitialized = true
         }
     }

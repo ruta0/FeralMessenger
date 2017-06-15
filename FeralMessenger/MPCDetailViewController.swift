@@ -46,7 +46,9 @@ class MPCDetailViewContrller: UIViewController {
         let messageDictionary: [String : String] = ["message": "_end_chat_"]
         if appDelegate.mpcManager.sendData(dictionaryWithData: messageDictionary, toPeer: appDelegate.mpcManager.session.connectedPeers[0]) {
             self.appDelegate.mpcManager.session.disconnect()
-            self.navigationController?.popViewController(animated: true)
+            DispatchQueue.main.async(execute: { 
+                self.navigationController?.popViewController(animated: true)
+            })
         }
     }
     

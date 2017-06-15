@@ -24,24 +24,24 @@ class MasterViewController: UITableViewController {
     }()
     
     func beginRefresh() {
-        DispatchQueue.main.async { [weak self] in
-            self?.tableView.refreshControl?.beginRefreshing()
+        DispatchQueue.main.async {
+            self.tableView.refreshControl?.beginRefreshing()
+            self.tableView.refreshControl?.layoutIfNeeded()
         }
-        tableView.refreshControl?.layoutIfNeeded()
     }
     
     func endRefresh() {
-        DispatchQueue.main.async { [weak self] in
-            self?.tableView.refreshControl?.endRefreshing()
+        DispatchQueue.main.async {
+            self.tableView.refreshControl?.endRefreshing()
         }
     }
     
     @IBAction func refresh(_ sender: UIRefreshControl) {
         beginRefresh()
-        manager?.readUsersInParse(with: nil, completion: { [weak self] (users: [PFObject]?) in
+        manager?.readUsersInParse(with: nil, completion: { (users: [PFObject]?) in
             if let users = users {
-                self?.parseUsers = users
-                self?.endRefresh()
+                self.parseUsers = users
+                self.endRefresh()
             }
         })
     }
@@ -81,10 +81,10 @@ class MasterViewController: UITableViewController {
         setupNavigationController()
         beginRefresh()
         manager = ParseManager()
-        manager?.readUsersInParse(with: nil, completion: { [weak self] (users: [PFObject]?) in
+        manager?.readUsersInParse(with: nil, completion: { (users: [PFObject]?) in
             guard let users = users else { return }
-            self?.parseUsers = users
-            self?.endRefresh()
+            self.parseUsers = users
+            self.endRefresh()
         })
     }
     

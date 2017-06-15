@@ -54,7 +54,7 @@ final class ChatsViewController: MasterViewController {
     fileprivate let masterCellID = "MasterCell"
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return fetchedResultsController.sections?.count ?? 1
+        return fetchedResultsController.sections?.count ?? 0
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -94,7 +94,7 @@ extension ChatsViewController: ParseUsersManagerDelegate {
     }
     
     func updateCoreUser(with pfObjects: [PFObject]) {
-        self.container?.performBackgroundTask { [weak self] context in
+        self.container?.performBackgroundTask { context in
             for pfObject in pfObjects {
                 _ = try? CoreUser.findOrCreateCoreUser(matching: pfObject, in: context)
             }
@@ -103,17 +103,7 @@ extension ChatsViewController: ParseUsersManagerDelegate {
             } catch let err {
                 print("updateCoreUserFromParse - Failed to save context", err)
             }
-            self?.performFetchFromCoreData()
-            // self?.printDatabaseStats()
-        }
-    }
-    
-    private func printDatabaseStats() {
-        guard let context = container?.viewContext else { return }
-        context.perform {
-            if let userCount = try? context.count(for: CoreUser.fetchRequest()) {
-                print(userCount, "users in the core data store")
-            }
+            self.performFetchFromCoreData()
         }
     }
     

@@ -25,9 +25,9 @@ class DisclosureViewController: UICollectionViewController {
     }
     
     fileprivate func animateSaveAvatar() {
-        DispatchQueue.main.async { [weak self] in
-            if self?.saveButton.tintColor == UIColor.orange {
-                self?.saveButton.tintColor = UIColor.white
+        DispatchQueue.main.async {
+            if self.saveButton.tintColor == UIColor.orange {
+                self.saveButton.tintColor = UIColor.white
             }
         }
     }
@@ -65,7 +65,9 @@ extension DisclosureViewController {
     
     fileprivate func popViewController() {
         if let nav = self.navigationController {
-            nav.popViewController(animated: true)
+            DispatchQueue.main.async {
+                nav.popViewController(animated: true)
+            }
         }
     }
     
@@ -119,8 +121,8 @@ extension DisclosureViewController {
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedAvatarName = avatars?[indexPath.item].name
-        DispatchQueue.main.async { [weak self] in
-            self?.saveButton.tintColor = UIColor.orange
+        DispatchQueue.main.async {
+            self.saveButton.tintColor = UIColor.orange
         }
     }
     

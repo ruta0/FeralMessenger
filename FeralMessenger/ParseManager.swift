@@ -16,10 +16,10 @@ protocol ParseUsersManagerDelegate {
 
 
 protocol ParseMessengerManagerDelegate {
-    func registerForLocalNotifications() // add observers to listen APNS from AppDelegate, then setup UI in the next protocol method
-    func unregisterForLocalNotifications() // remove observers for APNS
-    func didReceiveMessages(with messages: [PFObject])
-    func didReceiveMessage(with message: Message) //  update local persistent container and handle UI
+    func registerForLocalNotifications() // add observers to listen APNS in AppDelegate
+    func unregisterForLocalNotifications() // remove observers for APNS in AppDelegate
+    func didReceiveMessages(with messages: [PFObject]) // fetched an array of messages, handle UI
+    func didReceiveMessage(with message: Message) // update local persistent container and handle UI
     func didSendMessage(with message: Message) // update local persistent container and handle UI
 }
 
@@ -83,12 +83,12 @@ class ParseManager: NSObject {
         message["image"] = ""
         message["senderName"] = PFUser.current()?.username!
         message["receiverName"] = receiverName
-        message.saveInBackground { [weak self] (completed: Bool, error: Error?) in
+        message.saveInBackground { (completed: Bool, error: Error?) in
             if error != nil {
                 print(error!.localizedDescription)
             } else {
                 if completed == true {
-                    self?.messengerDelegate?.didSendMessage(with: message)
+                    self.messengerDelegate?.didSendMessage(with: message)
                 }
             }
         }

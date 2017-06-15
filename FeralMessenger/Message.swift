@@ -9,7 +9,7 @@
 import Parse
 
 
-final class Message: PFObject {
+class Message: PFObject {
     
     // parse handles the id, created_at, updated_at automatically
     var image: PFFile?

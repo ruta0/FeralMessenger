@@ -9,7 +9,7 @@
 import Parse
 
 
-public class ParseConfiguration {
+struct ParseServerConfiguration {
     
     // MARK: - mLab db configs
     

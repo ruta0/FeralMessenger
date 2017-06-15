@@ -22,14 +22,14 @@ class WalletViewController: UIViewController {
     }()
     
     func beginRefresh() {
-        DispatchQueue.main.async { [weak self] in
-            self?.tableView.refreshControl?.beginRefreshing()
+        DispatchQueue.main.async {
+            self.tableView.refreshControl?.beginRefreshing()
         }
     }
     
     func endRefresh() {
-        DispatchQueue.main.async { [weak self] in
-            self?.tableView.refreshControl?.endRefreshing()
+        DispatchQueue.main.async {
+            self.tableView.refreshControl?.endRefreshing()
         }
     }
     

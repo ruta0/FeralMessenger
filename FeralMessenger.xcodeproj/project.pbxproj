@@ -227,6 +227,7 @@
 		C525BC321ED02C77006BEEA3 /* FeralMessenger */ = {
 			isa = PBXGroup;
 			children = (
+				C525BC331ED02C77006BEEA3 /* AppDelegate.swift */,
 				C525BC681ED02CC0006BEEA3 /* Helpers */,
 				C525BC671ED02CB7006BEEA3 /* Controllers */,
 				C525BC661ED02CB1006BEEA3 /* Views */,
@@ -258,7 +259,6 @@
 			isa = PBXGroup;
 			children = (
 				C54393181EE7BA1F006B73C3 /* FeralMessenger.entitlements */,
-				C525BC331ED02C77006BEEA3 /* AppDelegate.swift */,
 				C525BC3D1ED02C77006BEEA3 /* Assets.xcassets */,
 				C525BC421ED02C77006BEEA3 /* Info.plist */,
 				C55D62F31EE2A08000AEE16D /* Avatars.plist */,
@@ -321,19 +321,19 @@
 				C537FB8A1EE8616E00556AF2 /* MPC */,
 				C543931E1EE7D09F006B73C3 /* Keychain */,
 				C53D0A5A1EDA2BC60048CC44 /* CoreData */,
-				C525BC6F1ED0D442006BEEA3 /* ParseServer */,
+				C525BC6F1ED0D442006BEEA3 /* Parse */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
 		};
-		C525BC6F1ED0D442006BEEA3 /* ParseServer */ = {
+		C525BC6F1ED0D442006BEEA3 /* Parse */ = {
 			isa = PBXGroup;
 			children = (
 				C53D058E1EEF1D4D00D93787 /* ParseManager.swift */,
 				C543931C1EE7CE04006B73C3 /* ParseServerManager.swift */,
 				C525BC6C1ED0D2F3006BEEA3 /* ParseConguration.swift */,
 			);
-			name = ParseServer;
+			name = Parse;
 			sourceTree = "<group>";
 		};
 		C537FB8A1EE8616E00556AF2 /* MPC */ = {

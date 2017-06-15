@@ -78,14 +78,14 @@ class DetailViewController: UIViewController {
     }
     
     func beginRefresh() {
-        DispatchQueue.main.async { [weak self] in
-            self?.refreshControl.beginRefreshing()
+        DispatchQueue.main.async {
+            self.refreshControl.beginRefreshing()
         }
     }
     
     func endRefresh() {
-        DispatchQueue.main.async { [weak self] in
-            self?.refreshControl.endRefreshing()
+        DispatchQueue.main.async {
+            self.refreshControl.endRefreshing()
         }
     }
     
@@ -147,9 +147,9 @@ class DetailViewController: UIViewController {
         setupFooterView()
         manager = ParseManager()
         if let receiverName = receiverName {
-            manager?.readMessagesInParse(with: receiverName, completion: { [weak self] (messages: [PFObject]?) in
+            manager?.readMessagesInParse(with: receiverName, completion: { (messages: [PFObject]?) in
                 guard let messages = messages else { return }
-                self?.parseMessages = messages
+                self.parseMessages = messages
             })
         } else {
             print("receiverName is nil")
@@ -222,8 +222,8 @@ extension DetailViewController {
         let numberOfRows = tableView.numberOfRows(inSection: 0)
         let lastIndexPath = IndexPath(item: numberOfRows - 1, section: 0)
         if numberOfRows >= 1 {
-            DispatchQueue.main.async { [weak self] in
-                self?.tableView.scrollToRow(at: lastIndexPath, at: UITableViewScrollPosition.bottom, animated: true)
+            DispatchQueue.main.async {
+                self.tableView.scrollToRow(at: lastIndexPath, at: UITableViewScrollPosition.bottom, animated: true)
             }
         }
     }

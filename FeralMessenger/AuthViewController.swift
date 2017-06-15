@@ -49,10 +49,10 @@ class AuthViewController: UIViewController {
     @IBAction func authButton_tapped(_ sender: UIButton) {
         if sender.titleLabel?.text == AuthButtonType.login.rawValue {
             if nameTextField.text != "" && passTextField.text != "" {
-                performLogin(name: nameTextField.text!, pass: passTextField.text!, completion: { [weak self] (pfUser: PFUser?) in
+                performLogin(name: nameTextField.text!, pass: passTextField.text!, completion: { (pfUser: PFUser?) in
                     if pfUser != nil {
                         KeychainManager.shared.persistAuthToken(with: (pfUser?.sessionToken!)!)
-                        self?.presentMasterView()
+                        self.presentMasterView()
                     }
                 })
             } else {
@@ -92,30 +92,36 @@ class AuthViewController: UIViewController {
     
     // I should've use stackView to do this instead.
     fileprivate func changeEmailTextFieldAlpha(sender: UITextField) {
-        if sender.alpha == 0.0 {
-            // show
-            dividerViewOne.alpha = 1.0
-            sender.alpha = 1.0
-        } else {
-            // hide
-            sender.alpha = 0.0
-            dividerViewOne.alpha = 0.0
+        DispatchQueue.main.async { 
+            if sender.alpha == 0.0 {
+                // show
+                self.dividerViewOne.alpha = 1.0
+                sender.alpha = 1.0
+            } else {
+                // hide
+                sender.alpha = 0.0
+                self.dividerViewOne.alpha = 0.0
+            }
         }
     }
     
     fileprivate func changeAuthButtonTitle(sender: UIButton) {
-        if sender.titleLabel?.text == AuthButtonType.login.rawValue {
-            sender.setTitle(AuthButtonType.signup.rawValue, for: UIControlState.normal)
-        } else {
-            sender.setTitle(AuthButtonType.login.rawValue, for: UIControlState.normal)
+        DispatchQueue.main.async { 
+            if sender.titleLabel?.text == AuthButtonType.login.rawValue {
+                sender.setTitle(AuthButtonType.signup.rawValue, for: UIControlState.normal)
+            } else {
+                sender.setTitle(AuthButtonType.login.rawValue, for: UIControlState.normal)
+            }
         }
     }
     
     fileprivate func changeToggleButtonTitle(sender: UIButton) {
-        if sender.titleLabel?.text == ToggleButtonType.createAnAccount.rawValue {
-            sender.setTitle(ToggleButtonType.returnToLogin.rawValue, for: UIControlState.normal)
-        } else {
-            sender.setTitle(ToggleButtonType.createAnAccount.rawValue, for: UIControlState.normal)
+        DispatchQueue.main.async { 
+            if sender.titleLabel?.text == ToggleButtonType.createAnAccount.rawValue {
+                sender.setTitle(ToggleButtonType.returnToLogin.rawValue, for: UIControlState.normal)
+            } else {
+                sender.setTitle(ToggleButtonType.createAnAccount.rawValue, for: UIControlState.normal)
+            }
         }
     }
     
@@ -183,13 +189,15 @@ extension AuthViewController {
         if logoImageView.tintColor != UIColor.metallicGold() {
             DispatchQueue.main.async {
                 self.logoImageView.tintColor = UIColor.metallicGold()
+                self.performSegue(withIdentifier: "ServerConfigViewControllerSegue", sender: self)
             }
         }
-        self.performSegue(withIdentifier: "ServerConfigViewControllerSegue", sender: self)
     }
     
     fileprivate func presentMasterView() {
-        self.performSegue(withIdentifier: "ChatsViewControllerSegue", sender: self)
+        DispatchQueue.main.async { 
+            self.performSegue(withIdentifier: "ChatsViewControllerSegue", sender: self)
+        }
     }
     
     fileprivate func redirectToBrowserForTerms() {
@@ -208,9 +216,9 @@ extension AuthViewController {
         setupTextFieldDelegates()
         setupScrollViewDelegate()
         setupScrollViewGesture()
-        KeychainManager.shared.loadAuthToken { [weak self] (token: String?) in
+        KeychainManager.shared.loadAuthToken { (token: String?) in
             if token != nil {
-                self?.performLogin(token: token!)
+                self.performLogin(token: token!)
             }
         }
     }

@@ -63,9 +63,10 @@ class MasterCell: UITableViewCell {
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted == true {
-            wrapperView.backgroundColor = UIColor.miamiBlue()
+            self.wrapperView.backgroundColor = UIColor.miamiBlue()
+            
         } else {
-            wrapperView.backgroundColor = UIColor.mediumBlueGray()
+            self.wrapperView.backgroundColor = UIColor.mediumBlueGray()
         }
     }
     

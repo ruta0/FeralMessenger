@@ -58,10 +58,32 @@ class GroupViewController: UIViewController {
         return button
     }()
     
+    func updateAvatar() {
+        DispatchQueue.main.async {
+            self.avatarButton.setBackgroundImage(UIImage(named: self.getCurrentUserAvatarName()!), for: UIControlState.normal)
+        }
+    }
+    
+    func activityIndicatorStopAnime() {
+        if activityIndicator.isAnimating {
+            DispatchQueue.main.async(execute: { 
+                self.activityIndicator.stopAnimating()
+            })
+        }
+    }
+    
+    func activityIndicatorStartAnime() {
+        if activityIndicator.isAnimating == false {
+            DispatchQueue.main.async(execute: { 
+                self.activityIndicator.startAnimating()
+            })
+        }
+    }
+    
     private func animateEditBio() {
-        DispatchQueue.main.async { [weak self] in
-            self?.editButton.title = "Save"
-            self?.editButton.tintColor = UIColor.orange
+        DispatchQueue.main.async {
+            self.editButton.title = "Save"
+            self.editButton.tintColor = UIColor.orange
             UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: { [weak self] in
                 self?.bioTextView.textColor = UIColor.orange
             }) { [weak self] (completed: Bool) in
@@ -73,9 +95,9 @@ class GroupViewController: UIViewController {
     }
     
     private func animateSaveBio() {
-        DispatchQueue.main.async { [weak self] in
-            self?.editButton.title = "Edit"
-            self?.editButton.tintColor = UIColor.white
+        DispatchQueue.main.async {
+            self.editButton.title = "Edit"
+            self.editButton.tintColor = UIColor.white
             UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: { [weak self] in
                 self?.bioTextView.textColor = UIColor.candyWhite()
             }) { [weak self] (completed: Bool) in
@@ -144,7 +166,9 @@ class GroupViewController: UIViewController {
 extension GroupViewController {
     
     func dismissTabBar() {
-        self.tabBarController?.dismiss(animated: true, completion: nil)
+        DispatchQueue.main.async { 
+            self.tabBarController?.dismiss(animated: true, completion: nil)
+        }
     }
 
     override func viewDidLoad() {
@@ -156,7 +180,7 @@ extension GroupViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        avatarButton.setBackgroundImage(UIImage(named: getCurrentUserAvatarName()!), for: UIControlState.normal)
+        updateAvatar()
     }
     
 }
@@ -189,14 +213,14 @@ extension GroupViewController {
     }
     
     func performLogout() {
-        self.activityIndicator.startAnimating()
-        PFUser.logOutInBackground { [weak self] (error: Error?) in
-            self?.activityIndicator.stopAnimating()
-            self?.removeAuthTokenInKeychain(account: KeychainConfiguration.accountType.auth_token.rawValue)
+        activityIndicatorStartAnime()
+        PFUser.logOutInBackground { (error: Error?) in
+            self.activityIndicatorStopAnime()
+            self.removeAuthTokenInKeychain(account: KeychainConfiguration.accountType.auth_token.rawValue)
             if error != nil {
-                self?.alertRespond((self?.headerLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
+                self.alertRespond((self.headerLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
             } else {
-                self?.dismissTabBar()
+                self.dismissTabBar()
             }
         }
     }
@@ -204,14 +228,14 @@ extension GroupViewController {
     func updateBioInParse(with newBio: String?) {
         guard let newBio = newBio, let user = PFUser.current() else { return }
         user["bio"] = newBio
-        activityIndicator.startAnimating()
-        user.saveInBackground { [weak self] (completed: Bool, error: Error?) in
-            self?.activityIndicator.stopAnimating()
+        activityIndicatorStartAnime()
+        user.saveInBackground { (completed: Bool, error: Error?) in
+            self.activityIndicatorStopAnime()
             if error != nil {
-                self?.alertRespond((self?.headerLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
+                self.alertRespond((self.headerLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
             } else {
                 if completed == true {
-                    self?.alertRespond((self?.headerLabel)!, with: nil, for: ResponseType.success, with: "Saved", completion: nil)
+                    self.alertRespond((self.headerLabel)!, with: nil, for: ResponseType.success, with: "Saved", completion: nil)
                 }
             }
         }

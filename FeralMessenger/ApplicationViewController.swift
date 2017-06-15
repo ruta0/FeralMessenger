@@ -25,17 +25,23 @@ extension UIViewController {
         print("localTextResponder - type \(type): \(message)")
         switch type {
         case .success:
-            handler.flash(delay: 5, duration: 0.3, message: message, color: UIColor.green)
+            DispatchQueue.main.async(execute: { 
+                handler.flash(delay: 5, duration: 0.3, message: message, color: UIColor.green)
+            })
         case .failure:
-            handler.flash(delay: 5, duration: 0.3, message: message, color: UIColor.red)
-            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            if let responders = responders {
-                for responder in responders {
-                    responder.jitter(repeatCount: 5, duration: 0.03)
+            DispatchQueue.main.async(execute: { 
+                handler.flash(delay: 5, duration: 0.3, message: message, color: UIColor.red)
+                AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+                if let responders = responders {
+                    for responder in responders {
+                        responder.jitter(repeatCount: 5, duration: 0.03)
+                    }
                 }
-            }
+            })
         case .normal:
-            handler.flash(delay: 6, duration: 0.3, message: message, color: UIColor.orange)
+            DispatchQueue.main.async(execute: { 
+                handler.flash(delay: 6, duration: 0.3, message: message, color: UIColor.orange)
+            })
         }
         completion?()
     }

@@ -144,7 +144,7 @@ final class MessageViewController: DetailViewController {
 extension MessageViewController: ParseMessengerManagerDelegate {
     
     func updateCoreMessage(with pfObjects: [PFObject]) {
-        self.container?.performBackgroundTask { [weak self] context in
+        self.container?.performBackgroundTask { context in
             for pfObject in pfObjects {
                 _ = try? CoreMessage.findOrCreateCoreMessage(matching: pfObject, in: context)
             }
@@ -153,7 +153,7 @@ extension MessageViewController: ParseMessengerManagerDelegate {
             } catch let err {
                 print("updateCoreMessageFromParse - Failed to save context: ", err.localizedDescription)
             }
-            self?.performFetchFromCoreData()
+            self.performFetchFromCoreData()
         }
     }
     

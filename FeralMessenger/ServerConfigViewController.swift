@@ -37,9 +37,9 @@ class ServerConfigViewController: UIViewController {
     }
     
     @IBAction func defaultButton_tapped(_ sender: UIButton) {
-        self.application_idTextField.text = ParseConfiguration.heroku_app_id
-        self.server_urlTextField.text = ParseConfiguration.heroku_server_url
-        self.master_keyTextField.text = ParseConfiguration.heroku_master_key
+        self.application_idTextField.text = ParseServerConfiguration.heroku_app_id
+        self.server_urlTextField.text = ParseServerConfiguration.heroku_server_url
+        self.master_keyTextField.text = ParseServerConfiguration.heroku_master_key
     }
     
     @IBAction func returnButton_tapped(_ sender: UIButton) {
