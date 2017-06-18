@@ -11,35 +11,17 @@ import Parse
 import CoreData
 
 
-// MARK: - Core Data
-
 final class ChatsViewController: MasterViewController {
     
-    fileprivate let cellID = "MasterCell"
+    // MARK: - CoreData
     
-    var container: NSPersistentContainer? = CoreDataManager.persistentContainer
+    var container: NSPersistentContainer? = CoreDataManager.persistentContainer // default container
     
-    lazy var fetchedResultsController: NSFetchedResultsController<CoreUser> = {
-        let frc = NSFetchedResultsController(fetchRequest: CoreUser.defaultFetchedRequest, managedObjectContext: CoreDataManager.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+    lazy fileprivate var fetchedResultsController: NSFetchedResultsController<CoreUser> = {
+        let frc = NSFetchedResultsController(fetchRequest: CoreUser.defaultFetchRequest(with: nil), managedObjectContext: CoreDataManager.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         frc.delegate = self
         return frc
     }()
-    
-    func persistToCoreUser(with pfObjects: [PFObject]) {
-        self.container?.performBackgroundTask { [weak self] context in
-            for pfObject in pfObjects {
-                _ = try? CoreUser.findOrCreateCoreUser(matching: pfObject, in: context)
-            }
-            do {
-                try context.save()
-            } catch let err {
-                print("updateCoreUserFromParse - Failed to save context", err)
-            }
-            self?.performFetchFromCoreData()
-            self?.reloadColectionView()
-//            self?.printDatabaseStats()
-        }
-    }
     
     private func performFetchFromCoreData() {
         guard let context = container?.viewContext else { return }
@@ -49,89 +31,144 @@ final class ChatsViewController: MasterViewController {
             } catch let err {
                 print("performFetchFromCoreData failed to fetch: - \(err)")
             }
+            self.tableView.reloadData()
         }
     }
     
-    private func printDatabaseStats() {
-        guard let context = container?.viewContext else { return }
-        context.perform {
-            if let userCount = try? context.count(for: CoreUser.fetchRequest()) {
-                print(userCount, "users in the core data store")
+    func updateCoreUser(with pfObjects: [PFObject]) {
+        self.container?.performBackgroundTask { context in
+            for pfObject in pfObjects {
+                _ = try? CoreUser.findOrCreateCoreUser(matching: pfObject, in: context)
             }
-        }
-    }
-    
-    override func handleRefresh() {
-        readUserInParse { [weak self] (pfObjects: [PFObject]) in
-            self?.activityIndicator.stopAnimating()
-            self?.persistToCoreUser(with: pfObjects)
-            DispatchQueue.main.async { [weak self] in
-                self?.collectionView?.reloadData()
-                self?.refreshController.endRefreshing()
+            do {
+                try context.save()
+            } catch let err {
+                print("updateCoreUserFromParse - Failed to save context", err)
             }
+            self.performFetchFromCoreData()
         }
     }
     
-}
-
-
-// MARK: - Lifecycle
-
-extension ChatsViewController {
+    // MARK: - Lifecycle
+    
+    fileprivate let segueID = "DetailViewControllerSegue"
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.activityIndicator.startAnimating()
-        readUserInParse { [weak self] (pfObjects: [PFObject]) in
-            self?.activityIndicator.stopAnimating()
-            self?.persistToCoreUser(with: pfObjects)
-        }
+        setupDelegates()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "DetailViewControllerSegue" {
-            guard let selectedCell = sender as? MasterCell else {
-                print("unexpected sender of cell")
-                return
+        if segue.identifier == segueID {
+            if let selectedCell = sender as? MasterCell {
+                guard let messageViewController = segue.destination as? MessageViewController else {
+                    print("unexpected sender of cell")
+                    return
+                }
+                let receiverID = selectedCell.coreUser?.id
+                messageViewController.receiverID = receiverID // a handle for the Parse layer only
+                messageViewController.selectedCoreUser = selectedCell.coreUser // a handle for the CoreData layer
+                messageViewController.container = container
             }
-            let messageViewController = segue.destination as! MessageViewController
-            messageViewController.selectedUser = selectedCell.coreUser
-            messageViewController.container = container
         }
     }
     
-}
-
-
-// MARK: - UICollectionViewDataSource
-
-extension ChatsViewController {
+    // MARK: - UITableViewDataSource
     
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return fetchedResultsController.sections?.count ?? 1
+    fileprivate let masterCellID = "MasterCell"
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return fetchedResultsController.sections?.count ?? 0
     }
     
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let sections = fetchedResultsController.sections, sections.count > 0 {
-            return sections[section].numberOfObjects
-        } else {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let sections = fetchedResultsController.sections, sections.count > 0 else {
             return 0
         }
+        return sections[section].numberOfObjects
     }
     
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath)
-        let coreUser = fetchedResultsController.object(at: indexPath)
-        if let masterCell = cell as? MasterCell {
-            masterCell.coreUser = coreUser
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: masterCellID, for: indexPath) as? MasterCell {
+            cell.selectionStyle = UITableViewCellSelectionStyle.none
+            let coreUser = fetchedResultsController.object(at: indexPath)
+            cell.coreUser = coreUser
+            return cell
+        } else {
+            return UITableViewCell()
         }
-        return cell
     }
     
 }
 
 
+// MARK: - ParseUserManagerDelegate
 
+extension ChatsViewController: ParseUsersManagerDelegate {
+    
+    fileprivate func setupDelegates() {
+        manager?.userDelegate = self
+    }
+    
+    func didReceiveUsers(with users: [PFObject]) {
+        updateCoreUser(with: users)
+    }
+    
+}
+
+
+// MARK: - NSFetchedResultsControllerDelegate
+
+extension ChatsViewController: NSFetchedResultsControllerDelegate {
+    
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        self.tableView.beginUpdates()
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+        switch type {
+        case .insert:
+            self.tableView.insertSections([sectionIndex], with: UITableViewRowAnimation.fade)
+        case .delete:
+            self.tableView.deleteSections([sectionIndex], with: UITableViewRowAnimation.fade)
+        default:
+            break
+        }
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            if let indexPath = newIndexPath {
+                self.tableView.insertRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            }
+            break
+        case .delete:
+            if let indexPath = indexPath {
+                self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            }
+            break
+        case .update:
+            if let indexPath = indexPath {
+                self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            }
+            break
+        case .move:
+            if let indexPath = indexPath {
+                self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            }
+            if let newIndexPath = newIndexPath {
+                self.tableView.insertRows(at: [newIndexPath], with: UITableViewRowAnimation.fade)
+            }
+            break
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        self.tableView.endUpdates()
+    }
+    
+}
 
 
 

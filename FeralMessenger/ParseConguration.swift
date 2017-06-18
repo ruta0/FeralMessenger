@@ -9,13 +9,14 @@
 import Parse
 
 
-public class ParseConfiguration {
+struct ParseServerConfiguration {
     
     // MARK: - mLab db configs
     
     static var dbUserId: String = "heroku_swxl1fjq.heroku_swxl1fjq"
     static var dbUser: String = "heroku_swxl1fjq"
     static var dbPass: String = ""
+    
     static let dbURL: String = "mongodb://\(dbUser):\(dbPass)@ds149511.mlab.com:49511/heroku_swxl1fjq"
     
     // MARK: - server configs

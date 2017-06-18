@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="hcr-3t-wHc">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Wallet-->
+        <scene sceneID="Gyz-cb-4T8">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="hcr-3t-wHc" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Wallet" image="Wallet" id="d4V-NA-nN1"/>
+                    <toolbarItems/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="tKw-BV-q4h">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="g4y-1i-G8q" kind="relationship" relationship="rootViewController" id="DUA-vg-HNF"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UjX-gQ-u7F" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-106.40000000000001" y="175.86206896551727"/>
+        </scene>
+        <!--Wallet-->
+        <scene sceneID="4vj-Iv-kVo">
+            <objects>
+                <viewController id="g4y-1i-G8q" customClass="WalletViewController" customModule="FeralMessenger" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ZCA-6a-0Go"/>
+                        <viewControllerLayoutGuide type="bottom" id="Fy3-oH-y5j"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="81u-eI-Lqy">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="214" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ll6-PV-EbZ">
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="WalletCell" rowHeight="214" id="f9r-IH-n0a">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="214"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="f9r-IH-n0a" id="zlV-lx-vSW">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="214"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <color key="backgroundColor" red="0.094117647060000004" green="0.50588235290000005" blue="0.51764705879999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ll6-PV-EbZ" firstAttribute="top" secondItem="ZCA-6a-0Go" secondAttribute="bottom" id="B03-5L-wtd"/>
+                            <constraint firstItem="Fy3-oH-y5j" firstAttribute="top" secondItem="ll6-PV-EbZ" secondAttribute="bottom" id="N7w-2F-i3E"/>
+                            <constraint firstItem="ll6-PV-EbZ" firstAttribute="leading" secondItem="81u-eI-Lqy" secondAttribute="leading" id="YtJ-cZ-61M"/>
+                            <constraint firstAttribute="trailing" secondItem="ll6-PV-EbZ" secondAttribute="trailing" id="ba0-Lf-reN"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Wallet" id="dX2-Ma-B4F"/>
+                    <connections>
+                        <outlet property="tableView" destination="ll6-PV-EbZ" id="KSU-tH-3C4"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yaQ-Pc-3R0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="900" y="175.86206896551727"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Wallet" width="25" height="25"/>
+    </resources>
+</document>

@@ -11,49 +11,23 @@ import Parse
 import AudioToolbox
 
 
-// MARK: - UI
-
 class ServerConfigViewController: UIViewController {
-        
+    
+    // MARK: - UIScrollView
+    
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var errorLabel: UILabel!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var application_idTextField: UITextField!
     @IBOutlet weak var server_urlTextField: UITextField!
     @IBOutlet weak var master_keyTextField: UITextField!
-    @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var defaultButton: UIButton!
-    @IBOutlet weak var returnButton: UIButton!
     @IBOutlet weak var warningLabel: UILabel!
     
-    @IBAction func saveButton_tapped(_ sender: UIButton) {
-        if application_idTextField.text != "" && server_urlTextField.text != "" && master_keyTextField.text != "" {
-            
-            attemptToInitiateParse(appId: application_idTextField.text!, serverUrl: server_urlTextField.text!, masterKey: master_keyTextField.text!)
-        } else {
-            localTextResponder(errorLabel, for: ResponseType.failure, with: "Fields cannot be blank", completion: { [weak self] in
-                self?.application_idTextField.jitter(repeatCount: 5)
-                self?.server_urlTextField.jitter(repeatCount: 5)
-                self?.master_keyTextField.jitter(repeatCount: 5)
-                self?.master_keyTextField.text = ""
-            })
-        }
-    }
-    
     @IBAction func defaultButton_tapped(_ sender: UIButton) {
-        self.application_idTextField.text = ParseConfiguration.heroku_app_id
-        self.server_urlTextField.text = ParseConfiguration.heroku_server_url
-        self.master_keyTextField.text = ParseConfiguration.heroku_master_key
-    }
-    
-    @IBAction func returnButton_tapped(_ sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
-    fileprivate func setupWarningLabelGesture() {
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(enableSudo(gestureRecognizer:)))
-        gesture.numberOfTapsRequired = 49
-        warningLabel.addGestureRecognizer(gesture)
+        self.application_idTextField.text = ParseServerConfiguration.heroku_app_id
+        self.server_urlTextField.text = ParseServerConfiguration.heroku_server_url
+        self.master_keyTextField.text = ParseServerConfiguration.heroku_master_key
     }
     
     fileprivate func setupViews() {
@@ -82,21 +56,12 @@ class ServerConfigViewController: UIViewController {
         returnButton.backgroundColor = UIColor.clear
     }
     
-}
-
-
-// MARK: - Lifecycle
-
-extension ServerConfigViewController {
+    // MARK: - Lifecycle
     
-    internal func enableSudo(gestureRecognizer: UITapGestureRecognizer) {
-        localTextResponder(errorLabel, for: ResponseType.success, with: "sudo granted") {
-            isSudoGranted = true
-            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-        }
-        DispatchQueue.main.async {
-            self.warningLabel.textColor = UIColor.green
-        }
+    @IBOutlet weak var returnButton: UIButton!
+    
+    @IBAction func returnButton_tapped(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
@@ -106,12 +71,49 @@ extension ServerConfigViewController {
         setupTextFieldDelegates()
         setupScrollViewDelegate()
         setupScrollViewGesture()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         registerForKeyboardNotifications()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(true)
-        deregisterFromKeyboardNotifications()
+        super.viewDidDisappear(animated)
+        unregisterFromKeyboardNotifications()
+    }
+    
+    // MARK: - Parse
+    
+    @IBOutlet weak var saveButton: UIButton!
+    
+    @IBAction func saveButton_tapped(_ sender: UIButton) {
+        if application_idTextField.text != "" && server_urlTextField.text != "" && master_keyTextField.text != "" {
+            attemptToInitiateParse(appId: application_idTextField.text!, serverUrl: server_urlTextField.text!, masterKey: master_keyTextField.text!)
+        } else {
+            alertRespond(errorLabel, with: [application_idTextField, server_urlTextField, master_keyTextField], for: ResponseType.failure, with: "Fields cannot be blank", completion: {
+                self.master_keyTextField.text?.removeAll()
+            })
+        }
+    }
+    
+    fileprivate func attemptToInitiateParse(appId: String, serverUrl: String, masterKey: String) {
+        if isParseInitialized == true {
+            alertRespond(errorLabel, with: nil, for: ResponseType.normal, with: "Restart the app to setup a new server configuration", completion: nil)
+        } else {
+            guard let url: URL = URL(string: serverUrl) else { return }
+            if UIApplication.shared.canOpenURL(url) == true {
+                ParseServerManager.shared.attemptToInitializeParse()
+                alertRespond(errorLabel, with: nil, for: ResponseType.success, with: "Server initialized with provided credentials", completion: {
+                    self.master_keyTextField.text?.removeAll()
+                    self.server_urlTextField.text?.removeAll()
+                })
+            } else {
+                alertRespond(errorLabel, with: [application_idTextField, server_urlTextField, master_keyTextField], for: ResponseType.failure, with: "Invalid URL", completion: {
+                    self.server_urlTextField.text?.removeAll()
+                })
+            }
+        }
     }
     
 }
@@ -141,7 +143,7 @@ extension ServerConfigViewController: UITextFieldDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    fileprivate func deregisterFromKeyboardNotifications() {
+    fileprivate func unregisterFromKeyboardNotifications() {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
@@ -179,9 +181,25 @@ extension ServerConfigViewController: UITextFieldDelegate {
 }
 
 
-// MARK: - UIScrollViewDelegate
+// MARK: - UIScrollViewDelegate + Sudo
 
 extension ServerConfigViewController: UIScrollViewDelegate {
+    
+    fileprivate func setupWarningLabelGesture() {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(enableSudo(gestureRecognizer:)))
+        gesture.numberOfTapsRequired = 49
+        warningLabel.addGestureRecognizer(gesture)
+    }
+    
+    @objc fileprivate func enableSudo(gestureRecognizer: UITapGestureRecognizer) {
+        alertRespond(errorLabel, with: nil, for: ResponseType.success, with: "sudo granted", completion: {
+            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+            isSudoGranted = true
+            DispatchQueue.main.async {
+                self.warningLabel.textColor = UIColor.green
+            }
+        })
+    }
     
     fileprivate func setupScrollViewDelegate() {
         scrollView.delegate = self
@@ -199,42 +217,6 @@ extension ServerConfigViewController: UIScrollViewDelegate {
 }
 
 
-// MARK: - Parse
-
-extension ServerConfigViewController {
-    
-    fileprivate func attemptToInitiateParse(appId: String, serverUrl: String, masterKey: String) {
-        if isParseInitialized == true {
-            localTextResponder(errorLabel, for: ResponseType.normal, with: "Restart the app to setup a new server configuration", completion: nil)
-        } else {
-            if Reachability.isConnectedToNetwork() == true {
-                guard let url: URL = URL(string: serverUrl) else { return }
-                if UIApplication.shared.canOpenURL(url) == true {
-                    ParseServerManager.shared.attemptToInitializeParse()
-                    localTextResponder(errorLabel, for: ResponseType.success, with: "Server initialized with provided credentials", completion: { [weak self] in
-                        self?.master_keyTextField.text = ""
-                        self?.server_urlTextField.text = ""
-                    })
-                } else {
-                    localTextResponder(errorLabel, for: ResponseType.failure, with: "Invalid URL", completion: { [weak self] in
-                        self?.application_idTextField.jitter(repeatCount: 5)
-                        self?.server_urlTextField.jitter(repeatCount: 5)
-                        self?.master_keyTextField.jitter(repeatCount: 5)
-                        self?.master_keyTextField.text = ""
-                    })
-                }
-            } else {
-                localTextResponder(errorLabel, for: ResponseType.failure, with: "Failed to connect to Internet", completion: { [weak self] in
-                    self?.application_idTextField.jitter(repeatCount: 5)
-                    self?.server_urlTextField.jitter(repeatCount: 5)
-                    self?.master_keyTextField.jitter(repeatCount: 5)
-                    self?.master_keyTextField.text = ""
-                })
-            }
-        }
-    }
-    
-}
 
 
 

@@ -11,23 +11,16 @@ import AudioToolbox
 
 
 public protocol StaticScrollViewControllerDelegate : class, UIScrollViewDelegate {
-    
     var lastTextField: UITextField? { get set } // the last item could be a UITextField, else be nil
     var lastTextView: UITextView? { get set } // the last item could be a UITextView, else be nil
-    
 }
 
 extension StaticScrollViewControllerDelegate {
-    
-    @available(iOS 10.0, *)
     func registerLastTextFieldOnView(_ lastTextField: UITextField) { }
-    
-    @available(iOS 10.0, *)
-    func registerLastTextViewOnView(_ lastTextView: UITextView) { }
-    
+    func registerLastTextViewOnView(_ lastTextView: UITextView) { }    
 }
 
-/*
+/**
  StaticScrollViewController conforms to StaticScrollViewControllerDelegate.
  Either lastTextField or lastTextView can be instantiated but not at the same time.
  */
@@ -71,7 +64,7 @@ open class StaticScrollViewController: UIViewController, UIScrollViewDelegate, S
         }
     }
     
-    func keyboardWillBeHidden(notification: NSNotification) {
+    func keyboardWillHide(notification: NSNotification) {
         //Once keyboard disappears, restore original positions
         var info = notification.userInfo!
         let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
@@ -84,7 +77,7 @@ open class StaticScrollViewController: UIViewController, UIScrollViewDelegate, S
     
     func registerForKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
     func deregisterFromKeyboardNotifications() {
@@ -134,41 +127,6 @@ extension StaticScrollViewController: UITextViewDelegate {
     }
     
 }
-
-
-// MARK: - CompletionCorrespondence
-
-extension StaticScrollViewController {
-    
-    // The handler will display a dynamic message while the responder will perform animation, vibration, sounds, etc.
-    // In case of success, responderTextFields will be cleared; in case of failure, responderTextFields will be cleared and perform jitter while in UIColor.red; in case or normal, it depends...
-    func completionWithResponder(_ handler: UILabel, with responders: [UITextField]?, for type: ResponseType, with message: String, completion: (() -> Void)? = nil) {
-        print("localTextResponder - type \(type): \(message)")
-        switch type {
-        case .success:
-            handler.flash(delay: 5, duration: 0.3, message: message, color: UIColor.green)
-            if let responders = responders {
-                for responder in responders {
-                    responder.text = ""
-                }
-            }
-        case .failure:
-            handler.flash(delay: 5, duration: 0.3, message: message, color: UIColor.red)
-            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            if let responders = responders {
-                for responder in responders {
-                    responder.text = ""
-                    responder.jitter(repeatCount: 5)
-                }
-            }
-        case .normal:
-            handler.flash(delay: 7, duration: 0.3, message: message, color: UIColor.orange)
-        }
-        completion?()
-    }
-    
-}
-
 
 
 

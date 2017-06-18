@@ -12,10 +12,8 @@ import Parse
 
 class DisclosureViewController: UICollectionViewController {
     
-    var avatars: [Avatar]?
-    var selectedAvatarName: String?
+    // MARK: - NavigationController
     
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var saveButton: UIBarButtonItem!
     
     @IBAction func saveButton_tapped(_ sender: UIBarButtonItem) {
@@ -25,11 +23,30 @@ class DisclosureViewController: UICollectionViewController {
     }
     
     fileprivate func animateSaveAvatar() {
-        DispatchQueue.main.async { [weak self] in
-            if self?.saveButton.tintColor == UIColor.orange {
-                self?.saveButton.tintColor = UIColor.white
+        DispatchQueue.main.async {
+            if self.saveButton.tintColor == UIColor.orange {
+                self.saveButton.tintColor = UIColor.white
             }
         }
+    }
+    
+    // MARK: - TabBarController
+    
+    fileprivate func setupTabBar() {
+        guard let tabBar = tabBarController?.tabBar else { return }
+        tabBar.isHidden = true
+    }
+    
+    // MARK: - UICollectionView
+    
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    var avatars: [Avatar]?
+    var selectedAvatarName: String?
+    
+    fileprivate func setupCollectionView() {
+        guard let collectionView = collectionView else { return }
+        collectionView.backgroundColor = UIColor.midNightBlack()
     }
     
     fileprivate func fetchAvatarsFromPropertyList(for resource: String, of type: String) {
@@ -46,26 +63,13 @@ class DisclosureViewController: UICollectionViewController {
         self.avatars = items
     }
     
-    fileprivate func setupCollectionView() {
-        guard let collectionView = collectionView else { return }
-        collectionView.backgroundColor = UIColor.midNightBlack()
-    }
-    
-    fileprivate func setupTabBar() {
-        guard let tabBar = tabBarController?.tabBar else { return }
-        tabBar.isHidden = true
-    }
-    
-}
-
-
-// MARK: - Lifecycle
-
-extension DisclosureViewController {
+    // MARK: - Lifecycle
     
     fileprivate func popViewController() {
         if let nav = self.navigationController {
-            nav.popViewController(animated: true)
+            DispatchQueue.main.async {
+                nav.popViewController(animated: true)
+            }
         }
     }
     
@@ -119,8 +123,8 @@ extension DisclosureViewController {
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedAvatarName = avatars?[indexPath.item].name
-        DispatchQueue.main.async { [weak self] in
-            self?.saveButton.tintColor = UIColor.orange
+        DispatchQueue.main.async {
+            self.saveButton.tintColor = UIColor.orange
         }
     }
     

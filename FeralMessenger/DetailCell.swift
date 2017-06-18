@@ -9,10 +9,9 @@
 import UIKit
 
 
-class DetailCell: UICollectionViewCell {
+class DetailCell: UITableViewCell {
     
     @IBOutlet weak var wrapperView: UIView!
-    @IBOutlet weak var bubbleView: UIView!
     @IBOutlet weak var messageTextView: UITextView!
     
     var coreMessage: CoreMessage? {
@@ -26,7 +25,6 @@ class DetailCell: UICollectionViewCell {
         messageTextView?.text = nil
         // STEP 2: load new info from user (if any)
         if let coreMessage = self.coreMessage {
-            // implement profile_image
             messageTextView.text = coreMessage.sms
         }
     }
@@ -36,22 +34,17 @@ class DetailCell: UICollectionViewCell {
         backgroundColor = UIColor.clear
         // wrapperView
         wrapperView.backgroundColor = UIColor.clear
-        // bubbleView
-        bubbleView.backgroundColor = UIColor.miamiBlue()
-        bubbleView.layer.cornerRadius = 15
-        bubbleView.layer.masksToBounds = true
         // messageTextView
-        messageTextView.textColor = UIColor.darkGray
-        messageTextView.backgroundColor = UIColor.clear
+        messageTextView.textColor = UIColor.white // deafult
+        messageTextView.backgroundColor = UIColor.miamiBlue() // default
         messageTextView.font = UIFont.systemFont(ofSize: 14)
-        messageTextView.text = "message"
+        messageTextView.layer.cornerRadius = 10
+        messageTextView.textContainerInset.left = 3
     }
     
     override func awakeFromNib() {
         super.awakeFromNib()
         setupViews()
-        addSubview(bubbleView)
-        addSubview(messageTextView)
     }
     
 }

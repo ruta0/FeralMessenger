@@ -24,10 +24,13 @@ final class User: PFUser {
     var timezone: String
     var model: String
     
-    func query() -> PFQuery<PFObject>? {
-        let query = PFQuery(className: User.parseClassName())
-        query.includeKey("User")
-        query.order(byAscending: "created_at")
+    static let createdSortDescriptor = NSSortDescriptor(key: "created_at", ascending: false, selector: #selector(NSString.localizedCompare(_:)))
+    
+    class func defaultQuery(with predicate: NSPredicate?) -> PFQuery<PFObject>? {        
+        // query for users
+        let query = PFQuery(className: User.parseClassName(), predicate: predicate)
+        let usernameSortDescriptor = NSSortDescriptor(key: "username", ascending: true, selector: nil)
+        query.order(by: [usernameSortDescriptor])
         return query
     }
     

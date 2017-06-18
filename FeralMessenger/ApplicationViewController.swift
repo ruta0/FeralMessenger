@@ -10,6 +10,8 @@ import UIKit
 import AudioToolbox
 
 
+// MARK: - Alert event handling
+
 enum ResponseType {
     case normal
     case success
@@ -18,20 +20,28 @@ enum ResponseType {
 
 extension UIViewController {
     
-    // I should add an optional array parameters to store textFieldFlashers and textFieldJiterers
-    func localTextResponder(_ responder: UILabel, for type: ResponseType, with message: String, completion: (() -> Void)? = nil) {
+    // Alert for error / success handling
+    func alertRespond(_ handler: UILabel, with responders: [UITextField]?, for type: ResponseType, with message: String, completion: (() -> Void)? = nil) {
         print("localTextResponder - type \(type): \(message)")
         switch type {
         case .success:
-            responder.textColor = UIColor.green
-            responder.flash(delay: 5, message: message)
+            DispatchQueue.main.async(execute: { 
+                handler.flash(delay: 5, duration: 0.3, message: message, color: UIColor.green)
+            })
         case .failure:
-            responder.textColor = UIColor.red
-            responder.flash(delay: 5, message: message)
-            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+            DispatchQueue.main.async(execute: { 
+                handler.flash(delay: 5, duration: 0.3, message: message, color: UIColor.red)
+                AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+                if let responders = responders {
+                    for responder in responders {
+                        responder.jitter(repeatCount: 5, duration: 0.03)
+                    }
+                }
+            })
         case .normal:
-            responder.textColor = UIColor.orange
-            responder.flash(delay: 7, message: message)
+            DispatchQueue.main.async(execute: { 
+                handler.flash(delay: 6, duration: 0.3, message: message, color: UIColor.orange)
+            })
         }
         completion?()
     }
@@ -40,20 +50,6 @@ extension UIViewController {
 
 
 extension UILabel {
-    
-    // I should add a flashing colour parameter into this
-    func flash(delay: TimeInterval, message: String) {
-        self.text = message
-        UILabel.animate(withDuration: 0.3, delay: 0, options: UIViewAnimationOptions.curveEaseIn, animations: {
-            self.alpha = 1.0
-        }) { (completed: Bool) in
-            if completed == true {
-                UILabel.animate(withDuration: 0.3, delay: delay, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                    self.alpha = 0.0
-                }, completion: nil)
-            }
-        }
-    }
     
     // Call this method with your handler: UILabel
     func flash(delay: TimeInterval, duration: TimeInterval, message: String, color: UIColor) {
@@ -75,26 +71,6 @@ extension UILabel {
 
 extension UIView {
     
-    func addConstraintsWithFormat(format: String, views: UIView...) {
-        var viewsDictionary = [String: UIView]()
-        for (index, view) in views.enumerated() {
-            let key = "v\(index)"
-            viewsDictionary[key] = view
-            view.translatesAutoresizingMaskIntoConstraints = false
-        }
-        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: format, options: NSLayoutFormatOptions(), metrics: nil, views: viewsDictionary))
-    }
-    
-    func jitter(repeatCount: Float) {
-        let animation = CABasicAnimation(keyPath: "position")
-        animation.duration = 0.03
-        animation.repeatCount = repeatCount
-        animation.autoreverses = true
-        animation.fromValue = NSValue(cgPoint: CGPoint.init(x: self.center.x - 5.0, y: self.center.y))
-        animation.toValue = NSValue(cgPoint: CGPoint.init(x: self.center.x + 5.0, y: self.center.y))
-        layer.add(animation, forKey: "position")
-    }
-    
     func jitter(repeatCount: Float, duration: TimeInterval) {
         let animation = CABasicAnimation(keyPath: "position")
         animation.duration = duration
@@ -107,6 +83,8 @@ extension UIView {
     
 }
 
+
+// MARK: - Color customization
 
 extension UIColor {
     

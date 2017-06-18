@@ -14,6 +14,8 @@ import Locksmith
 
 class AuthViewController: UIViewController {
     
+    // MARK: UIScrollView
+    
     fileprivate enum AuthButtonType: String {
         case login = "Login"
         case signup = "Sign Up"
@@ -23,10 +25,6 @@ class AuthViewController: UIViewController {
         case returnToLogin = "Return to Login"
         case createAnAccount = "Create an Account"
     }
-    
-    let termsUrl: String = "https://sheltered-ridge-89457.herokuapp.com/terms"
-    
-    var accountName: String?
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
@@ -49,37 +47,26 @@ class AuthViewController: UIViewController {
     @IBAction func authButton_tapped(_ sender: UIButton) {
         if sender.titleLabel?.text == AuthButtonType.login.rawValue {
             if nameTextField.text != "" && passTextField.text != "" {
-                performLogin(name: nameTextField.text!, pass: passTextField.text!, completion: { [weak self] (pfUser: PFUser?) in
+                performLogin(name: nameTextField.text!, pass: passTextField.text!, completion: { (pfUser: PFUser?) in
                     if pfUser != nil {
                         KeychainManager.shared.persistAuthToken(with: (pfUser?.sessionToken!)!)
-                        self?.presentMasterView()
+                        self.presentMasterView()
                     }
                 })
             } else {
-                localTextResponder(errorLabel, for: ResponseType.failure, with: "Fields cannot be blank", completion: { [weak self] in
-                    self?.jitterAndReset()
+                alertRespond(errorLabel, with: [emailTextField, passTextField], for: ResponseType.failure, with: "Fields cannot be blank", completion: {
+                    self.passTextField.text?.removeAll()
                 })
             }
         } else {
             if nameTextField.text != "" && emailTextField.text != "" && passTextField.text != "" {
                 createUserInParse(with: nameTextField.text!, email: emailTextField.text!.lowercased(), pass: passTextField.text!)
             } else {
-                localTextResponder(errorLabel, for: ResponseType.failure, with: "Fields cannot be blank", completion: { [weak self] in
-                    self?.jitterAndReset()
+                alertRespond(errorLabel, with: [nameTextField, emailTextField, passTextField], for: ResponseType.failure, with: "Fields cannot be blank", completion: { 
+                    self.passTextField.text?.removeAll()
                 })
             }
         }
-    }
-    
-    @IBAction func termsButton_tapped(_ sender: UIButton) {
-        let alert = UIAlertController(title: "You will be redirected to your browser for the following URL", message: "\(termsUrl)", preferredStyle: UIAlertControllerStyle.alert)
-        let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: nil)
-        let redirect = UIAlertAction(title: "Redirect", style: UIAlertActionStyle.destructive) { (action: UIAlertAction) in
-            self.redirectToBrowserForTerms()
-        }
-        alert.addAction(cancel)
-        alert.addAction(redirect)
-        self.present(alert, animated: true, completion: nil)
     }
     
     @IBAction func toggleButton_tapped(_ sender: UIButton) {
@@ -90,47 +77,58 @@ class AuthViewController: UIViewController {
         }, completion: nil)
     }
     
-    fileprivate func jitterAndReset() {
-        nameTextField.jitter(repeatCount: 5)
-        emailTextField.jitter(repeatCount: 5)
-        passTextField.jitter(repeatCount: 5)
-        passTextField.text = ""
-    }
-    
     // I should've use stackView to do this instead.
     fileprivate func changeEmailTextFieldAlpha(sender: UITextField) {
-        if sender.alpha == 0.0 {
-            dividerViewOne.alpha = 1.0
-            sender.alpha = 1.0
-        } else {
-            sender.alpha = 0.0
-            dividerViewOne.alpha = 0.0
+        DispatchQueue.main.async { 
+            if sender.alpha == 0.0 {
+                // show
+                self.dividerViewOne.alpha = 1.0
+                sender.alpha = 1.0
+            } else {
+                // hide
+                sender.alpha = 0.0
+                self.dividerViewOne.alpha = 0.0
+            }
         }
     }
     
     fileprivate func changeAuthButtonTitle(sender: UIButton) {
-        if sender.titleLabel?.text == AuthButtonType.login.rawValue {
-            sender.setTitle(AuthButtonType.signup.rawValue, for: UIControlState.normal)
-        } else {
-            sender.setTitle(AuthButtonType.login.rawValue, for: UIControlState.normal)
+        DispatchQueue.main.async { 
+            if sender.titleLabel?.text == AuthButtonType.login.rawValue {
+                sender.setTitle(AuthButtonType.signup.rawValue, for: UIControlState.normal)
+            } else {
+                sender.setTitle(AuthButtonType.login.rawValue, for: UIControlState.normal)
+            }
         }
     }
     
     fileprivate func changeToggleButtonTitle(sender: UIButton) {
-        if sender.titleLabel?.text == ToggleButtonType.createAnAccount.rawValue {
-            sender.setTitle(ToggleButtonType.returnToLogin.rawValue, for: UIControlState.normal)
-        } else {
-            sender.setTitle(ToggleButtonType.createAnAccount.rawValue, for: UIControlState.normal)
+        DispatchQueue.main.async { 
+            if sender.titleLabel?.text == ToggleButtonType.createAnAccount.rawValue {
+                sender.setTitle(ToggleButtonType.returnToLogin.rawValue, for: UIControlState.normal)
+            } else {
+                sender.setTitle(ToggleButtonType.createAnAccount.rawValue, for: UIControlState.normal)
+            }
         }
     }
     
     fileprivate func setupLogoImageViewGesture() {
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(presentServerConfigView(gestureRecognizer:)))
-        gesture.numberOfTapsRequired = 7
-        logoImageView.addGestureRecognizer(gesture)
+        let date = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH"
+        let hourString = dateFormatter.string(from: date)
+        if let hourInt = Int(hourString) {
+            if hourInt >= 23 || hourInt < 3 {
+                let gesture = UITapGestureRecognizer(target: self, action: #selector(presentServerConfigView(gestureRecognizer:)))
+                gesture.numberOfTapsRequired = 7
+                logoImageView.addGestureRecognizer(gesture)
+            } else {
+                print("time is still too early :(")
+            }
+        }
     }
     
-    fileprivate func setupViews() {
+    private func setupViews() {
         // scrollView
         scrollView.isScrollEnabled = false
         scrollView.backgroundColor = UIColor.midNightBlack()
@@ -167,27 +165,37 @@ class AuthViewController: UIViewController {
         toggleButton.setTitle(ToggleButtonType.createAnAccount.rawValue, for: UIControlState.normal)
     }
     
-}
-
-
-// MARK: - Lifecycle
-
-extension AuthViewController {
+    // MARK: - Lifecycle
     
-    internal func presentServerConfigView(gestureRecognizer: UITapGestureRecognizer) {
+    private let termsUrl: String = "https://sheltered-ridge-89457.herokuapp.com/terms"
+    
+    @IBAction func termsButton_tapped(_ sender: UIButton) {
+        let alert = UIAlertController(title: "You will be redirected to your browser for the following URL", message: "\(termsUrl)", preferredStyle: UIAlertControllerStyle.alert)
+        let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
+        let redirect = UIAlertAction(title: "Redirect", style: UIAlertActionStyle.default) { (action: UIAlertAction) in
+            self.redirectToBrowserForTerms()
+        }
+        alert.addAction(cancel)
+        alert.addAction(redirect)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    @objc private func presentServerConfigView(gestureRecognizer: UITapGestureRecognizer) {
         if logoImageView.tintColor != UIColor.metallicGold() {
             DispatchQueue.main.async {
                 self.logoImageView.tintColor = UIColor.metallicGold()
+                self.performSegue(withIdentifier: "ServerConfigViewControllerSegue", sender: self)
             }
         }
-        self.performSegue(withIdentifier: "ServerConfigViewControllerSegue", sender: self)
     }
     
     fileprivate func presentMasterView() {
-        self.performSegue(withIdentifier: "ChatsViewControllerSegue", sender: self)
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: "ChatsViewControllerSegue", sender: self)
+        }
     }
     
-    fileprivate func redirectToBrowserForTerms() {
+    private func redirectToBrowserForTerms() {
         guard let termsUrl = URL(string: termsUrl) else { return }
         if #available(iOS 10.0, *) {
             UIApplication.shared.open(termsUrl, options: [:], completionHandler: nil)
@@ -203,27 +211,27 @@ extension AuthViewController {
         setupTextFieldDelegates()
         setupScrollViewDelegate()
         setupScrollViewGesture()
-        KeychainManager.shared.loadAuthToken { [weak self] (token: String?) in
+        KeychainManager.shared.loadAuthToken { (token: String?) in
             if token != nil {
-                self?.performLogin(token: token!)
+                self.performLogin(token: token!)
             }
         }
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        super.viewDidDisappear(true)
+        super.viewDidDisappear(animated)
         registerForKeyboardNotifications()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(true)
+        super.viewDidDisappear(animated)
         deregisterFromKeyboardNotifications()
     }
     
 }
 
 
-// MARK: - UITextFieldDelegate
+// MARK: - UITextFieldDelegate + Keyboard
 
 extension AuthViewController: UITextFieldDelegate {
     
@@ -262,10 +270,10 @@ extension AuthViewController: UITextFieldDelegate {
         self.scrollView.contentInset = contentInsets
         self.scrollView.scrollIndicatorInsets = contentInsets
         
-        var aRect : CGRect = self.view.frame
+        var aRect: CGRect = self.view.frame
         aRect.size.height -= keyboardSize!.height
         if let activeField = self.passTextField {
-            if (!aRect.contains(activeField.frame.origin)){
+            if (!aRect.contains(activeField.frame.origin)) {
                 self.scrollView.scrollRectToVisible(activeField.frame, animated: true)
             }
         }
@@ -311,80 +319,64 @@ extension AuthViewController {
     
     func performLogin(name: String, pass: String, completion: @escaping (PFUser?) -> Void) {
         guard let name = nameTextField.text?.lowercased(), let pass = passTextField.text else { return }
-        if Reachability.isConnectedToNetwork() == true {
-            ParseServerManager.shared.attemptToInitializeParse()
-            self.activityIndicator.startAnimating()
-            UIApplication.shared.beginIgnoringInteractionEvents()
-            PFUser.logInWithUsername(inBackground: name, password: pass, block: { [weak self] (pfUser: PFUser?, error: Error?) in
-                self?.activityIndicator.stopAnimating()
-                UIApplication.shared.endIgnoringInteractionEvents()
-                self?.passTextField.text = ""
-                if error != nil {
-                    self?.localTextResponder((self?.errorLabel)!, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
-                } else {
-                    completion(pfUser)
-                }
-            })
-        } else {
-            localTextResponder(errorLabel, for: ResponseType.failure, with: "Failed to connect to Internet", completion: { [weak self] in
-                self?.jitterAndReset()
-            })
-        }
+        ParseServerManager.shared.attemptToInitializeParse()
+        self.activityIndicator.startAnimating()
+        authButton.isEnabled = false
+        PFUser.logInWithUsername(inBackground: name, password: pass, block: { [weak self] (pfUser: PFUser?, error: Error?) in
+            self?.activityIndicator.stopAnimating()
+            self?.authButton.isEnabled = true
+            self?.passTextField.text = ""
+            if error != nil {
+                self?.alertRespond((self?.errorLabel)!, with: [(self?.nameTextField)!, (self?.passTextField)!], for: ResponseType.failure, with: error!.localizedDescription, completion: {
+                    self?.passTextField.text?.removeAll()
+                })
+            } else {
+                completion(pfUser)
+            }
+        })
     }
     
     func performLogin(token: String) {
-        if Reachability.isConnectedToNetwork() == true {
-            ParseServerManager.shared.attemptToInitializeParse()
-            self.activityIndicator.startAnimating()
-            localTextResponder(errorLabel, for: ResponseType.normal, with: "Resumming to previous session", completion: nil)
-            UIApplication.shared.beginIgnoringInteractionEvents()
-            PFUser.become(inBackground: token, block: { [weak self] (pfUser: PFUser?, error: Error?) in
-                self?.activityIndicator.stopAnimating()
-                UIApplication.shared.endIgnoringInteractionEvents()
-                if error != nil {
-                    self?.localTextResponder((self?.errorLabel)!, for: ResponseType.failure, with: error!.localizedDescription, completion: { [weak self] in
-                        self?.jitterAndReset()
-                    })
-                    KeychainManager.shared.deleteAuthToken(in: KeychainConfiguration.accountType.auth_token.rawValue)
-                } else {
-                    KeychainManager.shared.persistAuthToken(with: token)
-                    self?.presentMasterView()
-                }
-            })
-        } else {
-            localTextResponder(errorLabel, for: ResponseType.failure, with: "Failed to connect to Internet", completion: { [weak self] in
-                self?.jitterAndReset()
-            })
-        }
+        ParseServerManager.shared.attemptToInitializeParse()
+        self.activityIndicator.startAnimating()
+        alertRespond(errorLabel, with: nil, for: ResponseType.normal, with: "Resumming to previous session", completion: nil)
+        authButton.isEnabled = false
+        PFUser.become(inBackground: token, block: { [weak self] (pfUser: PFUser?, error: Error?) in
+            self?.activityIndicator.stopAnimating()
+            self?.authButton.isEnabled = true
+            if error != nil {
+                self?.alertRespond((self?.errorLabel)!, with: [(self?.nameTextField)!, (self?.passTextField)!], for: ResponseType.failure, with: error!.localizedDescription, completion: {
+                    self?.passTextField.text?.removeAll()
+                })
+                KeychainManager.shared.deleteAuthToken(in: KeychainConfiguration.accountType.auth_token.rawValue)
+            } else {
+                KeychainManager.shared.persistAuthToken(with: token)
+                self?.presentMasterView()
+            }
+        })
     }
     
     func createUserInParse(with name: String, email: String, pass: String) {
         guard let name = nameTextField.text?.lowercased(), let email = emailTextField.text?.lowercased(), let pass = passTextField.text else { return }
-        if Reachability.isConnectedToNetwork() == true {
-            ParseServerManager.shared.attemptToInitializeParse()            
-            self.activityIndicator.startAnimating()
-            UIApplication.shared.beginIgnoringInteractionEvents()
-            let newUser = User()
-            newUser.constructUserInfo(name: name, email: email, pass: pass)
-            newUser.signUpInBackground(block: { [weak self] (completed: Bool, error: Error?) in
-                UIApplication.shared.endIgnoringInteractionEvents()
-                self?.activityIndicator.stopAnimating()
-                self?.passTextField.text = ""
-                if error != nil {
-                    self?.localTextResponder((self?.errorLabel)!, for: ResponseType.failure, with: error!.localizedDescription, completion: { [weak self] in
-                        self?.jitterAndReset()
-                    })
-                } else {
-                    if completed == true {
-                        self?.localTextResponder((self?.errorLabel)!, for: ResponseType.success, with: "Success! Please proceed to login", completion: nil)
-                    }
+        ParseServerManager.shared.attemptToInitializeParse()
+        self.activityIndicator.startAnimating()
+        authButton.isEnabled = false
+        let newUser = User()
+        newUser.constructUserInfo(name: name, email: email, pass: pass)
+        newUser.signUpInBackground(block: { [unowned self] (completed: Bool, error: Error?) in
+            self.authButton.isEnabled = true
+            self.activityIndicator.stopAnimating()
+            self.passTextField.text = ""
+            if error != nil {
+                self.alertRespond(self.errorLabel, with: [self.nameTextField, self.emailTextField, self.passTextField], for: ResponseType.failure, with: error!.localizedDescription, completion: {
+                    self.passTextField.text?.removeAll()
+                })
+            } else {
+                if completed == true {
+                    self.alertRespond(self.errorLabel, with: [self.nameTextField, self.emailTextField, self.passTextField], for: ResponseType.success, with: "Success. Please proceed to login", completion: nil)
                 }
-            })
-        } else {
-            localTextResponder(errorLabel, for: ResponseType.failure, with: "Failed to connect to Internet", completion: { [weak self] in
-                self?.jitterAndReset()
-            })
-        }
+            }
+        })
     }
     
 }

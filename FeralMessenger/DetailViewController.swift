@@ -9,71 +9,76 @@
 import UIKit
 import Parse
 import AVFoundation
+import CloudKit
 
 
-// MARK: - UI
-
-class DetailViewController: FetchedResultsViewController {
+class DetailViewController: UIViewController {
     
-    var player: AVAudioPlayer?
+    // MARK: - NavigationController
     
-    var bottomConstraint: NSLayoutConstraint?
-    var selectedUser: CoreUser?
-    
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    
-    let messageInputContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.mediumBlueGray()
+    var activityIndicator: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
+        view.hidesWhenStopped = true
         return view
     }()
     
-    let topBorderView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.lightGray
-        return view
-    }()
-    
-    lazy var titleButton: UIButton = {
+    var titleButton: UIButton = {
         let button = UIButton()
         button.tintColor = UIColor.white
         button.frame = CGRect(x: 0, y: 0, width: 35, height: 25)
         return button
     }()
     
-    lazy var profileButton: UIButton = {
+    func beginLoadingAnime() {
+        DispatchQueue.main.async {
+            self.view.layoutIfNeeded()
+            self.navigationItem.titleView = self.activityIndicator
+            self.activityIndicator.startAnimating()
+        }
+    }
+    
+    func stopLoadingAnime() {
+        DispatchQueue.main.async {
+            self.activityIndicator.stopAnimating()
+            self.navigationItem.titleView = self.titleButton
+        }
+    }
+    
+    var rightBarButton: UIButton = {
         let button = UIButton()
         button.tintColor = UIColor.white
-        button.setBackgroundImage(UIImage(named: "Cat")!, for: UIControlState.normal)
         button.layer.cornerRadius = 16.5
         button.clipsToBounds = true
-        button.addTarget(self, action: #selector(presentProfileViewController(_:)), for: UIControlEvents.touchUpInside)
         button.contentMode = UIViewContentMode.scaleAspectFill
         button.frame = CGRect(x: 0, y: 0, width: 33, height: 33)
         return button
     }()
     
-    lazy var inputTextField: UITextField = {
-        let textField = UITextField()
-        textField.textColor = UIColor.white
-        textField.backgroundColor = UIColor.clear
-        textField.attributedPlaceholder = NSAttributedString(string: "Message", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
-        textField.keyboardAppearance = UIKeyboardAppearance.dark
-        textField.delegate = self
-        return textField
-    }()
+    func setupNavigationController() {
+        navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: rightBarButton)]
+    }
     
-    lazy var sendButton: UIButton = {
-        let button = UIButton(type: UIButtonType.system)
-        button.setTitle("Send", for: UIControlState.normal)
-        button.backgroundColor = UIColor.clear
-        let titleColor = UIColor.white
-        button.setTitleColor(titleColor, for: UIControlState.normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        button.addTarget(self, action: #selector(sendMessage), for: UIControlEvents.touchUpInside)
-        return button
-    }()
+    // MARK: - InputContainerView
     
+    var player: AVAudioPlayer?
+    
+    @IBOutlet weak var heightContraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var inputContainerView: UIView!
+    @IBOutlet weak var dividerView: UIView!
+    @IBOutlet weak var messageTextField: UITextField!
+    @IBOutlet weak var sendButton: UIButton!
+    
+    @IBAction func sendButton_tapped(_ sender: UIButton) {
+        let message = messageTextField.text
+        clearMessageTextField()
+        // sending message
+        if let sms = message, !sms.isEmpty, let receiverID = receiverID {
+            parseManager?.createMessageInParse(with: sms, receiverID: receiverID)
+        }
+    }
+    
+    // schwoof
     func playSound() {
         guard let sound = NSDataAsset(name: "sent") else {
             print("sound file not found")
@@ -90,38 +95,44 @@ class DetailViewController: FetchedResultsViewController {
         }
     }
     
-    func sendMessage() {
-        self.activityIndicator.startAnimating()
-    }
-    
-    func reloadCollectionView() {
+    func clearMessageTextField() {
         DispatchQueue.main.async {
-            self.collectionView?.reloadData()
-            self.scrollToLastCellItem()
+            self.messageTextField.text?.removeAll()
         }
     }
     
-    func scrollToLastCellItem() {
-        guard let collectionView = collectionView else { return }
-        let numberOfItems = collectionView.numberOfItems(inSection: 0)
-        let lastIndexPath = IndexPath(item: numberOfItems - 1, section: 0)
-        if numberOfItems >= 1 {
-            collectionView.scrollToItem(at: lastIndexPath, at: UICollectionViewScrollPosition.bottom, animated: true)
+    fileprivate func setupInputContainerView() {
+        // inputContainerView
+        inputContainerView.backgroundColor = UIColor.midNightBlack()
+        // dividerView
+        dividerView.backgroundColor = UIColor.mediumBlueGray()
+        // messageTextField
+        messageTextField.backgroundColor = UIColor.clear
+        messageTextField.attributedPlaceholder = NSAttributedString(string: "Message", attributes: [NSForegroundColorAttributeName: UIColor.darkGray])
+        messageTextField.delegate = self
+        // sendButton
+        sendButton.backgroundColor = UIColor.clear
+    }
+    
+    private func getKeyboardFrameSize(notification: Notification) -> CGRect? {
+        if let keyboardRect = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            return keyboardRect
+        } else {
+            return nil
         }
     }
     
-    internal func handleKeyboardNotification(notification: Notification) {
-        if let userInfo = notification.userInfo {
-            let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
-            let isKeyboardShowing = notification.name == NSNotification.Name.UIKeyboardWillShow
-            bottomConstraint?.constant = isKeyboardShowing ? -(keyboardFrame?.height)! : 0
-            UIView.animate(withDuration: 0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+    func handleKeyboardNotification(notification: Notification) {
+        if let keyboardRect = getKeyboardFrameSize(notification: notification) {
+            let keyboardWillShow = (notification.name == NSNotification.Name.UIKeyboardWillShow)
+            heightContraint.constant = keyboardWillShow ? (inputContainerView.frame.size.height + keyboardRect.height) : 50
+            UIView.animate(withDuration: 0, delay: 0, options: UIViewAnimationOptions.curveEaseInOut, animations: {
                 self.view.layoutIfNeeded()
-            }, completion: { (completed) in
-                if isKeyboardShowing {
+            }) { (completed: Bool) in
+                if keyboardWillShow {
                     self.scrollToLastCellItem()
                 }
-            })
+            }
         }
     }
     
@@ -135,87 +146,157 @@ class DetailViewController: FetchedResultsViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    fileprivate func setupInputComponent() {
-        messageInputContainerView.addSubview(inputTextField)
-        messageInputContainerView.addSubview(sendButton)
-        messageInputContainerView.addSubview(topBorderView)
-        messageInputContainerView.addConstraintsWithFormat(format: "H:|-8-[v0][v1(60)]|", views: inputTextField, sendButton)
-        messageInputContainerView.addConstraintsWithFormat(format: "V:|[v0]|", views: inputTextField)
-        messageInputContainerView.addConstraintsWithFormat(format: "V:|[v0]|", views: sendButton)
-        messageInputContainerView.addConstraintsWithFormat(format: "H:|[v0]|", views: topBorderView)
-        messageInputContainerView.addConstraintsWithFormat(format: "V:|[v0(1)]", views: topBorderView)
+    // MARK: - TableView
+    
+    @IBOutlet weak var tableView: UITableView!
+    
+    @IBOutlet weak var footerView: UIView!
+    @IBOutlet weak var footerLabel: UILabel!
+    
+    func tableViewTapped(recognizer: UIGestureRecognizer) {
+        messageTextField.resignFirstResponder()
     }
     
-    fileprivate func setupMessageInputContainerView() {
-        view.addSubview(messageInputContainerView)
-        view.addConstraintsWithFormat(format: "H:|[v0]|", views: messageInputContainerView)
-        view.addConstraintsWithFormat(format: "V:[v0(48)]", views: messageInputContainerView)
-        bottomConstraint = NSLayoutConstraint(item: messageInputContainerView, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 0)
-        view.addConstraint(bottomConstraint!)
-        setupInputComponent()
-    }
-    
-    fileprivate func setupTabBar() {
-        guard let tabBar = tabBarController?.tabBar else { return }
-        tabBar.isHidden = true
-    }
-    
-    fileprivate func setupNavigationController() {
-        // title
-        navigationItem.titleView = titleButton
-        titleButton.setTitle(selectedUser?.username!, for: UIControlState.normal)
-        // rightBarButton
-        navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: profileButton)]
-        if let profileImage = selectedUser?.profile_image, let image = UIImage(named: profileImage) {
-            profileButton.setImage(image, for: UIControlState.normal)
+    // this method is still very buggy
+    func scrollToLastCellItem() {
+        let numberOfRows = tableView.numberOfRows(inSection: 0)
+        let lastIndexPath = IndexPath(row: numberOfRows - 1, section: 0)
+        if numberOfRows >= 1 && tableView.visibleCells.count > 1 {
+            DispatchQueue.main.async {
+                self.tableView.scrollToRow(at: lastIndexPath, at: UITableViewScrollPosition.bottom, animated: true)
+            }
         }
     }
     
-    fileprivate func setupCollectionView() {
-        guard let collectionView = collectionView else { return }
-        collectionView.backgroundColor = UIColor.midNightBlack()
+    fileprivate func setupFooterView() {
+        // footerView
+        footerView.backgroundColor = UIColor.midNightBlack()
+        // footerTextField
+        footerLabel.backgroundColor = UIColor.midNightBlack()
     }
     
-}
-
-
-// MARK: - Lifecycle
-
-extension DetailViewController {
-    
-    internal func presentProfileViewController(_ sender: UIButton) {
-        print("Not supported at this moment")
+    fileprivate func setupTableView() {
+        tableView.delegate = self
+        tableView.backgroundColor = UIColor.midNightBlack()
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(tableViewTapped(recognizer:)))
+        tableView.addGestureRecognizer(gesture)
     }
+    
+    // MARK: - CloudKit
+    
+    var ckManager: CloudKitManager?
+    
+    let pubDatabase = CKContainer.default().publicCloudDatabase
+    
+    private var cloudKitObserver: NSObjectProtocol?
+    
+    let subscriptionID = "iCloud_Messages_Notification_Creations_Deletions"
+    
+    func setupCloudKitObserver() {
+        // listen to the notification coming from AppDelegate
+        cloudKitObserver = NotificationCenter.default.addObserver(forName: Notification.Name(CloudKitNotifications.NotificationReceived), object: nil, queue: OperationQueue.main, using: { (notification: Notification) in
+            if let ckqn = notification.userInfo?[CloudKitNotifications.NotificationKey] as? CKQueryNotification {
+                self.iCloudHandleSubscriptionNotification(ckqn: ckqn)
+            }
+        })
+    }
+    
+    func removeCloudKitObserver() {
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(CloudKitNotifications.NotificationReceived), object: nil)
+    }
+    
+    private func iCloudHandleSubscriptionNotification(ckqn: CKQueryNotification) {
+        if ckqn.subscriptionID == self.subscriptionID {
+            if let recordID = ckqn.recordID {
+                switch ckqn.queryNotificationReason {
+                case .recordCreated:
+                    pubDatabase.fetch(withRecordID: recordID, completionHandler: { (ckRecord: CKRecord?, err: Error?) in
+                        // if a record cannot be fetched, just fetch a new batch of messages from Parse Server and tableView.reload()
+                        // if fetch is success, either show a remote notification+change ChatsViewController's border color || reload tableView if the user is at MessageViewController
+                        print(ckRecord!)
+                    })
+                case .recordDeleted:
+                    // when a user did read the push notification, delete it on iCloud and then handle UI
+                    ckManager?.deleteCKRecord()
+                default:
+                    break
+                }
+            }
+        }
+    }
+    
+    // MARK: - Lifecycle
+    
+    var parseManager: ParseManager?
+    
+    var receiverID: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupTabBar()
-        setupCollectionView()
-        setupMessageInputContainerView()
-        setupKeyboardNotifications()
-        setupCollectionViewGesture()
+        setupTableView()
+        setupInputContainerView()
         setupNavigationController()
+        setupFooterView()
+        // Parse
+        parseManager = ParseManager()
+        if let receiverID = receiverID {
+            beginLoadingAnime()
+            parseManager?.readMessagesInParse(with: receiverID, completion: { (messages: [PFObject]?) in
+                self.stopLoadingAnime()
+            })
+        } else {
+            print("receiverID is nil")
+        }
+        // CloudKit
+        ckManager = CloudKitManager()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        setupKeyboardNotifications()
+        ckManager?.subscribeToMessage(database: pubDatabase, subscriptionID: subscriptionID)
+        setupCloudKitObserver()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(true)
+        super.viewDidDisappear(animated)
         removeKeyboardNotifications()
+        ckManager?.unsubscribeToMessage(database: pubDatabase, subscriptionID: subscriptionID)
+        removeCloudKitObserver()
     }
     
 }
 
 
-// MARK: - UICollectionViewDelegateFlowLayout
+// MARK: - UITableViewDelegate
 
-extension DetailViewController: UICollectionViewDelegateFlowLayout {
+extension DetailViewController: UITableViewDelegate {
     
-    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
-        collectionViewLayout.invalidateLayout()
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return nil
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let edgeInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
-        return edgeInset
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return CGFloat(84)
+    }
+    
+}
+
+
+// MARK: - UITableViewDataSource
+
+extension DetailViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 0
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 0
     }
     
 }
@@ -226,61 +307,11 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout {
 extension DetailViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        inputTextField.resignFirstResponder()
+        textField.resignFirstResponder()
         return true
     }
     
-    func setupCollectionViewGesture() {
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(collectionViewTapped(recognizer: )))
-        collectionView?.addGestureRecognizer(gesture)
-    }
-    
-    func collectionViewTapped(recognizer: UIGestureRecognizer) {
-        inputTextField.resignFirstResponder()
-    }
-    
 }
-
-
-// MARK: - Parse
-
-extension DetailViewController {
-    
-    func readMessageInParse(with selectedUserName: String, completion: @escaping ([PFObject]) -> Void) {
-        guard let query = Message.query(receiverName: selectedUserName, senderName: (PFUser.current()?.username)!) else { return }
-        query.findObjectsInBackground { (pfObjects: [PFObject]?, error: Error?) in
-            if error != nil {
-                print(error!.localizedDescription)
-            } else {
-                guard let pfObjects = pfObjects else {
-                    print("updateCoreMessageFromParse - pfObjects are nil")
-                    return
-                }
-                completion(pfObjects)
-            }
-        }
-    }
-    
-    func createMessageInParse(with sms: String, completion: @escaping (Message) -> Void) {
-        let pfObject = Message()
-        pfObject["sms"] = sms
-        pfObject["image"] = ""
-        pfObject["senderName"] = PFUser.current()?.username!
-        pfObject["receiverName"] = selectedUser?.username!
-        pfObject.saveInBackground { [weak self] (completed: Bool, error: Error?) in
-            if error != nil {
-                print(error!.localizedDescription)
-            } else {
-                if completed == true {
-                    completion(pfObject)
-                    self?.playSound()
-                }
-            }
-        }
-    }
-    
-}
-
 
 
 

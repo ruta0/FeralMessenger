@@ -11,28 +11,27 @@ import MultipeerConnectivity
 
 
 protocol MPCManagerDelegate {
-    
     func foundPeer()
     func lostPeer()
     func didReceivedInvitation(fromPeer: String, group: String)
-    func didConnect(fromPeer: String, group: String)
-    
+    func didConnect(fromPeer: MCPeerID, group: String)
 }
 
 
 class MPCManager: NSObject {
     
-    private let serviceType = "Duckisburg.Feral"
+    let myPeerId = MCPeerID(displayName: UIDevice.current.name)
+    var serviceType = "feral-mpc" // must be all lowercased and shorter than 15 chars!!!
+    var serviceBrowser: MCNearbyServiceBrowser
+    var serviceAdvertiser: MCNearbyServiceAdvertiser
+    
+    var session: MCSession!
+    var group: String!
     
     var initationHandler: ((Bool, MCSession?) -> Void)!
     var invitationHandler: ((Bool, MCSession?) -> Void)!
     
     var delegate: MPCManagerDelegate?
-    var session: MCSession!
-    var group: String!
-    var peer: MCPeerID!
-    var browser: MCNearbyServiceBrowser!
-    var advertiser: MCNearbyServiceAdvertiser!
     
     var foundPeers = [MCPeerID]()
     
@@ -48,27 +47,32 @@ class MPCManager: NSObject {
     }
     
     override init() {
-        super.init()
         // peer must be the first one to be initialized
-        peer = MCPeerID(displayName: UIDevice.current.name) // handle this with the actual username of the Feral
-        session = MCSession(peer: peer)
-        session.delegate = self
-        
-        // (a) It mustn’t be longer than 15 characters, and (b) it can contain only lowercase ASCII characters, numbers and hyphens.
-        browser = MCNearbyServiceBrowser(peer: peer, serviceType: serviceType)
-        browser.delegate = self
-        
-        advertiser = MCNearbyServiceAdvertiser(peer: peer, discoveryInfo: nil, serviceType: serviceType)
-        advertiser.delegate = self
+        session = MCSession(peer: myPeerId, securityIdentity: nil, encryptionPreference: MCEncryptionPreference.none)
+        serviceBrowser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: serviceType)
+        serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: nil, serviceType: serviceType)
+        super.init()
+        self.session.delegate = self
+        self.serviceBrowser.delegate = self
+        self.serviceAdvertiser.delegate = self
+        group = "new group"
+    }
+    
+    deinit {
+        self.serviceAdvertiser.stopAdvertisingPeer()
+        self.serviceBrowser.stopBrowsingForPeers()
     }
     
 }
 
 
+// MARK: - MCSessionDelegate
+
 extension MPCManager: MCSessionDelegate {
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        
+        let dictionary: [String : AnyObject] = ["data" : data as AnyObject, "fromPeer" : peerID]
+        NotificationCenter.default.post(name: NSNotification.Name("receivedMPCDataNotification"), object: dictionary)
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
@@ -84,24 +88,39 @@ extension MPCManager: MCSessionDelegate {
     }
     
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        
+        switch state {
+        case MCSessionState.connected:
+            delegate?.didConnect(fromPeer: peerID, group: "")
+            print("Connected to session: \(session)")
+        case MCSessionState.connecting:
+            print("Connecting to session: \(session)")
+        default:
+            print("Did not connect to session \(session)")
+        }
     }
     
-    func session(_ session: MCSession, didReceiveCertificate certificate: [Any]?, fromPeer peerID: MCPeerID, certificateHandler: @escaping (Bool) -> Void) {
-        
-    }
+    // if didReceiveCertificate is not defined. Then it will accept any certificate, otherwise it must be handled
     
 }
 
 
+// MARK: - MCNearbyServiceBrowserDelegate
+
 extension MPCManager: MCNearbyServiceBrowserDelegate {
     
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
-        delegate?.lostPeer()
+        foundPeers.append(peerID)
+        delegate?.foundPeer()
     }
     
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
-        delegate?.foundPeer()
+        for (index, aPeer) in foundPeers.enumerated() {
+            if aPeer == peerID {
+                foundPeers.remove(at: index)
+                break
+            }
+        }
+        delegate?.lostPeer()
     }
     
     func browser(_ browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {
@@ -110,6 +129,8 @@ extension MPCManager: MCNearbyServiceBrowserDelegate {
     
 }
 
+
+// MARK: - MCNearbyServiceAdvertiserDelegate
 
 extension MPCManager: MCNearbyServiceAdvertiserDelegate {
     
@@ -121,7 +142,6 @@ extension MPCManager: MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: Error) {
         print(error.localizedDescription)
     }
-    
     
 }
 

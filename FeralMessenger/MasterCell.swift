@@ -9,12 +9,12 @@
 import UIKit
 
 
-class MasterCell: UICollectionViewCell {
+class MasterCell: UITableViewCell {
     
     @IBOutlet weak var wrapperView: UIView!
-    @IBOutlet weak var profileImageView: UIImageView!
-    @IBOutlet weak var usernameLabel: UILabel!
-    @IBOutlet weak var bioLabel: UILabel!
+    @IBOutlet weak var avatarImageView: UIImageView!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var subtitleLabel: UILabel!
     
     var coreUser: CoreUser? {
         didSet {
@@ -24,43 +24,49 @@ class MasterCell: UICollectionViewCell {
     
     private func updateCell() {
         // STEP 1: reset any existing UI info/outlets, otherwise info will become misplaced
-        profileImageView?.image = nil
-        usernameLabel?.text = nil
-        bioLabel?.text = nil
+        avatarImageView?.image = nil
+        titleLabel?.text = nil
+        subtitleLabel?.text = nil
         // STEP 2: load new info from user (if any)
         if let coreUser = self.coreUser {
-            usernameLabel.text = coreUser.username
-            bioLabel.text = coreUser.bio
+            titleLabel.text = coreUser.username
+            subtitleLabel.text = coreUser.bio
             if let avatar = UIImage(named: coreUser.profile_image!) {
-                profileImageView.image = avatar
+                // profile_image cannot be nil
+                avatarImageView.image = avatar
+            } else {
+                // just in case, Cat!
+                avatarImageView.image = UIImage(named: "Cat")!
             }
-            profileImageView.image = UIImage(named: coreUser.profile_image!)
         }
     }
     
     private func setupViews() {
-        // collectionViewCell
+        // tableViewCell
         backgroundColor = UIColor.clear
         // wrapperView
         wrapperView.backgroundColor = UIColor.mediumBlueGray()
-        // profileImage
-        profileImageView.layer.cornerRadius = 32
-        profileImageView.layer.borderColor = UIColor.white.cgColor
-        profileImageView.layer.borderWidth = 2
-        profileImageView.image = UIImage(named: "Cat")
-        // usernameLabel
-        usernameLabel.textColor = UIColor.white
-        usernameLabel.backgroundColor = UIColor.clear
-        usernameLabel.text = "username"
-        // messageLabel
-        bioLabel.textColor = UIColor.candyWhite()
-        bioLabel.backgroundColor = UIColor.clear
-        bioLabel.text = "bio"
+        // avatarImageView
+        avatarImageView.layer.cornerRadius = 32
+        avatarImageView.layer.borderColor = UIColor.white.cgColor
+        avatarImageView.layer.borderWidth = 2
+        avatarImageView.image = UIImage(named: "Cat")
+        // titleLabel
+        titleLabel.textColor = UIColor.white
+        titleLabel.backgroundColor = UIColor.clear
+        titleLabel.text = "username"
+        // subtitleLabel
+        subtitleLabel.textColor = UIColor.candyWhite()
+        subtitleLabel.backgroundColor = UIColor.clear
+        subtitleLabel.text = "bio"
     }
     
-    override var isHighlighted: Bool {
-        didSet {
-            wrapperView.backgroundColor = isHighlighted ? UIColor.miamiBlue() : UIColor.mediumBlueGray()
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        if highlighted == true {
+            self.wrapperView.backgroundColor = UIColor.miamiBlue()
+            
+        } else {
+            self.wrapperView.backgroundColor = UIColor.mediumBlueGray()
         }
     }
     
