@@ -25,7 +25,7 @@ class MPCDetailCell: UITableViewCell {
         usernameLabel?.text = nil
         usernameLabel?.text = nil
         if let mpcMessage = self.mpcMessage {
-            usernameLabel.text = mpcMessage.sender_name
+            usernameLabel.text = mpcMessage.senderID
             smsTextView.text = mpcMessage.sms
         }
     }

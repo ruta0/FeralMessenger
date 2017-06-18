@@ -13,20 +13,20 @@ import Locksmith
 
 class GroupViewController: UIViewController {
     
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var contentView: UIView!
+    // MARK: - TabBarController
     
-    @IBOutlet weak var headerView: UIView!
-    @IBOutlet weak var headerLabel: UILabel!
+    fileprivate func setupTabBar() {
+        guard let tabBar = tabBarController?.tabBar else { return }
+        tabBar.tintColor = UIColor.candyWhite()
+        tabBar.barTintColor = UIColor.midNightBlack()
+        tabBar.isHidden = false
+        tabBar.isTranslucent = false
+    }
+    
+    // MARK: - NavigationController
     
     @IBOutlet weak var logoutButton: UIBarButtonItem!
     @IBOutlet weak var editButton: UIBarButtonItem!
-    @IBOutlet weak var profileContainerView: UIView!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var avatarButton: UIButton!
-    @IBOutlet weak var usernameLabel: UILabel!
-    @IBOutlet weak var dividerView: UIView!
-    @IBOutlet weak var bioTextView: UITextView!
     
     @IBAction func logoutButton_tapped(_ sender: UIBarButtonItem) {
         let alert = UIAlertController(title: "What would you like to do?", message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
@@ -58,15 +58,33 @@ class GroupViewController: UIViewController {
         return button
     }()
     
-    func updateAvatar() {
-        DispatchQueue.main.async {
-            self.avatarButton.setBackgroundImage(UIImage(named: self.getCurrentUserAvatarName()!), for: UIControlState.normal)
-        }
+    fileprivate func setupNavigationController() {
+        guard let navigationController = navigationController else { return }
+        navigationController.navigationBar.isTranslucent = false
+        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
+        navigationController.navigationBar.tintColor = UIColor.white
+        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+        navigationItem.titleView = titleButton
     }
+    
+    // MARK: - UIScrollView
+    
+    @IBOutlet weak var profileContainerView: UIView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var avatarButton: UIButton!
+    @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var dividerView: UIView!
+    @IBOutlet weak var bioTextView: UITextView!
+    
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var contentView: UIView!
+    
+    @IBOutlet weak var headerView: UIView!
+    @IBOutlet weak var headerLabel: UILabel!
     
     func activityIndicatorStopAnime() {
         if activityIndicator.isAnimating {
-            DispatchQueue.main.async(execute: { 
+            DispatchQueue.main.async(execute: {
                 self.activityIndicator.stopAnimating()
             })
         }
@@ -74,7 +92,7 @@ class GroupViewController: UIViewController {
     
     func activityIndicatorStartAnime() {
         if activityIndicator.isAnimating == false {
-            DispatchQueue.main.async(execute: { 
+            DispatchQueue.main.async(execute: {
                 self.activityIndicator.startAnimating()
             })
         }
@@ -106,23 +124,6 @@ class GroupViewController: UIViewController {
                 }
             }
         }
-    }
-    
-    fileprivate func setupTabBar() {
-        guard let tabBar = tabBarController?.tabBar else { return }
-        tabBar.tintColor = UIColor.candyWhite()
-        tabBar.barTintColor = UIColor.midNightBlack()
-        tabBar.isHidden = false
-        tabBar.isTranslucent = false
-    }
-    
-    fileprivate func setupNavigationController() {
-        guard let navigationController = navigationController else { return }
-        navigationController.navigationBar.isTranslucent = false
-        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
-        navigationController.navigationBar.tintColor = UIColor.white
-        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-        navigationItem.titleView = titleButton
     }
     
     fileprivate func setupViews() {
@@ -157,20 +158,15 @@ class GroupViewController: UIViewController {
         bioTextView.textContainer.lineFragmentPadding = 0
         bioTextView.text = getCurrentUserBioInParse()
     }
-
-}
-
-
-// MARK: - Lifecycle
-
-extension GroupViewController {
     
+    // MARK: - Lifecycle
+
     func dismissTabBar() {
-        DispatchQueue.main.async { 
+        DispatchQueue.main.async {
             self.tabBarController?.dismiss(animated: true, completion: nil)
         }
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
@@ -183,12 +179,13 @@ extension GroupViewController {
         updateAvatar()
     }
     
-}
-
-
-// MARK: - Parse
-
-extension GroupViewController {
+    // MARK: - Parse
+    
+    func updateAvatar() {
+        DispatchQueue.main.async {
+            self.avatarButton.setBackgroundImage(UIImage(named: self.getCurrentUserAvatarName()!), for: UIControlState.normal)
+        }
+    }
     
     func getCurrentUserAvatarName() -> String? {
         if let name = PFUser.current()?["avatar"] as? String {
@@ -241,23 +238,17 @@ extension GroupViewController {
         }
     }
     
-}
+    // MARK: - Keychain
 
-
-// MARK: - Keychain
-
-extension GroupViewController {
-    
-    fileprivate func removeAuthTokenInKeychain(account: String) {
+    private func removeAuthTokenInKeychain(account: String) {
         do {
             try Locksmith.deleteDataForUserAccount(userAccount: KeychainConfiguration.accountType.auth_token.rawValue, inService: KeychainConfiguration.serviceName)
         } catch let err {
             alertRespond(headerLabel, with: nil, for: ResponseType.failure, with: err.localizedDescription, completion: nil)
         }
     }
-    
-}
 
+}
 
 
 

@@ -13,8 +13,6 @@ import MultipeerConnectivity
 import AudioToolbox
 
 
-// MARK: - UI
-
 class MPCMasterViewController: UITableViewController {
     
     fileprivate let cellID = "MPCGroupCell"

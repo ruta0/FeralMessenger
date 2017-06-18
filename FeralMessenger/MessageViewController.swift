@@ -9,9 +9,25 @@
 import UIKit
 import Parse
 import CoreData
+import CloudKit
 
 
 final class MessageViewController: DetailViewController {
+    
+    // MARK: - NavigationController
+    
+    override func setupNavigationController() {
+        super.setupNavigationController()
+        // profileButton
+        rightBarButton.addTarget(self, action: #selector(showProfileViewController(_:)), for: UIControlEvents.touchUpInside)
+        if let avatarName = selectedCoreUser?.profile_image, let image = UIImage(named: avatarName) {
+            rightBarButton.setBackgroundImage(image, for: UIControlState.normal)
+        }
+        // titleButton
+        if let username = selectedCoreUser?.username {
+            titleButton.setTitle(username, for: UIControlState.normal)
+        }
+    }
     
     // MARK: - Core Data
     
@@ -27,8 +43,8 @@ final class MessageViewController: DetailViewController {
             newCoreMessage.created_at = pfObject.createdAt! as NSDate
             newCoreMessage.sms = pfObject["sms"] as? String
             newCoreMessage.updated_at = pfObject.updatedAt! as NSDate
-            newCoreMessage.sender_name = pfObject["senderName"] as? String
-            newCoreMessage.receiver_name = pfObject["receiverName"] as? String
+            newCoreMessage.senderID = pfObject["senderID"] as? String
+            newCoreMessage.receiverID = pfObject["receiverID"] as? String
             newCoreMessage.id = pfObject.objectId!
             do {
                 try context.save()
@@ -38,36 +54,19 @@ final class MessageViewController: DetailViewController {
         }
     }
     
-    func setupDelegates() {
-        manager?.messengerDelegate = self
-    }
-    
-    override func setupNavigationController() {
-        super.setupNavigationController()
-        // rendering the correct avatar
-        profileButton.addTarget(self, action: #selector(showProfileViewController(_:)), for: UIControlEvents.touchUpInside)
-        if let avatarName = selectedCoreUser?.profile_image, let image = UIImage(named: avatarName) {
-            profileButton.setBackgroundImage(image, for: UIControlState.normal)
-        }
-        // titleButton
-        if let username = selectedCoreUser?.username {
-            titleButton.setTitle(username, for: UIControlState.normal)
-        }
-    }
-    
     // MARK: - Lifecycle
     
-    fileprivate let segueID = "SettingsViewControllerSegue"
+    private let segueID = "SettingsViewControllerSegue"
     
+    // animate a popover instead of performing yet another segue
     func showProfileViewController(_ sender: UIButton) {
-        // perform segue to settings
         print("Not supported at this moment")
     }
     
     override func viewDidLoad() {
-        beginRefresh()
         super.viewDidLoad()
-        setupDelegates()
+        setupParseManagerDelegate()
+        setupCKManagerDelegates()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -78,7 +77,7 @@ final class MessageViewController: DetailViewController {
     
     // MARK: - UITableViewDataSource
     
-    fileprivate let cellID = "DetailCell"
+    private let cellID = "DetailCell"
     
     /// Note: notice that there is a footer in the storyboard to offer the additional space offset for the textfield
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -89,10 +88,10 @@ final class MessageViewController: DetailViewController {
                 let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
                 let estimatedFrame = NSString(string: coreMessage.sms!).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
                 // outgoing message
-                if coreMessage.sender_name == PFUser.current()!.username! {
+                if coreMessage.senderID == PFUser.current()!.objectId {
                     cell.messageTextView.backgroundColor = UIColor.miamiBlue()
                     cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8, y: 8, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
-                } else if coreMessage.receiver_name == PFUser.current()!.username! {
+                } else if coreMessage.receiverID == PFUser.current()!.objectId {
                     // incoming message
                     cell.messageTextView.backgroundColor = UIColor.mediumBlueGray()
                     cell.messageTextView.frame = CGRect(x: 8, y: 8, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
@@ -143,6 +142,10 @@ final class MessageViewController: DetailViewController {
 
 extension MessageViewController: ParseMessengerManagerDelegate {
     
+    fileprivate func setupParseManagerDelegate() {
+        parseManager?.messengerDelegate = self
+    }
+    
     func updateCoreMessage(with pfObjects: [PFObject]) {
         self.container?.performBackgroundTask { context in
             for pfObject in pfObjects {
@@ -158,9 +161,9 @@ extension MessageViewController: ParseMessengerManagerDelegate {
     }
     
     private func performFetchFromCoreData() {
-        guard let context = container?.viewContext, let senderName = selectedCoreUser?.username, let receiver = PFUser.current()?.username else { return }
+        guard let context = container?.viewContext, let senderID = selectedCoreUser?.id, let receiverID = PFUser.current()?.objectId else { return }
         context.perform {
-            let request: NSFetchRequest<CoreMessage> = CoreMessage.defaultFetchRequest(from: senderName, to: receiver)
+            let request: NSFetchRequest<CoreMessage> = CoreMessage.defaultFetchRequest(from: senderID, to: receiverID)
             request.fetchLimit = 200
             request.fetchBatchSize = 5
             self.fetchedResultsController = NSFetchedResultsController<CoreMessage>(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
@@ -175,18 +178,8 @@ extension MessageViewController: ParseMessengerManagerDelegate {
         }
     }
     
-    private func printDatabaseStats() {
-        guard let context = container?.viewContext else { return }
-        context.perform {
-            if let messageCount = try? context.count(for: CoreMessage.fetchRequest()) {
-                print(messageCount, "messages in the core data store")
-            }
-        }
-    }
-    
     func didReceiveMessages(with messages: [PFObject]) {
         updateCoreMessage(with: messages)
-        endRefresh()
     }
     
     func didReceiveMessage(with message: Message) {
@@ -194,16 +187,82 @@ extension MessageViewController: ParseMessengerManagerDelegate {
     }
     
     func didSendMessage(with message: Message) {
+        // 1. play sound to confirm successfully upload to Parse
         playSound()
+        
+        // 2. create record in the CloudKit's pubDatabase to receiver's subscription
+        guard let receiverID = message["receiverID"] as? String, let sms = message["sms"] as? String else { return }
+        ckManager?.createCKRecord(in: pubDatabase, receiverID: receiverID, sms: sms)
+        
+        // 3. fetch for new message when a PUSH payload comes in
         insertToCoreMessage(with: message)
     }
     
-    func registerForLocalNotifications() {
-        // implement this
+}
+
+
+// MARK: - CloudKitSubscriptionDelegate
+
+extension MessageViewController: CloudKitSubscriptionDelegate {
+    
+    fileprivate func setupCKManagerDelegates() {
+        ckManager?.delegate = self
     }
     
-    func unregisterForLocalNotifications() {
-        // implement this
+    func cloudKitHandleSubscriptionNotification(ckqn: CKQueryNotification) {
+        if ckqn.subscriptionID == subscriptionID {
+            if let recordID = ckqn.recordID {
+                switch ckqn.queryNotificationReason {
+                case .recordCreated:
+                    print(recordID)
+                    ckManager?.delegate = self
+                case .recordDeleted:
+                    // ignore, for now
+                    break
+                default:
+                    break
+                }
+            }
+        }
+    }
+    
+    func didSubscribed(subscription: CKSubscription?, error: Error?) {
+        // ignore
+        print("subscribed to: ", subscription!.subscriptionID)
+    }
+    
+    func didUnsubscribed(subscription: String?, error: Error?) {
+        // ignore
+        print("unsubscribed from: ", subscription!)
+    }
+    
+    func didCreateRecord(ckRecord: CKRecord?, error: Error?) {
+        // called after didSendMessage
+        if let err = error as? CKError {
+            if err.code == CKError.Code.notAuthenticated {
+                // invite user to login with iCloud account
+                performAlert(error: err.localizedDescription)
+            } else {
+                // unexpected error
+                print(err)
+            }
+        } else {
+            print(ckRecord!)
+        }
+    }
+    
+    func didDeleteRecord() {
+        // called after didReadMessage
+        print("deleted")
+    }
+    
+    private func performAlert(error: String) {
+        let alert = UIAlertController(title: error, message: "Please login to iCloud to enable Push Notification and auto-refresh", preferredStyle: UIAlertControllerStyle.alert)
+        let ok = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil)
+        alert.addAction(ok)
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
 }

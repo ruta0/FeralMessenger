@@ -9,9 +9,10 @@
 import UIKit
 
 
-class NotificationsViewController: UIViewController {
+/// This class handles invitations only, notification of messages are handled in thier own ways.
+class NotificationsViewController: UIViewController, UITableViewDataSource {
     
-    @IBOutlet weak var tableView: UITableView!
+    // MARK: - NavigationController
     
     lazy var titleButton: UIButton = {
         let button = UIButton()
@@ -21,27 +22,7 @@ class NotificationsViewController: UIViewController {
         return button
     }()
     
-    func beginRefresh() {
-        DispatchQueue.main.async {
-            self.tableView.refreshControl?.beginRefreshing()
-        }
-    }
-    
-    func endRefresh() {
-        DispatchQueue.main.async {
-            self.tableView.refreshControl?.endRefreshing()
-        }
-    }
-    
-    fileprivate func setupTabBar() {
-        guard let tabBar = tabBarController?.tabBar else { return }
-        tabBar.tintColor = UIColor.candyWhite()
-        tabBar.barTintColor = UIColor.midNightBlack()
-        tabBar.isHidden = false
-        tabBar.isTranslucent = false
-    }
-    
-    fileprivate func setupNavigationController() {
+    private func setupNavigationController() {
         guard let navigationController = navigationController else { return }
         navigationController.navigationBar.isTranslucent = false
         navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
@@ -49,19 +30,40 @@ class NotificationsViewController: UIViewController {
         navigationItem.titleView = titleButton
     }
     
-    fileprivate func setupTableView() {
+    // MARK: - TableView
+    
+    @IBOutlet weak var tableView: UITableView!
+    
+    private func beginRefresh() {
+        DispatchQueue.main.async {
+            self.tableView.refreshControl?.beginRefreshing()
+        }
+    }
+    
+    private func endRefresh() {
+        DispatchQueue.main.async {
+            self.tableView.refreshControl?.endRefreshing()
+        }
+    }
+    
+    private func setupTableView() {
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.backgroundColor = UIColor.midNightBlack()
     }
     
-}
-
-
-// MARK: - Lifecycle
-
-extension NotificationsViewController {
+    // MARK: - TabBarController
     
+    private func setupTabBar() {
+        guard let tabBar = tabBarController?.tabBar else { return }
+        tabBar.tintColor = UIColor.candyWhite()
+        tabBar.barTintColor = UIColor.midNightBlack()
+        tabBar.isHidden = false
+        tabBar.isTranslucent = false
+    }
+    
+    // MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
@@ -69,15 +71,27 @@ extension NotificationsViewController {
         setupNavigationController()
     }
     
+    // MARK: - UITableViewDataSource
+    
+    private let cellID = "NotificationCell"
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? NotificationCell {
+            return cell
+        } else {
+            return UITableViewCell()
+        }
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
 }
-
-
-
-
-
-
-
-
 
 
 

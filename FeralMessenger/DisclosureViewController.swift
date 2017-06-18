@@ -12,10 +12,8 @@ import Parse
 
 class DisclosureViewController: UICollectionViewController {
     
-    var avatars: [Avatar]?
-    var selectedAvatarName: String?
+    // MARK: - NavigationController
     
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var saveButton: UIBarButtonItem!
     
     @IBAction func saveButton_tapped(_ sender: UIBarButtonItem) {
@@ -32,6 +30,25 @@ class DisclosureViewController: UICollectionViewController {
         }
     }
     
+    // MARK: - TabBarController
+    
+    fileprivate func setupTabBar() {
+        guard let tabBar = tabBarController?.tabBar else { return }
+        tabBar.isHidden = true
+    }
+    
+    // MARK: - UICollectionView
+    
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    var avatars: [Avatar]?
+    var selectedAvatarName: String?
+    
+    fileprivate func setupCollectionView() {
+        guard let collectionView = collectionView else { return }
+        collectionView.backgroundColor = UIColor.midNightBlack()
+    }
+    
     fileprivate func fetchAvatarsFromPropertyList(for resource: String, of type: String) {
         var items = [Avatar]()
         guard let inputFile = Bundle.main.path(forResource: resource, ofType: type) else {
@@ -46,22 +63,7 @@ class DisclosureViewController: UICollectionViewController {
         self.avatars = items
     }
     
-    fileprivate func setupCollectionView() {
-        guard let collectionView = collectionView else { return }
-        collectionView.backgroundColor = UIColor.midNightBlack()
-    }
-    
-    fileprivate func setupTabBar() {
-        guard let tabBar = tabBarController?.tabBar else { return }
-        tabBar.isHidden = true
-    }
-    
-}
-
-
-// MARK: - Lifecycle
-
-extension DisclosureViewController {
+    // MARK: - Lifecycle
     
     fileprivate func popViewController() {
         if let nav = self.navigationController {

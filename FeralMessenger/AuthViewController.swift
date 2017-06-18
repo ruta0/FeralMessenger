@@ -14,6 +14,8 @@ import Locksmith
 
 class AuthViewController: UIViewController {
     
+    // MARK: UIScrollView
+    
     fileprivate enum AuthButtonType: String {
         case login = "Login"
         case signup = "Sign Up"
@@ -23,10 +25,6 @@ class AuthViewController: UIViewController {
         case returnToLogin = "Return to Login"
         case createAnAccount = "Create an Account"
     }
-    
-    let termsUrl: String = "https://sheltered-ridge-89457.herokuapp.com/terms"
-    
-    var accountName: String?
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
@@ -69,17 +67,6 @@ class AuthViewController: UIViewController {
                 })
             }
         }
-    }
-    
-    @IBAction func termsButton_tapped(_ sender: UIButton) {
-        let alert = UIAlertController(title: "You will be redirected to your browser for the following URL", message: "\(termsUrl)", preferredStyle: UIAlertControllerStyle.alert)
-        let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: nil)
-        let redirect = UIAlertAction(title: "Redirect", style: UIAlertActionStyle.destructive) { (action: UIAlertAction) in
-            self.redirectToBrowserForTerms()
-        }
-        alert.addAction(cancel)
-        alert.addAction(redirect)
-        self.present(alert, animated: true, completion: nil)
     }
     
     @IBAction func toggleButton_tapped(_ sender: UIButton) {
@@ -141,7 +128,7 @@ class AuthViewController: UIViewController {
         }
     }
     
-    fileprivate func setupViews() {
+    private func setupViews() {
         // scrollView
         scrollView.isScrollEnabled = false
         scrollView.backgroundColor = UIColor.midNightBlack()
@@ -178,14 +165,22 @@ class AuthViewController: UIViewController {
         toggleButton.setTitle(ToggleButtonType.createAnAccount.rawValue, for: UIControlState.normal)
     }
     
-}
-
-
-// MARK: - Lifecycle
-
-extension AuthViewController {
+    // MARK: - Lifecycle
     
-    internal func presentServerConfigView(gestureRecognizer: UITapGestureRecognizer) {
+    private let termsUrl: String = "https://sheltered-ridge-89457.herokuapp.com/terms"
+    
+    @IBAction func termsButton_tapped(_ sender: UIButton) {
+        let alert = UIAlertController(title: "You will be redirected to your browser for the following URL", message: "\(termsUrl)", preferredStyle: UIAlertControllerStyle.alert)
+        let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
+        let redirect = UIAlertAction(title: "Redirect", style: UIAlertActionStyle.default) { (action: UIAlertAction) in
+            self.redirectToBrowserForTerms()
+        }
+        alert.addAction(cancel)
+        alert.addAction(redirect)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    @objc private func presentServerConfigView(gestureRecognizer: UITapGestureRecognizer) {
         if logoImageView.tintColor != UIColor.metallicGold() {
             DispatchQueue.main.async {
                 self.logoImageView.tintColor = UIColor.metallicGold()
@@ -195,12 +190,12 @@ extension AuthViewController {
     }
     
     fileprivate func presentMasterView() {
-        DispatchQueue.main.async { 
+        DispatchQueue.main.async {
             self.performSegue(withIdentifier: "ChatsViewControllerSegue", sender: self)
         }
     }
     
-    fileprivate func redirectToBrowserForTerms() {
+    private func redirectToBrowserForTerms() {
         guard let termsUrl = URL(string: termsUrl) else { return }
         if #available(iOS 10.0, *) {
             UIApplication.shared.open(termsUrl, options: [:], completionHandler: nil)
@@ -224,19 +219,19 @@ extension AuthViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        super.viewDidDisappear(true)
+        super.viewDidDisappear(animated)
         registerForKeyboardNotifications()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(true)
+        super.viewDidDisappear(animated)
         deregisterFromKeyboardNotifications()
     }
     
 }
 
 
-// MARK: - UITextFieldDelegate
+// MARK: - UITextFieldDelegate + Keyboard
 
 extension AuthViewController: UITextFieldDelegate {
     

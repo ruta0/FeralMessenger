@@ -12,24 +12,33 @@ import Parse
 class Message: PFObject {
     
     // parse handles the id, created_at, updated_at automatically
-    var image: PFFile?
-    var senderName: String?
-    var receiverName: String?
+    var image_path: String?
+    var senderID: String?
+    var receiverID: String?
     var sms: String?
+    var isRead: Bool?
     
     override init() {
         super.init()
     }
     
     // not fetching with the correct predicates???
-    class func query(receiverName: String, senderName: String) -> PFQuery<PFObject>? {
-        let predicate = NSPredicate(format: "receiverName == %@ AND senderName == %@", receiverName, senderName)
-        let inversePredicate = NSPredicate(format: "receiverName == %@ AND senderName == %@", senderName, receiverName)
+    class func query(receiverID: String, senderID: String) -> PFQuery<PFObject>? {
+        // query for message
+        let predicate = NSPredicate(format: "receiverID == %@ AND senderID == %@", receiverID, senderID)
+        let inversePredicate = NSPredicate(format: "receiverID == %@ AND senderID == %@", senderID, receiverID)
         let compoundedPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [predicate, inversePredicate])
         let query = PFQuery(className: Message.parseClassName(), predicate: compoundedPredicate)
-        query.includeKey("Message")
         query.order(byDescending: "created_at")
         return query
+    }
+    
+    func constructMessageInfo(sms: String, receiverID: String, senderID: String) {
+        self["sms"] = sms
+        self["isRead"] = false
+        // self["image_path"] = image_path
+        self["receiverID"] = receiverID
+        self["senderID"] = senderID
     }
     
 }

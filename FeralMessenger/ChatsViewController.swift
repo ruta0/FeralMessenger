@@ -12,74 +12,16 @@ import CoreData
 
 
 final class ChatsViewController: MasterViewController {
-        
-    private func setupDelegates() {
-        manager?.userDelegate = self
-    }
     
-    // MARK: - Lifecycle
-    
-    fileprivate let segueID = "DetailViewControllerSegue"
+    // MARK: - CoreData
     
     var container: NSPersistentContainer? = CoreDataManager.persistentContainer // default container
     
     lazy fileprivate var fetchedResultsController: NSFetchedResultsController<CoreUser> = {
         let frc = NSFetchedResultsController(fetchRequest: CoreUser.defaultFetchRequest(with: nil), managedObjectContext: CoreDataManager.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         frc.delegate = self
-        return frc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+        return frc
     }()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupDelegates()
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == segueID {
-            if let selectedCell = sender as? MasterCell {
-                guard let messageViewController = segue.destination as? MessageViewController else {
-                    print("unexpected sender of cell")
-                    return
-                }
-                let receiverName = selectedCell.coreUser?.username
-                messageViewController.receiverName = receiverName
-                messageViewController.selectedCoreUser = selectedCell.coreUser
-                messageViewController.container = container
-            }
-        }
-    }
-    
-    // MARK: - UITableViewDataSource
-    
-    fileprivate let masterCellID = "MasterCell"
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return fetchedResultsController.sections?.count ?? 0
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let sections = fetchedResultsController.sections, sections.count > 0 else {
-            return 0
-        }
-        return sections[section].numberOfObjects
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: masterCellID, for: indexPath) as? MasterCell {
-            let coreUser = fetchedResultsController.object(at: indexPath)
-            cell.coreUser = coreUser
-            return cell
-        } else {
-            return UITableViewCell()
-        }
-    }
-    
-}
-
-
-// MARK: - ParseUserManagerDelegate
-
-extension ChatsViewController: ParseUsersManagerDelegate {
     
     private func performFetchFromCoreData() {
         guard let context = container?.viewContext else { return }
@@ -105,6 +47,67 @@ extension ChatsViewController: ParseUsersManagerDelegate {
             }
             self.performFetchFromCoreData()
         }
+    }
+    
+    // MARK: - Lifecycle
+    
+    fileprivate let segueID = "DetailViewControllerSegue"
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupDelegates()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == segueID {
+            if let selectedCell = sender as? MasterCell {
+                guard let messageViewController = segue.destination as? MessageViewController else {
+                    print("unexpected sender of cell")
+                    return
+                }
+                let receiverID = selectedCell.coreUser?.id
+                messageViewController.receiverID = receiverID // a handle for the Parse layer only
+                messageViewController.selectedCoreUser = selectedCell.coreUser // a handle for the CoreData layer
+                messageViewController.container = container
+            }
+        }
+    }
+    
+    // MARK: - UITableViewDataSource
+    
+    fileprivate let masterCellID = "MasterCell"
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return fetchedResultsController.sections?.count ?? 0
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let sections = fetchedResultsController.sections, sections.count > 0 else {
+            return 0
+        }
+        return sections[section].numberOfObjects
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: masterCellID, for: indexPath) as? MasterCell {
+            cell.selectionStyle = UITableViewCellSelectionStyle.none
+            let coreUser = fetchedResultsController.object(at: indexPath)
+            cell.coreUser = coreUser
+            return cell
+        } else {
+            return UITableViewCell()
+        }
+    }
+    
+}
+
+
+// MARK: - ParseUserManagerDelegate
+
+extension ChatsViewController: ParseUsersManagerDelegate {
+    
+    fileprivate func setupDelegates() {
+        manager?.userDelegate = self
     }
     
     func didReceiveUsers(with users: [PFObject]) {
