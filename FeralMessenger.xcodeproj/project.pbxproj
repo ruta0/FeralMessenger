@@ -49,7 +49,7 @@
 		C55D62F01EE23F1100AEE16D /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D62EF1EE23F1100AEE16D /* PhotoCell.swift */; };
 		C55D62F21EE29F4800AEE16D /* Avatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D62F11EE29F4800AEE16D /* Avatar.swift */; };
 		C55D62F41EE2A08000AEE16D /* Avatars.plist in Resources */ = {isa = PBXBuildFile; fileRef = C55D62F31EE2A08000AEE16D /* Avatars.plist */; };
-		C55D62F81EE3525300AEE16D /* StaticScrollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D62F71EE3525300AEE16D /* StaticScrollViewController.swift */; };
+		C55D62F81EE3525300AEE16D /* AdaptiveScrollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D62F71EE3525300AEE16D /* AdaptiveScrollViewController.swift */; };
 		C55D62FA1EE3D40800AEE16D /* ApplicationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D62F91EE3D40800AEE16D /* ApplicationViewController.swift */; };
 		C55D62FF1EE51BDC00AEE16D /* MPCMasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D62FE1EE51BDC00AEE16D /* MPCMasterViewController.swift */; };
 		C5C58B931EDD6D2A003E19B7 /* ChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */; };
@@ -137,7 +137,7 @@
 		C55D62EF1EE23F1100AEE16D /* PhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
 		C55D62F11EE29F4800AEE16D /* Avatar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Avatar.swift; sourceTree = "<group>"; };
 		C55D62F31EE2A08000AEE16D /* Avatars.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Avatars.plist; sourceTree = "<group>"; };
-		C55D62F71EE3525300AEE16D /* StaticScrollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StaticScrollViewController.swift; sourceTree = "<group>"; };
+		C55D62F71EE3525300AEE16D /* AdaptiveScrollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdaptiveScrollViewController.swift; sourceTree = "<group>"; };
 		C55D62F91EE3D40800AEE16D /* ApplicationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationViewController.swift; sourceTree = "<group>"; };
 		C55D62FE1EE51BDC00AEE16D /* MPCMasterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPCMasterViewController.swift; sourceTree = "<group>"; };
 		C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatsViewController.swift; sourceTree = "<group>"; };
@@ -421,7 +421,7 @@
 		C5C58B951EDD7FC8003E19B7 /* Auth & Server */ = {
 			isa = PBXGroup;
 			children = (
-				C55D62F71EE3525300AEE16D /* StaticScrollViewController.swift */,
+				C55D62F71EE3525300AEE16D /* AdaptiveScrollViewController.swift */,
 				C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */,
 				C5439B741ED2094500FBD7D3 /* AuthViewController.swift */,
 			);
@@ -743,7 +743,7 @@
 			files = (
 				C5439B7D1ED28B5700FBD7D3 /* Message.swift in Sources */,
 				C537FB931EE8B99F00556AF2 /* MPCDetailCell.swift in Sources */,
-				C55D62F81EE3525300AEE16D /* StaticScrollViewController.swift in Sources */,
+				C55D62F81EE3525300AEE16D /* AdaptiveScrollViewController.swift in Sources */,
 				C543931D1EE7CE04006B73C3 /* ParseServerManager.swift in Sources */,
 				C525BC341ED02C77006BEEA3 /* AppDelegate.swift in Sources */,
 				C54065BC1EF464A600A2A720 /* CloudKitConfiguration.swift in Sources */,
