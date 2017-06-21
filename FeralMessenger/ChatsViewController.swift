@@ -55,7 +55,7 @@ final class ChatsViewController: MasterViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupDelegates()
+        setupParseDelegate()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -106,8 +106,8 @@ final class ChatsViewController: MasterViewController {
 
 extension ChatsViewController: ParseUsersManagerDelegate {
     
-    fileprivate func setupDelegates() {
-        manager?.userDelegate = self
+    fileprivate func setupParseDelegate() {
+        parseManager?.userDelegate = self
     }
     
     func didReceiveUsers(with users: [PFObject]) {

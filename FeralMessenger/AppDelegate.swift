@@ -8,9 +8,7 @@
 
 import UIKit
 import UserNotifications
-import Parse
 import Locksmith
-import CloudKit
 
 
 var isParseInitialized: Bool = false
@@ -21,12 +19,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     var mpcManager: MPCManager!
+    var ckManager: CloudKitManager?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        application.applicationIconBadgeNumber = 0 // clears the badge on app launch
-        registerForAPNS(with: application)
+//        registerForAPNS(with: application)
         CoreDataManager.emptyPersistentContainer() // [development]
         setupMPCManager()
+        setupCKManager()
         return true
     }
 
@@ -34,12 +33,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
+        ckManager?.resetBadgeCount()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
+        ckManager?.resetBadgeCount()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -53,32 +54,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     
+    func setupCKManager() {
+        ckManager = CloudKitManager()
+    }
+    
     // listen and post notification for other viewcontrollers to handle
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        // fetch notification in the background from death
-        let ckQueryNotification = CKQueryNotification(fromRemoteNotificationDictionary: userInfo as! [String: NSObject])
-        let notification = Notification(name: Notification.Name(CloudKitNotifications.NotificationReceived), object: self, userInfo: [CloudKitNotifications.NotificationKey: ckQueryNotification])
-        
-        print(ckQueryNotification)
-        
-        NotificationCenter.default.post(notification)
+        ckManager?.postNotifications(userInfo: userInfo, object: self)
     }
     
     // called when received a notification while in background, and launches via notification
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        // clears the badge only when the user actually taps on the cell, not here
-        print("User info =", response.notification.request.content.userInfo)
-        // implement this
+//        print("User info =", response.notification.request.content.userInfo)
+//        let userInfo = response.notification.request.content.userInfo
+//        ckManager?.setupNotifications(userInfo: userInfo, object: self)
         // start from the notification tab
         completionHandler()
     }
     
+    // called when a notification is delivered to a foreground app
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        // clears the badge only when the user actually taps on the cell, not here. if users is already talking to the user, then there is no need for this.
-        // called when a notification is delivered to a foreground app
-        // add a badge to the tabbar notification tab
-        // implement this
-        print("User info = ", notification.request.content.userInfo)
+        
+//        let userInfo = notification.request.content.userInfo
+//        ckManager?.setupNotifications(userInfo: userInfo, object: self)
+        
         completionHandler([.sound])
     }
     

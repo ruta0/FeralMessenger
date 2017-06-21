@@ -60,6 +60,8 @@ class DetailViewController: UIViewController {
     
     // MARK: - InputContainerView
     
+    var keyboardManager: KeyboardManager?
+    
     var player: AVAudioPlayer?
     
     @IBOutlet weak var heightContraint: NSLayoutConstraint!
@@ -74,7 +76,7 @@ class DetailViewController: UIViewController {
         clearMessageTextField()
         // sending message
         if let sms = message, !sms.isEmpty, let receiverID = receiverID {
-            parseManager?.createMessageInParse(with: sms, receiverID: receiverID)
+            parseManager?.createMessageInParse(with: sms, receiverID: receiverID, senderID: PFUser.current()!.objectId!)
         }
     }
     
@@ -88,8 +90,10 @@ class DetailViewController: UIViewController {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
             try AVAudioSession.sharedInstance().setActive(true)
             player = try AVAudioPlayer(data: sound.data, fileTypeHint: AVFileTypeWAVE)
-            guard let player = player else { return }
-            player.play()
+            DispatchQueue.main.async {
+                guard let player = self.player else { return }
+                player.play()
+            }
         } catch let err {
             print(err.localizedDescription)
         }
@@ -101,7 +105,7 @@ class DetailViewController: UIViewController {
         }
     }
     
-    fileprivate func setupInputContainerView() {
+    private func setupInputContainerView() {
         // inputContainerView
         inputContainerView.backgroundColor = UIColor.midNightBlack()
         // dividerView
@@ -114,44 +118,9 @@ class DetailViewController: UIViewController {
         sendButton.backgroundColor = UIColor.clear
     }
     
-    private func getKeyboardFrameSize(notification: Notification) -> CGRect? {
-        if let keyboardRect = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            return keyboardRect
-        } else {
-            return nil
-        }
-    }
-    
-    func handleKeyboardNotification(notification: Notification) {
-        if let keyboardRect = getKeyboardFrameSize(notification: notification) {
-            let keyboardWillShow = (notification.name == NSNotification.Name.UIKeyboardWillShow)
-            heightContraint.constant = keyboardWillShow ? (inputContainerView.frame.size.height + keyboardRect.height) : 50
-            UIView.animate(withDuration: 0, delay: 0, options: UIViewAnimationOptions.curveEaseInOut, animations: {
-                self.view.layoutIfNeeded()
-            }) { (completed: Bool) in
-                if keyboardWillShow {
-                    self.scrollToLastCellItem()
-                }
-            }
-        }
-    }
-    
-    fileprivate func removeKeyboardNotifications() {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
-    }
-    
-    fileprivate func setupKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(self.handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-    }
-    
     // MARK: - TableView
     
     @IBOutlet weak var tableView: UITableView!
-    
-    @IBOutlet weak var footerView: UIView!
-    @IBOutlet weak var footerLabel: UILabel!
     
     func tableViewTapped(recognizer: UIGestureRecognizer) {
         messageTextField.resignFirstResponder()
@@ -168,13 +137,6 @@ class DetailViewController: UIViewController {
         }
     }
     
-    fileprivate func setupFooterView() {
-        // footerView
-        footerView.backgroundColor = UIColor.midNightBlack()
-        // footerTextField
-        footerLabel.backgroundColor = UIColor.midNightBlack()
-    }
-    
     fileprivate func setupTableView() {
         tableView.delegate = self
         tableView.backgroundColor = UIColor.midNightBlack()
@@ -186,59 +148,25 @@ class DetailViewController: UIViewController {
     
     var ckManager: CloudKitManager?
     
+    func setupCKManager() {
+        ckManager = CloudKitManager()
+    }
+    
     let pubDatabase = CKContainer.default().publicCloudDatabase
     
-    private var cloudKitObserver: NSObjectProtocol?
+    let subscriptionID = "iCloud_Messages_Notification_Creations_Updates_Deletions"
     
-    let subscriptionID = "iCloud_Messages_Notification_Creations_Deletions"
-    
-    func setupCloudKitObserver() {
-        // listen to the notification coming from AppDelegate
-        cloudKitObserver = NotificationCenter.default.addObserver(forName: Notification.Name(CloudKitNotifications.NotificationReceived), object: nil, queue: OperationQueue.main, using: { (notification: Notification) in
-            if let ckqn = notification.userInfo?[CloudKitNotifications.NotificationKey] as? CKQueryNotification {
-                self.iCloudHandleSubscriptionNotification(ckqn: ckqn)
-            }
-        })
-    }
-    
-    func removeCloudKitObserver() {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name(CloudKitNotifications.NotificationReceived), object: nil)
-    }
-    
-    private func iCloudHandleSubscriptionNotification(ckqn: CKQueryNotification) {
-        if ckqn.subscriptionID == self.subscriptionID {
-            if let recordID = ckqn.recordID {
-                switch ckqn.queryNotificationReason {
-                case .recordCreated:
-                    pubDatabase.fetch(withRecordID: recordID, completionHandler: { (ckRecord: CKRecord?, err: Error?) in
-                        // if a record cannot be fetched, just fetch a new batch of messages from Parse Server and tableView.reload()
-                        // if fetch is success, either show a remote notification+change ChatsViewController's border color || reload tableView if the user is at MessageViewController
-                        print(ckRecord!)
-                    })
-                case .recordDeleted:
-                    // when a user did read the push notification, delete it on iCloud and then handle UI
-                    ckManager?.deleteCKRecord()
-                default:
-                    break
-                }
-            }
-        }
-    }
-    
-    // MARK: - Lifecycle
+    // MARK: - Parse
     
     var parseManager: ParseManager?
     
-    var receiverID: String?
+    var receiverID: String? // initiated by previous viewController at prepareForSegue()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupTableView()
-        setupInputContainerView()
-        setupNavigationController()
-        setupFooterView()
-        // Parse
+    func setupParseManager() {
         parseManager = ParseManager()
+    }
+    
+    func fetchMessages() {
         if let receiverID = receiverID {
             beginLoadingAnime()
             parseManager?.readMessagesInParse(with: receiverID, completion: { (messages: [PFObject]?) in
@@ -247,22 +175,37 @@ class DetailViewController: UIViewController {
         } else {
             print("receiverID is nil")
         }
+    }
+    
+    // MARK: - Lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // UI
+        setupTableView()
+        setupInputContainerView()
+        setupNavigationController()
+        // Parse
+        setupParseManager() // 1
+        fetchMessages() // 2
         // CloudKit
-        ckManager = CloudKitManager()
+        setupCKManager()
+        // Keyboard
+        setupKeyboardManager()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        setupKeyboardNotifications()
-        ckManager?.subscribeToMessage(database: pubDatabase, subscriptionID: subscriptionID)
-        setupCloudKitObserver()
+        ckManager?.subscribeToRecord(database: pubDatabase, subscriptionID: subscriptionID, dynamicRecordType: PFUser.current()!.username!)
+        ckManager?.setupLocalObserver()
+        keyboardManager?.setupKeyboardDockableNotifications()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        removeKeyboardNotifications()
-        ckManager?.unsubscribeToMessage(database: pubDatabase, subscriptionID: subscriptionID)
-        removeCloudKitObserver()
+        ckManager?.unsubscribeToRecord(database: pubDatabase, subscriptionID: subscriptionID)
+        ckManager?.removeLocalObserver(observer: self)
+        keyboardManager?.removeKeyboardNotifications()
     }
     
 }
@@ -287,16 +230,19 @@ extension DetailViewController: UITableViewDelegate {
 
 extension DetailViewController: UITableViewDataSource {
     
+    // override this
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return UITableViewCell()
     }
     
+    // override this
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 0
+        return 1
     }
     
+    // override this
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        return 1
     }
     
 }
@@ -314,19 +260,27 @@ extension DetailViewController: UITextFieldDelegate {
 }
 
 
+// MARK: - KeyboardDockableDelegate
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+extension DetailViewController: KeyboardDockableDelegate {
+    
+    func setupKeyboardManager() {
+        keyboardManager = KeyboardManager()
+        keyboardManager?.dockableDelegate = self
+    }
+    
+    func keyboardDidChangeFrame(from notification: Notification, in keyboardRect: CGRect) {
+        let keyboardWillShow = (notification.name == NSNotification.Name.UIKeyboardWillShow)
+        heightContraint.constant = keyboardWillShow ? (inputContainerView.frame.size.height + keyboardRect.height) : 50
+        UIView.animate(withDuration: 0, delay: 0, options: UIViewAnimationOptions.curveEaseInOut, animations: {
+            self.view.layoutIfNeeded()
+        }) { (completed: Bool) in
+            if keyboardWillShow {
+                self.scrollToLastCellItem()
+            }
+        }
+    }
+    
+}
 
 

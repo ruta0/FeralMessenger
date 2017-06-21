@@ -42,6 +42,9 @@ final class User: PFUser {
         self.password = pass
         self["avatar"] = "Cat"
         self["bio"] = "...(ツ)..."
+        // friends
+        let friends = [String]()
+        self["friends"] = friends
         // device specific
         self["uuid"] = UIDevice.current.identifierForVendor!.uuidString
         self["sysVersion"] = UIDevice.current.systemVersion

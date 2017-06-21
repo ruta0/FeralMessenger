@@ -13,7 +13,7 @@ import AudioToolbox
 
 class ServerConfigViewController: UIViewController {
     
-    // MARK: - UIScrollView
+    // MARK: - UI
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var errorLabel: UILabel!
@@ -23,6 +23,9 @@ class ServerConfigViewController: UIViewController {
     @IBOutlet weak var master_keyTextField: UITextField!
     @IBOutlet weak var defaultButton: UIButton!
     @IBOutlet weak var warningLabel: UILabel!
+    @IBOutlet weak var returnButton: UIButton!
+    
+    var keyboardManager: KeyboardManager?
     
     @IBAction func defaultButton_tapped(_ sender: UIButton) {
         self.application_idTextField.text = ParseServerConfiguration.heroku_app_id
@@ -56,9 +59,23 @@ class ServerConfigViewController: UIViewController {
         returnButton.backgroundColor = UIColor.clear
     }
     
-    // MARK: - Lifecycle
+    private func setupWarningLabelGesture() {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(enableSudo(gestureRecognizer:)))
+        gesture.numberOfTapsRequired = 49
+        warningLabel.addGestureRecognizer(gesture)
+    }
     
-    @IBOutlet weak var returnButton: UIButton!
+    @objc private func enableSudo(gestureRecognizer: UITapGestureRecognizer) {
+        alertRespond(errorLabel, with: nil, for: ResponseType.success, with: "sudo granted", completion: {
+            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+            isSudoGranted = true
+            DispatchQueue.main.async {
+                self.warningLabel.textColor = UIColor.green
+            }
+        })
+    }
+    
+    // MARK: - Lifecycle
     
     @IBAction func returnButton_tapped(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
@@ -69,18 +86,18 @@ class ServerConfigViewController: UIViewController {
         setupViews()
         setupWarningLabelGesture()
         setupTextFieldDelegates()
-        setupScrollViewDelegate()
         setupScrollViewGesture()
+        setupKeyboardManager()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        registerForKeyboardNotifications()
+        keyboardManager?.setupKeyboardScrollableNotifications()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        unregisterFromKeyboardNotifications()
+        keyboardManager?.removeKeyboardNotifications()
     }
     
     // MARK: - Parse
@@ -119,7 +136,7 @@ class ServerConfigViewController: UIViewController {
 }
 
 
-// MARK: - UITextFieldDelegate + UIKeyboard
+// MARK: - UITextFieldDelegate
 
 extension ServerConfigViewController: UITextFieldDelegate {
     
@@ -138,28 +155,25 @@ extension ServerConfigViewController: UITextFieldDelegate {
         textField.resignFirstResponder()
     }
     
-    fileprivate func registerForKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+}
+
+
+// MARK: - KeyboardScrollableDelegate
+
+extension ServerConfigViewController: KeyboardScrollableDelegate {
+    
+    func setupKeyboardManager() {
+        keyboardManager = KeyboardManager()
+        keyboardManager?.scrollableDelegate = self
     }
     
-    fileprivate func unregisterFromKeyboardNotifications() {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-    }
-    
-    internal func keyboardWasShown(notification: NSNotification) {
-        //Need to calculate keyboard exact size due to Apple suggestions
+    func keyboardDidShow(from notification: Notification, in keyboardRect: CGRect) {
         self.scrollView.isScrollEnabled = true
-        var info = notification.userInfo!
-        let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
-        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize!.height, 0.0)
-        
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardRect.height, 0.0)
         self.scrollView.contentInset = contentInsets
         self.scrollView.scrollIndicatorInsets = contentInsets
-        
         var aRect : CGRect = self.view.frame
-        aRect.size.height -= keyboardSize!.height
+        aRect.size.height -= keyboardRect.height
         if let activeField = self.master_keyTextField {
             if (!aRect.contains(activeField.frame.origin)){
                 self.scrollView.scrollRectToVisible(activeField.frame, animated: true)
@@ -167,11 +181,8 @@ extension ServerConfigViewController: UITextFieldDelegate {
         }
     }
     
-    internal func keyboardWillBeHidden(notification: NSNotification) {
-        //Once keyboard disappears, restore original positions
-        var info = notification.userInfo!
-        let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
-        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardSize!.height, 0.0)
+    func keyboardDidHide(from notification: Notification, in keyboardRect: CGRect) {
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardRect.height, 0.0)
         self.scrollView.contentInset = contentInsets
         self.scrollView.scrollIndicatorInsets = contentInsets
         self.view.endEditing(true)
@@ -185,32 +196,13 @@ extension ServerConfigViewController: UITextFieldDelegate {
 
 extension ServerConfigViewController: UIScrollViewDelegate {
     
-    fileprivate func setupWarningLabelGesture() {
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(enableSudo(gestureRecognizer:)))
-        gesture.numberOfTapsRequired = 49
-        warningLabel.addGestureRecognizer(gesture)
-    }
-    
-    @objc fileprivate func enableSudo(gestureRecognizer: UITapGestureRecognizer) {
-        alertRespond(errorLabel, with: nil, for: ResponseType.success, with: "sudo granted", completion: {
-            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            isSudoGranted = true
-            DispatchQueue.main.async {
-                self.warningLabel.textColor = UIColor.green
-            }
-        })
-    }
-    
-    fileprivate func setupScrollViewDelegate() {
-        scrollView.delegate = self
-    }
-    
     fileprivate func setupScrollViewGesture() {
+        scrollView.delegate = self
         let gesture = UITapGestureRecognizer(target: self, action: #selector(scrollViewTapped(recognizer:)))
         scrollView.addGestureRecognizer(gesture)
     }
     
-    internal func scrollViewTapped(recognizer: UIGestureRecognizer) {
+    func scrollViewTapped(recognizer: UIGestureRecognizer) {
         scrollView.endEditing(true)
     }
     

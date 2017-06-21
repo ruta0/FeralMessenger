@@ -9,6 +9,7 @@
 import UIKit
 import Parse
 import AVFoundation
+import CloudKit
 
 
 class MasterViewController: UITableViewController {
@@ -43,7 +44,7 @@ class MasterViewController: UITableViewController {
         }
     }
     
-    fileprivate func setupNavigationController() {
+    private func setupNavigationController() {
         guard let navigationController = navigationController else { return }
         navigationController.navigationBar.isTranslucent = false
         navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
@@ -52,7 +53,7 @@ class MasterViewController: UITableViewController {
     
     // MARK: - TabBarController
     
-    fileprivate func setupTabBar() {
+    private func setupTabBar() {
         guard let tabBar = tabBarController?.tabBar else { return }
         tabBar.tintColor = UIColor.candyWhite()
         tabBar.barTintColor = UIColor.midNightBlack()
@@ -62,7 +63,7 @@ class MasterViewController: UITableViewController {
     
     // MARK: - UITableView
     
-    fileprivate func setupTableView() {
+    private func setupTableView() {
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.backgroundColor = UIColor.midNightBlack()
@@ -73,16 +74,14 @@ class MasterViewController: UITableViewController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
+        // UI
         setupTableView()
         setupNavigationController()
-        manager = ParseManager()
-        // I need to setup predicate for fetching the last message as well
-        beginLoadingAnime()
-        manager?.readUsersInParse(with: nil, completion: { (users: [PFObject]?) in
-            guard let users = users else { return }
-            self.parseUsers = users
-            self.stopLoadingAnime()
-        })
+        // Parse
+        setupParseManager() // 1
+        fetchUsers() // 2
+        // CloudKit
+        setupCKManager()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -90,13 +89,45 @@ class MasterViewController: UITableViewController {
         setupTabBar()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        ckManager?.setupLocalObserver()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        ckManager?.removeLocalObserver(observer: self)
+    }
+    
     // MARK: - Parse
     
     var parseUsers = [PFObject]()
     
-    var manager: ParseManager?
+    var parseManager: ParseManager?
+    
+    private func setupParseManager() {
+        parseManager = ParseManager()
+    }
+    
+    func fetchUsers() {
+        beginLoadingAnime()
+        parseManager?.readUsersInParse(with: nil, completion: { (users: [PFObject]?) in
+            guard let users = users else { return }
+            self.parseUsers = users
+            self.stopLoadingAnime()
+        })
+    }
+    
+    // MARK: - CloudKit
+    
+    var ckManager: CloudKitManager?
+    
+    private func setupCKManager() {
+        ckManager = CloudKitManager()
+    }
     
 }
+
 
 
 

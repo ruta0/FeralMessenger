@@ -10,6 +10,7 @@ import UIKit
 import Parse
 import CoreData
 import CloudKit
+import Locksmith
 
 
 final class MessageViewController: DetailViewController {
@@ -56,8 +57,6 @@ final class MessageViewController: DetailViewController {
     
     // MARK: - Lifecycle
     
-    private let segueID = "SettingsViewControllerSegue"
-    
     // animate a popover instead of performing yet another segue
     func showProfileViewController(_ sender: UIButton) {
         print("Not supported at this moment")
@@ -68,6 +67,8 @@ final class MessageViewController: DetailViewController {
         setupParseManagerDelegate()
         setupCKManagerDelegates()
     }
+    
+    private let segueID = "SettingsViewControllerSegue"
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == segueID {
@@ -191,11 +192,13 @@ extension MessageViewController: ParseMessengerManagerDelegate {
         playSound()
         
         // 2. create record in the CloudKit's pubDatabase to receiver's subscription
-        guard let receiverID = message["receiverID"] as? String, let sms = message["sms"] as? String else { return }
-        ckManager?.createCKRecord(in: pubDatabase, receiverID: receiverID, sms: sms)
-        
-        // 3. fetch for new message when a PUSH payload comes in
-        insertToCoreMessage(with: message)
+        if let receiver_name = selectedCoreUser?.username, let sender_name = PFUser.current()?.username {
+            let dataToSend: [String : Bool] = [sender_name : false]
+            ckManager?.createCKRecord(in: pubDatabase, dataToSend: dataToSend, dynamicRecordType: receiver_name)
+            
+            // 3. fetch for new message when a PUSH payload comes in
+            insertToCoreMessage(with: message)
+        }
     }
     
 }
@@ -209,42 +212,77 @@ extension MessageViewController: CloudKitSubscriptionDelegate {
         ckManager?.delegate = self
     }
     
-    func cloudKitHandleSubscriptionNotification(ckqn: CKQueryNotification) {
-        if ckqn.subscriptionID == subscriptionID {
+    func didReceiveNotificationFromSubscription(ckqn: CKQueryNotification) {
+        print(ckqn)
+        if ckqn.subscriptionID == self.subscriptionID {
             if let recordID = ckqn.recordID {
                 switch ckqn.queryNotificationReason {
                 case .recordCreated:
-                    print(recordID)
-                    ckManager?.delegate = self
+                    pubDatabase.fetch(withRecordID: recordID, completionHandler: { (ckRecord: CKRecord?, err: Error?) in
+                        // if a record cannot be fetched, just fetch a new batch of messages from Parse Server and tableView.reload()
+                        // if fetch is success, either show a remote notification+change ChatsViewController's border color || reload tableView if the user is at MessageViewController
+                        if err != nil {
+                            print(err!)
+                        } else {
+                            print(ckRecord!)
+                        }
+                    })
                 case .recordDeleted:
-                    // ignore, for now
-                    break
-                default:
-                    break
+                    // when a user did read the push notification, delete it on iCloud and then handle UI
+                    ckManager?.deleteCKRecord()
+                case .recordUpdated:
+                    pubDatabase.fetch(withRecordID: recordID, completionHandler: { (ckRecord: CKRecord?, err: Error?) in
+                        if err != nil {
+                            print(err!)
+                        } else {
+                            print(ckRecord!)
+                        }
+                    })
                 }
             }
         }
     }
     
     func didSubscribed(subscription: CKSubscription?, error: Error?) {
-        // ignore
-        print("subscribed to: ", subscription!.subscriptionID)
+        if error != nil {
+            print(error!)
+            if let err = error as? CKError {
+                if err.code == CKError.Code.unknownItem {
+                    ckManager?.createCKRecord(in: pubDatabase, dataToSend: nil, dynamicRecordType: PFUser.current()!.username!)
+                    ckManager?.subscribeToRecord(database: pubDatabase, subscriptionID: subscriptionID, dynamicRecordType: PFUser.current()!.username!)
+                } else if err.code == CKError.Code.serverRejectedRequest {
+                    print(err.localizedDescription) // [development]: mostly about duplicate subs -> ignore
+                }
+            } else {
+                performAlert(error: error!.localizedDescription)
+            }
+        } else {
+            KeychainManager.shared.persistCKSubscription(subscription: subscription!)
+            print("subscribed to: ", subscription!.subscriptionID)
+        }
     }
     
     func didUnsubscribed(subscription: String?, error: Error?) {
         // ignore
-        print("unsubscribed from: ", subscription!)
+        if error != nil {
+            print(error!)
+        } else {
+            print("unsubscribed from: ", subscription!)
+        }
     }
     
     func didCreateRecord(ckRecord: CKRecord?, error: Error?) {
         // called after didSendMessage
-        if let err = error as? CKError {
-            if err.code == CKError.Code.notAuthenticated {
-                // invite user to login with iCloud account
-                performAlert(error: err.localizedDescription)
+        if error != nil {
+            if let err = error as? CKError {
+                if err.code == CKError.Code.tooManyParticipants {
+                    // implement this
+                } else {
+                    print(err)
+                }
             } else {
-                // unexpected error
-                print(err)
+                // error not related to CK, then give it another try
+                performAlert(error: error!.localizedDescription)
             }
         } else {
             print(ckRecord!)
@@ -256,6 +294,7 @@ extension MessageViewController: CloudKitSubscriptionDelegate {
         print("deleted")
     }
     
+    // refactor this to somewhere else...probably to some super class
     private func performAlert(error: String) {
         let alert = UIAlertController(title: error, message: "Please login to iCloud to enable Push Notification and auto-refresh", preferredStyle: UIAlertControllerStyle.alert)
         let ok = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil)

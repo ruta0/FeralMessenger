@@ -7,96 +7,67 @@
 //
 
 import UIKit
-import AudioToolbox
 
 
-public protocol StaticScrollViewControllerDelegate : class, UIScrollViewDelegate {
-    var lastTextField: UITextField? { get set } // the last item could be a UITextField, else be nil
-    var lastTextView: UITextView? { get set } // the last item could be a UITextView, else be nil
-}
-
-extension StaticScrollViewControllerDelegate {
-    func registerLastTextFieldOnView(_ lastTextField: UITextField) { }
-    func registerLastTextViewOnView(_ lastTextView: UITextView) { }    
-}
-
-/**
- StaticScrollViewController conforms to StaticScrollViewControllerDelegate.
- Either lastTextField or lastTextView can be instantiated but not at the same time.
- */
-@available(iOS 6.0, *)
-open class StaticScrollViewController: UIViewController, UIScrollViewDelegate, StaticScrollViewControllerDelegate {
+class AdaptiveScrollViewController: UIViewController {
     
-    public var lastTextView: UITextView?
-
-    public var lastTextField: UITextField?
+    // MARK: - UI
     
-    open var scrollView: UIScrollView!
+    var keyboardManager: KeyboardManager?
     
-    func scrollViewTapped(recognizer: UIGestureRecognizer) {
-        scrollView.endEditing(true)
+    @IBOutlet weak var scrollView: UIScrollView!
+    
+    var bottomTextField: UITextField!
+    
+    // MARK: - Lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupKeyboardManager()
     }
     
-    func keyboardWasShown(notification: NSNotification) {
-        //Need to calculate keyboard exact size due to Apple suggestions
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        keyboardManager?.setupKeyboardScrollableNotifications()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        keyboardManager?.removeKeyboardNotifications()
+    }
+    
+}
+
+
+// MARK: - KeyboardScrollableDelegate
+
+extension AdaptiveScrollViewController: KeyboardScrollableDelegate {
+    
+    func setupKeyboardManager() {
+        keyboardManager = KeyboardManager()
+        keyboardManager?.scrollableDelegate = self
+    }
+    
+    func keyboardDidHide(from notification: Notification, in keyboardRect: CGRect) {
         self.scrollView.isScrollEnabled = true
-        var info = notification.userInfo!
-        let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
-        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize!.height, 0.0)
-        
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardRect.height, 0.0)
         self.scrollView.contentInset = contentInsets
         self.scrollView.scrollIndicatorInsets = contentInsets
-        
         var aRect : CGRect = self.view.frame
-        aRect.size.height -= keyboardSize!.height
-        
-        // Depending on whether it is a UITextField or UITextView, it scrolls to the visible last UIView...thing
-        if let activeField = self.lastTextField {
+        aRect.size.height -= keyboardRect.height
+        if let activeField = self.bottomTextField {
             if (!aRect.contains(activeField.frame.origin)){
                 self.scrollView.scrollRectToVisible(activeField.frame, animated: true)
             }
-        } else if let activeField = self.lastTextView {
-            if (!aRect.contains(activeField.frame.origin)){
-                self.scrollView.scrollRectToVisible(activeField.frame, animated: true)
-            }
-        } else {
-            fatalError("Both lastTextField and lastTextView are nil")
         }
     }
     
-    func keyboardWillHide(notification: NSNotification) {
-        //Once keyboard disappears, restore original positions
-        var info = notification.userInfo!
-        let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
-        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardSize!.height, 0.0)
+    func keyboardDidShow(from notification: Notification, in keyboardRect: CGRect) {
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardRect.height, 0.0)
         self.scrollView.contentInset = contentInsets
         self.scrollView.scrollIndicatorInsets = contentInsets
         self.view.endEditing(true)
         self.scrollView.isScrollEnabled = false
-    }
-    
-    func registerForKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-    }
-    
-    func deregisterFromKeyboardNotifications() {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-    }
-    
-    func setupScrollViewGesture() {
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(scrollViewTapped(recognizer:)))
-        scrollView.addGestureRecognizer(gesture)
-    }
-    
-    func setupScrollViewDelegate() {
-        scrollView.delegate = self
-    }
-    
-    open override func viewDidLoad() {
-        super.viewDidLoad()
-        setupScrollViewDelegate()
     }
     
 }
@@ -104,38 +75,33 @@ open class StaticScrollViewController: UIViewController, UIScrollViewDelegate, S
 
 // MARK: - UITextFieldDelegate
 
-extension StaticScrollViewController: UITextFieldDelegate {
+extension AdaptiveScrollViewController: UITextFieldDelegate {
     
-    public func textFieldShouldClear(_ textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
-    public func textFieldDidEndEditing(_ textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         textField.resignFirstResponder()
     }
     
 }
 
 
-// MARK: - UITextViewDelegate
+// MARK: - UIScrollViewDelegate
 
-extension StaticScrollViewController: UITextViewDelegate {
+extension AdaptiveScrollViewController: UIScrollViewDelegate {
     
-    public func textViewDidEndEditing(_ textView: UITextView) {
-        textView.resignFirstResponder()
+    fileprivate func setupScrollViewGesture() {
+        scrollView.delegate = self
+    }
+    
+    internal func scrollViewTapped(recognizer: UIGestureRecognizer) {
+        scrollView.endEditing(true)
     }
     
 }
-
-
-
-
-
-
-
-
-
 
 
 
