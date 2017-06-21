@@ -8,11 +8,14 @@
 
 import Parse
 import Locksmith
+import CloudKit
 
 
 class KeychainManager: NSObject {
     
     static let shared = KeychainManager()
+    
+    // MARK: - Authentication
     
     func persistAuthToken(with token: String) {
         do {
@@ -46,6 +49,16 @@ class KeychainManager: NSObject {
             try Locksmith.deleteDataForUserAccount(userAccount: userAccount, inService: KeychainConfiguration.serviceName)
         } catch let err {
             print(err.localizedDescription)
+        }
+    }
+    
+    // MARK: - CloudKit Subscription
+    
+    func persistCKSubscription(subscription: CKSubscription) {
+        do {
+            try Locksmith.updateData(data: [CloudKitSubscription.SubscriptionKey : subscription], forUserAccount: KeychainConfiguration.accountType.ck_subscription.rawValue, inService: KeychainConfiguration.serviceName)
+        } catch let err {
+            print("persistCKSubscription: - ", err.localizedDescription)
         }
     }
     

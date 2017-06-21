@@ -26,6 +26,8 @@ class AuthViewController: UIViewController {
         case createAnAccount = "Create an Account"
     }
     
+    var keyboardManager: KeyboardManager?
+    
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var infoStackView: UIStackView!
@@ -78,7 +80,7 @@ class AuthViewController: UIViewController {
     }
     
     // I should've use stackView to do this instead.
-    fileprivate func changeEmailTextFieldAlpha(sender: UITextField) {
+    private func changeEmailTextFieldAlpha(sender: UITextField) {
         DispatchQueue.main.async { 
             if sender.alpha == 0.0 {
                 // show
@@ -92,7 +94,7 @@ class AuthViewController: UIViewController {
         }
     }
     
-    fileprivate func changeAuthButtonTitle(sender: UIButton) {
+    private func changeAuthButtonTitle(sender: UIButton) {
         DispatchQueue.main.async { 
             if sender.titleLabel?.text == AuthButtonType.login.rawValue {
                 sender.setTitle(AuthButtonType.signup.rawValue, for: UIControlState.normal)
@@ -102,7 +104,7 @@ class AuthViewController: UIViewController {
         }
     }
     
-    fileprivate func changeToggleButtonTitle(sender: UIButton) {
+    private func changeToggleButtonTitle(sender: UIButton) {
         DispatchQueue.main.async { 
             if sender.titleLabel?.text == ToggleButtonType.createAnAccount.rawValue {
                 sender.setTitle(ToggleButtonType.returnToLogin.rawValue, for: UIControlState.normal)
@@ -112,13 +114,13 @@ class AuthViewController: UIViewController {
         }
     }
     
-    fileprivate func setupLogoImageViewGesture() {
+    private func setupLogoImageViewGesture() {
         let date = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH"
         let hourString = dateFormatter.string(from: date)
         if let hourInt = Int(hourString) {
-            if hourInt >= 23 || hourInt < 3 {
+            if hourInt >= 3 || hourInt < 23 {
                 let gesture = UITapGestureRecognizer(target: self, action: #selector(presentServerConfigView(gestureRecognizer:)))
                 gesture.numberOfTapsRequired = 7
                 logoImageView.addGestureRecognizer(gesture)
@@ -209,8 +211,9 @@ class AuthViewController: UIViewController {
         setupViews()
         setupLogoImageViewGesture()
         setupTextFieldDelegates()
-        setupScrollViewDelegate()
         setupScrollViewGesture()
+        setupKeyboardManager()
+        // login
         KeychainManager.shared.loadAuthToken { (token: String?) in
             if token != nil {
                 self.performLogin(token: token!)
@@ -220,18 +223,18 @@ class AuthViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        registerForKeyboardNotifications()
+        keyboardManager?.setupKeyboardScrollableNotifications()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        deregisterFromKeyboardNotifications()
+        keyboardManager?.removeKeyboardNotifications()
     }
     
 }
 
 
-// MARK: - UITextFieldDelegate + Keyboard
+// MARK: - UITextFieldDelegate
 
 extension AuthViewController: UITextFieldDelegate {
     
@@ -250,44 +253,38 @@ extension AuthViewController: UITextFieldDelegate {
         textField.resignFirstResponder()
     }
     
-    func registerForKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+}
+
+
+// MARK: - KeyboardScrollableDelegate
+
+extension AuthViewController: KeyboardScrollableDelegate {
+    
+    func setupKeyboardManager() {
+        keyboardManager = KeyboardManager()
+        keyboardManager?.scrollableDelegate = self
     }
     
-    func deregisterFromKeyboardNotifications() {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-    }
-    
-    func keyboardWasShown(notification: NSNotification){
-        // Need to calculate keyboard exact size due to Apple suggestions
-        self.scrollView.isScrollEnabled = true
-        var info = notification.userInfo!
-        let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
-        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize!.height, 0.0)
-        
+    func keyboardDidHide(from notification: Notification, in keyboardRect: CGRect) {
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardRect.height, 0.0)
         self.scrollView.contentInset = contentInsets
         self.scrollView.scrollIndicatorInsets = contentInsets
-        
+        self.view.endEditing(true)
+        self.scrollView.isScrollEnabled = false
+    }
+    
+    func keyboardDidShow(from notification: Notification, in keyboardRect: CGRect) {
+        self.scrollView.isScrollEnabled = true
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardRect.height, 0.0)
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
         var aRect: CGRect = self.view.frame
-        aRect.size.height -= keyboardSize!.height
+        aRect.size.height -= keyboardRect.height
         if let activeField = self.passTextField {
             if (!aRect.contains(activeField.frame.origin)) {
                 self.scrollView.scrollRectToVisible(activeField.frame, animated: true)
             }
         }
-    }
-    
-    func keyboardWillBeHidden(notification: NSNotification){
-        // Once keyboard disappears, restore original positions
-        var info = notification.userInfo!
-        let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
-        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardSize!.height, 0.0)
-        self.scrollView.contentInset = contentInsets
-        self.scrollView.scrollIndicatorInsets = contentInsets
-        self.view.endEditing(true)
-        self.scrollView.isScrollEnabled = false
     }
     
 }
@@ -297,11 +294,8 @@ extension AuthViewController: UITextFieldDelegate {
 
 extension AuthViewController: UIScrollViewDelegate {
     
-    fileprivate func setupScrollViewDelegate() {
-        scrollView.delegate = self
-    }
-    
     fileprivate func setupScrollViewGesture() {
+        scrollView.delegate = self
         let gesture = UITapGestureRecognizer(target: self, action: #selector(scrollViewTapped(recognizer:)))
         scrollView.addGestureRecognizer(gesture)
     }

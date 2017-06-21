@@ -164,25 +164,6 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="151" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="k6g-Cl-opc">
                                 <rect key="frame" x="0.0" y="64" width="375" height="553"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <view key="tableFooterView" contentMode="scaleToFill" id="pXk-1L-GFX" userLabel="Footer View">
-                                    <rect key="frame" x="0.0" y="179" width="375" height="50"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="¯\_(ツ)_/¯" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9j2-uM-GXz">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                    <color key="backgroundColor" red="0.74117647060000003" green="0.3921568627" blue="0.22352941179999999" alpha="1" colorSpace="calibratedRGB"/>
-                                    <constraints>
-                                        <constraint firstItem="9j2-uM-GXz" firstAttribute="leading" secondItem="pXk-1L-GFX" secondAttribute="leading" id="8Bn-cj-TMB"/>
-                                        <constraint firstItem="9j2-uM-GXz" firstAttribute="top" secondItem="pXk-1L-GFX" secondAttribute="top" id="AZF-j6-aNb"/>
-                                        <constraint firstAttribute="trailing" secondItem="9j2-uM-GXz" secondAttribute="trailing" id="OqQ-R9-TEt"/>
-                                        <constraint firstAttribute="bottom" secondItem="9j2-uM-GXz" secondAttribute="bottom" id="PwM-0z-Cek"/>
-                                    </constraints>
-                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="DetailCell" rowHeight="151" id="KgJ-LP-Y2e" customClass="DetailCell" customModule="FeralMessenger" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="151"/>
@@ -245,8 +226,6 @@
                     <navigationItem key="navigationItem" title="Message" id="Leb-PE-x9W"/>
                     <connections>
                         <outlet property="dividerView" destination="Nag-5i-Ctg" id="69j-ND-qwy"/>
-                        <outlet property="footerLabel" destination="9j2-uM-GXz" id="LDW-iK-XK8"/>
-                        <outlet property="footerView" destination="pXk-1L-GFX" id="Z0Z-49-l4M"/>
                         <outlet property="heightContraint" destination="qp3-e1-dnd" id="FVr-LB-9x4"/>
                         <outlet property="inputContainerView" destination="kNk-KU-V3S" id="TcZ-bM-pVR"/>
                         <outlet property="messageTextField" destination="7sL-gK-FGq" id="y9W-3K-bJW"/>

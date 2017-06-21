@@ -19,6 +19,7 @@ struct KeychainConfiguration {
         case device_token = "device_token"
         case email = "email"
         case password = "pass"
+        case ck_subscription = "ck_subscription"
     }
     
 }

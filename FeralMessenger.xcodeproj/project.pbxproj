@@ -54,7 +54,7 @@
 		C55D62FF1EE51BDC00AEE16D /* MPCMasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D62FE1EE51BDC00AEE16D /* MPCMasterViewController.swift */; };
 		C5C58B931EDD6D2A003E19B7 /* ChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */; };
 		C5C58B981EDD87A4003E19B7 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C58B971EDD87A4003E19B7 /* MessageViewController.swift */; };
-		C5C9AFA11EEFE9DF005A905F /* InputContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C9AFA01EEFE9DF005A905F /* InputContainerView.swift */; };
+		C5C9AFA11EEFE9DF005A905F /* KeyboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C9AFA01EEFE9DF005A905F /* KeyboardManager.swift */; };
 		C5D33B8A1EE610B50078ED01 /* MasterDetail.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5D33B891EE610B50078ED01 /* MasterDetail.storyboard */; };
 		C5D33B8E1EE61C1E0078ED01 /* MPCMasterMPCDetail.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5D33B8D1EE61C1E0078ED01 /* MPCMasterMPCDetail.storyboard */; };
 		C5D33B901EE61C550078ED01 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5D33B8F1EE61C550078ED01 /* Settings.storyboard */; };
@@ -142,7 +142,7 @@
 		C55D62FE1EE51BDC00AEE16D /* MPCMasterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPCMasterViewController.swift; sourceTree = "<group>"; };
 		C5C58B921EDD6D2A003E19B7 /* ChatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatsViewController.swift; sourceTree = "<group>"; };
 		C5C58B971EDD87A4003E19B7 /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
-		C5C9AFA01EEFE9DF005A905F /* InputContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputContainerView.swift; sourceTree = "<group>"; };
+		C5C9AFA01EEFE9DF005A905F /* KeyboardManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardManager.swift; sourceTree = "<group>"; };
 		C5D33B891EE610B50078ED01 /* MasterDetail.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MasterDetail.storyboard; sourceTree = "<group>"; };
 		C5D33B8D1EE61C1E0078ED01 /* MPCMasterMPCDetail.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MPCMasterMPCDetail.storyboard; sourceTree = "<group>"; };
 		C5D33B8F1EE61C550078ED01 /* Settings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
@@ -431,7 +431,7 @@
 		C5C9AF9F1EEFE9C0005A905F /* Keyboard */ = {
 			isa = PBXGroup;
 			children = (
-				C5C9AFA01EEFE9DF005A905F /* InputContainerView.swift */,
+				C5C9AFA01EEFE9DF005A905F /* KeyboardManager.swift */,
 			);
 			name = Keyboard;
 			sourceTree = "<group>";
@@ -754,7 +754,7 @@
 				C53D0A5E1EDA754A0048CC44 /* CoreMessage.swift in Sources */,
 				C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */,
 				C537FB911EE8B82100556AF2 /* MPCDetailViewController.swift in Sources */,
-				C5C9AFA11EEFE9DF005A905F /* InputContainerView.swift in Sources */,
+				C5C9AFA11EEFE9DF005A905F /* KeyboardManager.swift in Sources */,
 				C525BC6D1ED0D2F3006BEEA3 /* ParseConguration.swift in Sources */,
 				C53D058F1EEF1D4D00D93787 /* ParseManager.swift in Sources */,
 				C53F98401ED79BAD0085EB78 /* Feral.xcdatamodeld in Sources */,

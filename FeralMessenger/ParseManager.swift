@@ -9,39 +9,43 @@
 import UIKit
 import Parse
 
-
-// MARK: - Protocols
+// MARK: - ParseUsersManagerDelegate protocol
 
 protocol ParseUsersManagerDelegate {
+    
     func didReceiveUsers(with users: [PFObject]) // update local persistent container and handle UI
 }
 
+// MARK: - ParseMessengerManagerDelegate protocol
 
 protocol ParseMessengerManagerDelegate {
+    
     func didReceiveMessages(with messages: [PFObject]) // fetched an array of messages, handle UI
     func didReceiveMessage(with message: Message) // update local persistent container and handle UI
     func didSendMessage(with message: Message) // update local persistent container and handle UI
 }
 
 // [development]
+// MARK: - Optional ParseMessengerManagerDelegate protocol methods
+
 extension ParseMessengerManagerDelegate {
+    
     func didReceiveInvitation() {} // handle UI
     func didSendInvitation() {} // ignore
-    func invitationAccepted() {} // update relationship in Parse Server and local persistent container and handle UI
-    func invitationRejected() {} // handle UI
+    func invitationAccepted(senderID: String, receiverID: String) {} // update relationship in Parse Server and local persistent container and handle UI
+    func invitationRejected(senderID: String, receiverID: String) {} // handle UI
+    
 }
 
-
-// MARK: - Parse Manager
 
 /// This class handles the communication between the client and the parse server
 class ParseManager: NSObject {
     
     // MARK: - Create
     
-    func createMessageInParse(with sms: String, receiverID: String) {
+    func createMessageInParse(with sms: String, receiverID: String, senderID: String) {
         let message = Message()
-        message.constructMessageInfo(sms: sms, receiverID: receiverID, senderID: PFUser.current()!.objectId!)
+        message.constructMessageInfo(sms: sms, receiverID: receiverID, senderID: senderID)
         message.saveInBackground { (completed: Bool, error: Error?) in
             if error != nil {
                 print(error!.localizedDescription)
