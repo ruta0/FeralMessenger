@@ -31,6 +31,8 @@ class KeyboardManager: NSObject {
     
     func removeKeyboardNotifications() {
         if #available(iOS 9, *) {
+            // ignore
+        } else {
             NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillShow, object: nil)
             NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
         }

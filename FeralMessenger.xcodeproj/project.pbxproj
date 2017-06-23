@@ -33,7 +33,7 @@
 		C53D0A5E1EDA754A0048CC44 /* CoreMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53D0A5D1EDA754A0048CC44 /* CoreMessage.swift */; };
 		C53D0A601EDA75800048CC44 /* CoreUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53D0A5F1EDA75800048CC44 /* CoreUser.swift */; };
 		C53F98401ED79BAD0085EB78 /* Feral.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C53F983E1ED79BAD0085EB78 /* Feral.xcdatamodeld */; };
-		C54065BC1EF464A600A2A720 /* CloudKitConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C54065BB1EF464A600A2A720 /* CloudKitConfiguration.swift */; };
+		C54065BC1EF464A600A2A720 /* CloudKitConfigurations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C54065BB1EF464A600A2A720 /* CloudKitConfigurations.swift */; };
 		C542416E1EE10112009B02BD /* GroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C542416D1EE10112009B02BD /* GroupViewController.swift */; };
 		C543931D1EE7CE04006B73C3 /* ParseServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C543931C1EE7CE04006B73C3 /* ParseServerManager.swift */; };
 		C54393201EE7D0B8006B73C3 /* KeychainConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C543931F1EE7D0B8006B73C3 /* KeychainConfiguration.swift */; };
@@ -120,7 +120,7 @@
 		C53D0A5D1EDA754A0048CC44 /* CoreMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMessage.swift; sourceTree = "<group>"; };
 		C53D0A5F1EDA75800048CC44 /* CoreUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreUser.swift; sourceTree = "<group>"; };
 		C53F983F1ED79BAD0085EB78 /* Feral.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Feral.xcdatamodel; sourceTree = "<group>"; };
-		C54065BB1EF464A600A2A720 /* CloudKitConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitConfiguration.swift; sourceTree = "<group>"; };
+		C54065BB1EF464A600A2A720 /* CloudKitConfigurations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitConfigurations.swift; sourceTree = "<group>"; };
 		C542416D1EE10112009B02BD /* GroupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupViewController.swift; sourceTree = "<group>"; };
 		C54393181EE7BA1F006B73C3 /* FeralMessenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FeralMessenger.entitlements; sourceTree = "<group>"; };
 		C543931C1EE7CE04006B73C3 /* ParseServerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseServerManager.swift; sourceTree = "<group>"; };
@@ -367,7 +367,7 @@
 		C54065BA1EF4647B00A2A720 /* CloudKit */ = {
 			isa = PBXGroup;
 			children = (
-				C54065BB1EF464A600A2A720 /* CloudKitConfiguration.swift */,
+				C54065BB1EF464A600A2A720 /* CloudKitConfigurations.swift */,
 				C53C71DA1EF47BD900C916E2 /* CloudKitManager.swift */,
 			);
 			name = CloudKit;
@@ -746,7 +746,7 @@
 				C55D62F81EE3525300AEE16D /* AdaptiveScrollViewController.swift in Sources */,
 				C543931D1EE7CE04006B73C3 /* ParseServerManager.swift in Sources */,
 				C525BC341ED02C77006BEEA3 /* AppDelegate.swift in Sources */,
-				C54065BC1EF464A600A2A720 /* CloudKitConfiguration.swift in Sources */,
+				C54065BC1EF464A600A2A720 /* CloudKitConfigurations.swift in Sources */,
 				C54BECB11EEF9ADB005AC72B /* WalletViewController.swift in Sources */,
 				C54BECAE1EEF984F005AC72B /* NotificationsViewController.swift in Sources */,
 				C5C58B981EDD87A4003E19B7 /* MessageViewController.swift in Sources */,

@@ -34,6 +34,17 @@ final class User: PFUser {
         return query
     }
     
+    class func findFriendsID() -> [String]? {
+        guard let currentUser = PFUser.current() else {
+            fatalError("invalid current user")
+        }
+        if let friends = currentUser["friends"] as? [String] {
+            return friends
+        } else {
+            return nil
+        }
+    }
+    
     // username, email and password are inheritated from PFUser
     func constructUserInfo(name: String, email: String, pass: String) {
         // user specific

@@ -59,6 +59,30 @@ class ParseManager: NSObject {
     
     // MARK: - Read
     
+    /// fetching a list of friends id
+    private func getFriendIDs() -> [String] {
+        guard let currentUser = PFUser.current(), let friends = currentUser["friends"] as? [String] else {
+            fatalError("Invalid current user or friends field")
+        }
+        return friends
+    }
+    
+    func readFriends() {
+        var friends = [PFObject]()
+        let ids = getFriendIDs()
+        if !ids.isEmpty {
+            for id in ids {
+                guard let query = User.defaultQuery(with: nil) else { return }
+                let task = query.getObjectInBackground(withId: id)
+                if let result = task.result {
+                    print(result)
+                    friends.append(result)
+                }
+            }
+        }
+        print(friends)
+    }
+    
     func readUsersInParse(with predicate: NSPredicate?, completion: @escaping ([PFObject]?) -> Void) {
         guard let query = User.defaultQuery(with: predicate) else {
             print("query is nil")

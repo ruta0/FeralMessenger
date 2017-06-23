@@ -49,6 +49,7 @@ class AuthViewController: UIViewController {
     @IBAction func authButton_tapped(_ sender: UIButton) {
         if sender.titleLabel?.text == AuthButtonType.login.rawValue {
             if nameTextField.text != "" && passTextField.text != "" {
+                // login
                 performLogin(name: nameTextField.text!, pass: passTextField.text!, completion: { (pfUser: PFUser?) in
                     if pfUser != nil {
                         KeychainManager.shared.persistAuthToken(with: (pfUser?.sessionToken!)!)
@@ -62,6 +63,7 @@ class AuthViewController: UIViewController {
             }
         } else {
             if nameTextField.text != "" && emailTextField.text != "" && passTextField.text != "" {
+                // signup
                 createUserInParse(with: nameTextField.text!, email: emailTextField.text!.lowercased(), pass: passTextField.text!)
             } else {
                 alertRespond(errorLabel, with: [nameTextField, emailTextField, passTextField], for: ResponseType.failure, with: "Fields cannot be blank", completion: { 
@@ -171,6 +173,10 @@ class AuthViewController: UIViewController {
     
     private let termsUrl: String = "https://sheltered-ridge-89457.herokuapp.com/terms"
     
+    private let serverConfigViewControllerSegue = "ServerConfigViewControllerSegue"
+    
+    private let chatsViewControllerSegue = "ChatsViewControllerSegue"
+    
     @IBAction func termsButton_tapped(_ sender: UIButton) {
         let alert = UIAlertController(title: "You will be redirected to your browser for the following URL", message: "\(termsUrl)", preferredStyle: UIAlertControllerStyle.alert)
         let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
@@ -186,14 +192,14 @@ class AuthViewController: UIViewController {
         if logoImageView.tintColor != UIColor.metallicGold() {
             DispatchQueue.main.async {
                 self.logoImageView.tintColor = UIColor.metallicGold()
-                self.performSegue(withIdentifier: "ServerConfigViewControllerSegue", sender: self)
+                self.performSegue(withIdentifier: self.serverConfigViewControllerSegue, sender: self)
             }
         }
     }
     
     fileprivate func presentMasterView() {
         DispatchQueue.main.async {
-            self.performSegue(withIdentifier: "ChatsViewControllerSegue", sender: self)
+            self.performSegue(withIdentifier: self.chatsViewControllerSegue, sender: self)
         }
     }
     

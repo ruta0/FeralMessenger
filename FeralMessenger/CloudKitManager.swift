@@ -13,8 +13,6 @@ protocol CloudKitSubscriptionDelegate {
     
     // MARK: - Protocol
     
-    func didSubscribed(subscription: CKSubscription?, error: Error?) // add observers to AppDelegate and handle notification
-    func didUnsubscribed(subscription: String?, error: Error?) // ignore
     func didCreateRecord(ckRecord: CKRecord?, error: Error?) // handle this and update UI
     func didDeleteRecord() // handle this and update UI
     
@@ -24,6 +22,8 @@ extension CloudKitSubscriptionDelegate {
     
     // MARK: - Optional protocol methods
     
+    func didSubscribed(subscription: CKSubscription?, error: Error?) {} // add observers to AppDelegate and handle notification
+    func didUnsubscribed(subscription: String?, error: Error?) {} // ignore
     func didReceiveNotificationFromSubscription(ckqn: CKQueryNotification) {}
     
 }
@@ -118,6 +118,8 @@ class CloudKitManager: NSObject {
     
     func removeLocalObserver(observer: Any) {
         if #available(iOS 9, *) {
+            // ignore
+        } else {
             NotificationCenter.default.removeObserver(observer, name: Notification.Name(CloudKitNotifications.NotificationReceived), object: nil)
         }
     }

@@ -11,18 +11,42 @@ import UIKit
 
 class AdaptiveScrollViewController: UIViewController {
     
-    // MARK: - UI
+    // MARK: - UI & API
     
     var keyboardManager: KeyboardManager?
     
     @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var contentView: UIView!
+    
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var bottomTextField: UITextField!
+    
+    func beginLoadingAnime() {
+        DispatchQueue.main.async {
+            self.activityIndicator.startAnimating()
+        }
+    }
+    
+    func stopLoadingAnime() {
+        DispatchQueue.main.async {
+            self.activityIndicator.stopAnimating()
+        }
+    }
+    
+    private func setupViews() {
+        // scrollView
+        scrollView.isScrollEnabled = false
+        scrollView.backgroundColor = UIColor.midNightBlack()
+        // contentView
+        contentView.backgroundColor = UIColor.clear
+    }
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupViews()
         setupKeyboardManager()
     }
     
@@ -43,7 +67,7 @@ class AdaptiveScrollViewController: UIViewController {
 
 extension AdaptiveScrollViewController: KeyboardScrollableDelegate {
     
-    func setupKeyboardManager() {
+    fileprivate func setupKeyboardManager() {
         keyboardManager = KeyboardManager()
         keyboardManager?.scrollableDelegate = self
     }
@@ -95,9 +119,11 @@ extension AdaptiveScrollViewController: UIScrollViewDelegate {
     
     fileprivate func setupScrollViewGesture() {
         scrollView.delegate = self
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(scrollViewTapped(recognizer:)))
+        scrollView.addGestureRecognizer(gesture)
     }
     
-    internal func scrollViewTapped(recognizer: UIGestureRecognizer) {
+    func scrollViewTapped(recognizer: UIGestureRecognizer) {
         scrollView.endEditing(true)
     }
     

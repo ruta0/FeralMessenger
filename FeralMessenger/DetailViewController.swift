@@ -208,6 +208,11 @@ class DetailViewController: UIViewController {
         keyboardManager?.removeKeyboardNotifications()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        messageTextField.resignFirstResponder()
+    }
+    
 }
 
 
@@ -282,5 +287,18 @@ extension DetailViewController: KeyboardDockableDelegate {
     }
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
