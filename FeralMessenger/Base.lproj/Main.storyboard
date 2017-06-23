@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Mnx-Eg-w9t">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Mnx-Eg-w9t">
     <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -1645,13 +1645,13 @@
                                                 </variation>
                                             </stackView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$ printf &quot;%s\n&quot; &quot;Great power comes with great responsibility&quot;" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1mn-8Q-486">
-                                                <rect key="frame" x="36" y="273" width="342" height="32"/>
+                                                <rect key="frame" x="36" y="273.66666666666674" width="342" height="31.333333333333314"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <color key="textColor" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="e2j-w2-F41">
-                                                <rect key="frame" x="197" y="237" width="20" height="20"/>
+                                                <rect key="frame" x="197" y="237.66666666666669" width="20" height="20.000000000000057"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="20" id="1QY-lk-fHV"/>
                                                     <constraint firstAttribute="width" secondItem="e2j-w2-F41" secondAttribute="height" multiplier="1:1" id="gkD-kZ-Zza"/>
@@ -2103,14 +2103,15 @@
                         </variation>
                     </view>
                     <connections>
-                        <outlet property="activityIndicator" destination="e2j-w2-F41" id="lTV-uJ-9rU"/>
+                        <outlet property="activityIndicator" destination="e2j-w2-F41" id="9yd-aO-jH8"/>
                         <outlet property="application_idTextField" destination="kVc-Ql-dJ3" id="6qu-U9-Uen"/>
+                        <outlet property="contentView" destination="vRS-Ph-L3r" id="uhI-7H-TH7"/>
                         <outlet property="defaultButton" destination="shg-fA-Uz0" id="7lU-dc-iS3"/>
                         <outlet property="errorLabel" destination="y2J-hM-MKB" id="riC-hK-ueD"/>
                         <outlet property="master_keyTextField" destination="AHW-Jy-5Ja" id="I8D-FL-5xH"/>
                         <outlet property="returnButton" destination="G2U-5N-oCE" id="f7c-ip-Lx3"/>
                         <outlet property="saveButton" destination="CBQ-Sv-rXQ" id="1DC-Yi-mVU"/>
-                        <outlet property="scrollView" destination="lZ1-j0-ssB" id="EDN-Ty-6CB"/>
+                        <outlet property="scrollView" destination="lZ1-j0-ssB" id="ilY-vG-FkU"/>
                         <outlet property="server_urlTextField" destination="oaK-L7-63m" id="4Dd-qU-zWs"/>
                         <outlet property="warningLabel" destination="1mn-8Q-486" id="yaf-Tv-Z0Q"/>
                     </connections>

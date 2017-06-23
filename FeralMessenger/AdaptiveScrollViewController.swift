@@ -20,8 +20,6 @@ class AdaptiveScrollViewController: UIViewController {
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    var bottomTextField: UITextField!
-    
     func beginLoadingAnime() {
         DispatchQueue.main.async {
             self.activityIndicator.startAnimating()
@@ -42,11 +40,18 @@ class AdaptiveScrollViewController: UIViewController {
         contentView.backgroundColor = UIColor.clear
     }
     
+    // MARK: - KeyboardManager
+    
+    func setupKeyboardManager() {
+        keyboardManager = KeyboardManager()
+    }
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        setupScrollViewGesture()
         setupKeyboardManager()
     }
     
@@ -58,40 +63,6 @@ class AdaptiveScrollViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         keyboardManager?.removeKeyboardNotifications()
-    }
-    
-}
-
-
-// MARK: - KeyboardScrollableDelegate
-
-extension AdaptiveScrollViewController: KeyboardScrollableDelegate {
-    
-    fileprivate func setupKeyboardManager() {
-        keyboardManager = KeyboardManager()
-        keyboardManager?.scrollableDelegate = self
-    }
-    
-    func keyboardDidHide(from notification: Notification, in keyboardRect: CGRect) {
-        self.scrollView.isScrollEnabled = true
-        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardRect.height, 0.0)
-        self.scrollView.contentInset = contentInsets
-        self.scrollView.scrollIndicatorInsets = contentInsets
-        var aRect : CGRect = self.view.frame
-        aRect.size.height -= keyboardRect.height
-        if let activeField = self.bottomTextField {
-            if (!aRect.contains(activeField.frame.origin)){
-                self.scrollView.scrollRectToVisible(activeField.frame, animated: true)
-            }
-        }
-    }
-    
-    func keyboardDidShow(from notification: Notification, in keyboardRect: CGRect) {
-        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardRect.height, 0.0)
-        self.scrollView.contentInset = contentInsets
-        self.scrollView.scrollIndicatorInsets = contentInsets
-        self.view.endEditing(true)
-        self.scrollView.isScrollEnabled = false
     }
     
 }

@@ -11,21 +11,17 @@ import Parse
 import AudioToolbox
 
 
-class ServerConfigViewController: UIViewController {
+class ServerConfigViewController: AdaptiveScrollViewController {
     
     // MARK: - UI
     
-    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var errorLabel: UILabel!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var application_idTextField: UITextField!
     @IBOutlet weak var server_urlTextField: UITextField!
     @IBOutlet weak var master_keyTextField: UITextField!
     @IBOutlet weak var defaultButton: UIButton!
     @IBOutlet weak var warningLabel: UILabel!
     @IBOutlet weak var returnButton: UIButton!
-    
-    var keyboardManager: KeyboardManager?
     
     @IBAction func defaultButton_tapped(_ sender: UIButton) {
         self.application_idTextField.text = ParseServerConfiguration.heroku_app_id
@@ -34,9 +30,6 @@ class ServerConfigViewController: UIViewController {
     }
     
     fileprivate func setupViews() {
-        // scrollView
-        scrollView.isScrollEnabled = false
-        scrollView.backgroundColor = UIColor.midNightBlack()
         // warningLabel
         warningLabel.isUserInteractionEnabled = true
         // errorLabel
@@ -86,18 +79,7 @@ class ServerConfigViewController: UIViewController {
         setupViews()
         setupWarningLabelGesture()
         setupTextFieldDelegates()
-        setupScrollViewGesture()
-        setupKeyboardManager()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        keyboardManager?.setupKeyboardScrollableNotifications()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        keyboardManager?.removeKeyboardNotifications()
+        setupKeyboardScrollableDelegate()
     }
     
     // MARK: - Parse
@@ -138,21 +120,12 @@ class ServerConfigViewController: UIViewController {
 
 // MARK: - UITextFieldDelegate
 
-extension ServerConfigViewController: UITextFieldDelegate {
+extension ServerConfigViewController {
     
     fileprivate func setupTextFieldDelegates() {
         application_idTextField.delegate = self
         server_urlTextField.delegate = self
         master_keyTextField.delegate = self
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        textField.resignFirstResponder()
     }
     
 }
@@ -162,8 +135,7 @@ extension ServerConfigViewController: UITextFieldDelegate {
 
 extension ServerConfigViewController: KeyboardScrollableDelegate {
     
-    func setupKeyboardManager() {
-        keyboardManager = KeyboardManager()
+    func setupKeyboardScrollableDelegate() {
         keyboardManager?.scrollableDelegate = self
     }
     
@@ -187,23 +159,6 @@ extension ServerConfigViewController: KeyboardScrollableDelegate {
         self.scrollView.scrollIndicatorInsets = contentInsets
         self.view.endEditing(true)
         self.scrollView.isScrollEnabled = false
-    }
-    
-}
-
-
-// MARK: - UIScrollViewDelegate + Sudo
-
-extension ServerConfigViewController: UIScrollViewDelegate {
-    
-    fileprivate func setupScrollViewGesture() {
-        scrollView.delegate = self
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(scrollViewTapped(recognizer:)))
-        scrollView.addGestureRecognizer(gesture)
-    }
-    
-    func scrollViewTapped(recognizer: UIGestureRecognizer) {
-        scrollView.endEditing(true)
     }
     
 }
