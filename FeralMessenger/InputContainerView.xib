@@ -9,9 +9,17 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="InputContainerView" customModule="FeralMessenger" customModuleProvider="target">
+            <connections>
+                <outlet property="contentView" destination="1Sg-xO-0xd" id="syK-s5-XyE"/>
+                <outlet property="dividerView" destination="onC-Ls-rpP" id="6iV-Dv-t0v"/>
+                <outlet property="inputTextField" destination="8PB-xQ-GIe" id="Qkj-4w-45L"/>
+                <outlet property="sendButton" destination="dH7-vb-ktN" id="h69-gh-mFY"/>
+                <outlet property="view" destination="iN0-l3-epB" id="lqA-9Z-5Jg"/>
+            </connections>
+        </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="InputContainerView" customModule="FeralMessenger" customModuleProvider="target">
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
             <rect key="frame" x="0.0" y="0.0" width="514" height="63"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -26,16 +34,16 @@
                             </constraints>
                         </view>
                         <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="p4b-B6-06c">
-                            <rect key="frame" x="8" y="8" width="498" height="47"/>
+                            <rect key="frame" x="8" y="8" width="498" height="34"/>
                             <subviews>
-                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Message" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="8PB-xQ-GIe">
-                                    <rect key="frame" x="0.0" y="0.0" width="454" height="47"/>
-                                    <nil key="textColor"/>
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Message" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="8PB-xQ-GIe">
+                                    <rect key="frame" x="0.0" y="0.0" width="454" height="34"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardAppearance="alert"/>
                                 </textField>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dH7-vb-ktN">
-                                    <rect key="frame" x="462" y="0.0" width="36" height="47"/>
+                                    <rect key="frame" x="462" y="0.0" width="36" height="34"/>
                                     <color key="backgroundColor" red="0.74117647060000003" green="0.3921568627" blue="0.22352941179999999" alpha="1" colorSpace="calibratedRGB"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="36" id="Z8h-MO-JE0"/>
@@ -46,6 +54,9 @@
                                     </state>
                                 </button>
                             </subviews>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="34" id="9oI-jY-Wbr"/>
+                            </constraints>
                         </stackView>
                     </subviews>
                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -56,7 +67,6 @@
                         <constraint firstItem="p4b-B6-06c" firstAttribute="leading" secondItem="1Sg-xO-0xd" secondAttribute="leading" constant="8" id="HYu-TR-Ror"/>
                         <constraint firstItem="onC-Ls-rpP" firstAttribute="leading" secondItem="1Sg-xO-0xd" secondAttribute="leading" id="OUD-uk-k0X"/>
                         <constraint firstAttribute="trailing" secondItem="p4b-B6-06c" secondAttribute="trailing" constant="8" id="Qau-Ld-1YS"/>
-                        <constraint firstAttribute="bottom" secondItem="p4b-B6-06c" secondAttribute="bottom" constant="8" id="jLH-V2-UHq"/>
                     </constraints>
                 </view>
             </subviews>
@@ -69,12 +79,6 @@
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <connections>
-                <outlet property="contentView" destination="1Sg-xO-0xd" id="ZsA-tJ-IEh"/>
-                <outlet property="dividerView" destination="onC-Ls-rpP" id="bZ4-ho-4wB"/>
-                <outlet property="inputTextField" destination="8PB-xQ-GIe" id="b6u-c0-3y9"/>
-                <outlet property="sendButton" destination="dH7-vb-ktN" id="apU-1m-U8s"/>
-            </connections>
             <point key="canvasLocation" x="37" y="-249.5"/>
         </view>
     </objects>

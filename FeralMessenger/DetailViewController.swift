@@ -72,13 +72,9 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var player: AVAudioPlayer?
     
     @IBOutlet weak var heightContraint: NSLayoutConstraint!
+    @IBOutlet weak var inputContainerView: InputContainerView!
     
-    @IBOutlet weak var inputContainerView: UIView!
-    @IBOutlet weak var dividerView: UIView!
-    @IBOutlet weak var messageTextField: UITextField!
-    @IBOutlet weak var sendButton: UIButton!
-    
-    @IBAction func sendButton_tapped(_ sender: UIButton) {
+    func sendButton_tapped(_ sender: UIButton) {
         // override this
     }
     
@@ -102,21 +98,12 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func clearMessageTextField() {
         DispatchQueue.main.async {
-            self.messageTextField.text?.removeAll()
+            self.inputContainerView.inputTextField.text?.removeAll()
         }
     }
     
     private func setupInputContainerView() {
-        // inputContainerView
-        inputContainerView.backgroundColor = UIColor.midNightBlack()
-        // dividerView
-        dividerView.backgroundColor = UIColor.mediumBlueGray()
-        // messageTextField
-        messageTextField.backgroundColor = UIColor.clear
-        messageTextField.attributedPlaceholder = NSAttributedString(string: "Message", attributes: [NSForegroundColorAttributeName: UIColor.darkGray])
-        messageTextField.delegate = self
-        // sendButton
-        sendButton.backgroundColor = UIColor.clear
+        inputContainerView.sendButton?.addTarget(self, action: #selector(self.sendButton_tapped(_:)), for: UIControlEvents.touchUpInside)
     }
     
     // MARK: - UITableView
@@ -124,7 +111,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet weak var tableView: UITableView!
     
     @objc private func tableViewTapped(recognizer: UIGestureRecognizer) {
-        messageTextField.resignFirstResponder()
+        inputContainerView.inputTextField.resignFirstResponder()
     }
     
     // this method is still very buggy
@@ -168,7 +155,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         keyboardManager?.removeKeyboardNotifications()
-        messageTextField.resignFirstResponder()
+        inputContainerView.inputTextField.resignFirstResponder()
     }
     
     // MARK: - UITableViewDelegate

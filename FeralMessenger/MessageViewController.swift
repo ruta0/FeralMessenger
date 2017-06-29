@@ -17,7 +17,7 @@ final class MessageViewController: DetailViewController, NSFetchedResultsControl
     var receiverID: String?
     
     override func sendButton_tapped(_ sender: UIButton) {
-        let message = messageTextField.text // 1
+        let message = inputContainerView.inputTextField.text
         clearMessageTextField() // 2
         if let sms = message, !sms.isEmpty, let receiverID = receiverID, let senderID = currentUser.objectId {
             beginLoadingAnime()

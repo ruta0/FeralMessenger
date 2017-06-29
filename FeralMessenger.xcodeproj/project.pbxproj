@@ -61,6 +61,7 @@
 		C5D33B921EE624930078ED01 /* MPCMasterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D33B911EE624930078ED01 /* MPCMasterCell.swift */; };
 		C5D75BCF1F04A79500F3C141 /* InputContainerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C5D75BCE1F04A79500F3C141 /* InputContainerView.xib */; };
 		C5D75BD11F04AD2F00F3C141 /* InputContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D75BD01F04AD2F00F3C141 /* InputContainerView.swift */; };
+		C5D75BD31F04D22000F3C141 /* ProfileView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C5D75BD21F04D22000F3C141 /* ProfileView.xib */; };
 		C5D7C38E1ED4360B00ECE44C /* ServerConfigViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */; };
 		F60F367CA4D4A485FB6CA97E /* Pods_FeralMessengerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F49CECBB20EBDFECDB16144 /* Pods_FeralMessengerUITests.framework */; };
 /* End PBXBuildFile section */
@@ -151,6 +152,7 @@
 		C5D33B911EE624930078ED01 /* MPCMasterCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPCMasterCell.swift; sourceTree = "<group>"; };
 		C5D75BCE1F04A79500F3C141 /* InputContainerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InputContainerView.xib; sourceTree = "<group>"; };
 		C5D75BD01F04AD2F00F3C141 /* InputContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputContainerView.swift; sourceTree = "<group>"; };
+		C5D75BD21F04D22000F3C141 /* ProfileView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileView.xib; sourceTree = "<group>"; };
 		C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConfigViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -306,6 +308,7 @@
 				C54BECA81EEF8D09005AC72B /* Notifications.storyboard */,
 				C54BECAA1EEF8D6B005AC72B /* Wallet.storyboard */,
 				C5D33B8F1EE61C550078ED01 /* SettingsDisclosure.storyboard */,
+				C5D75BD21F04D22000F3C141 /* ProfileView.xib */,
 				C525BC741ED0DC47006BEEA3 /* MasterCell.swift */,
 				C525BC781ED0DCD9006BEEA3 /* DetailCell.swift */,
 				C5D75BD01F04AD2F00F3C141 /* InputContainerView.swift */,
@@ -583,6 +586,7 @@
 				C5D33B8E1EE61C1E0078ED01 /* MPCMasterMPCDetail.storyboard in Resources */,
 				C5D33B901EE61C550078ED01 /* SettingsDisclosure.storyboard in Resources */,
 				C54BECA91EEF8D09005AC72B /* Notifications.storyboard in Resources */,
+				C5D75BD31F04D22000F3C141 /* ProfileView.xib in Resources */,
 				C5D75BCF1F04A79500F3C141 /* InputContainerView.xib in Resources */,
 				C525BC3E1ED02C77006BEEA3 /* Assets.xcassets in Resources */,
 				C525BC391ED02C77006BEEA3 /* Main.storyboard in Resources */,
