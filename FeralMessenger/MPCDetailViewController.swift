@@ -10,11 +10,7 @@ import UIKit
 import MultipeerConnectivity
 
 
-// MARK: - UI
-
 class MPCDetailViewContrller: UIViewController {
-    
-    fileprivate let cellId = "MPCDetailCell"
     
     @IBOutlet weak var inputContainerView: UIView!
     @IBOutlet weak var tableView: UITableView!
@@ -112,12 +108,7 @@ class MPCDetailViewContrller: UIViewController {
         sendButton.contentMode = UIViewContentMode.scaleAspectFill
     }
     
-}
-
-
-// MARK: - Lifecycle
-
-extension MPCDetailViewContrller {
+    // MARK: - Lifecycle
     
     fileprivate func popViewController() {
         if let nav = self.navigationController {
@@ -160,7 +151,7 @@ extension MPCDetailViewContrller: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! MPCDetailCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: MPCDetailCell.id, for: indexPath) as! MPCDetailCell
         let message = messagesArray[indexPath.row] as Dictionary<String, String>
         if let sender = message["sender"] {
             cell.usernameLabel.text = sender

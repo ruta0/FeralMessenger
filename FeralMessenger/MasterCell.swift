@@ -11,10 +11,12 @@ import UIKit
 
 class MasterCell: UITableViewCell {
     
-    @IBOutlet weak var wrapperView: UIView!
+    @IBOutlet weak var dividerView: UIView!
     @IBOutlet weak var avatarImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
+    
+    static let id = "MasterCell"
     
     var coreUser: CoreUser? {
         didSet {
@@ -44,8 +46,10 @@ class MasterCell: UITableViewCell {
     private func setupViews() {
         // tableViewCell
         backgroundColor = UIColor.clear
-        // wrapperView
-        wrapperView.backgroundColor = UIColor.mediumBlueGray()
+        // dividerView
+        dividerView.backgroundColor = UIColor.midNightBlack()
+        // contentView
+        contentView.backgroundColor = UIColor.mediumBlueGray()
         // avatarImageView
         avatarImageView.layer.cornerRadius = 32
         avatarImageView.layer.borderColor = UIColor.white.cgColor
@@ -63,10 +67,10 @@ class MasterCell: UITableViewCell {
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted == true {
-            self.wrapperView.backgroundColor = UIColor.miamiBlue()
+            contentView.backgroundColor = UIColor.miamiBlue()
             
         } else {
-            self.wrapperView.backgroundColor = UIColor.mediumBlueGray()
+            contentView.backgroundColor = UIColor.mediumBlueGray()
         }
     }
     

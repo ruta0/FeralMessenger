@@ -26,7 +26,7 @@ class AdaptiveScrollViewController: UIViewController {
         }
     }
     
-    func stopLoadingAnime() {
+    func endLoadingAnime() {
         DispatchQueue.main.async {
             self.activityIndicator.stopAnimating()
         }

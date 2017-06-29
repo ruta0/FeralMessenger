@@ -9,9 +9,9 @@
 import UIKit
 import UserNotifications
 import Locksmith
+import CloudKit
 
 
-var isParseInitialized: Bool = false
 var isSudoGranted: Bool = false
 
 @UIApplicationMain
@@ -20,12 +20,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var mpcManager: MPCManager!
     var ckManager: CloudKitManager?
+    var parseManager: ParseManager?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-//        registerForAPNS(with: application)
+        registerForAPNS(with: application)
         CoreDataManager.emptyPersistentContainer() // [development]
         setupMPCManager()
         setupCKManager()
+        setupParseManager()
         return true
     }
 
@@ -50,13 +52,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 
-// MARK: - APNS
+// MARK: - UNUserNotificationCenterDelegate
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    
-    func setupCKManager() {
-        ckManager = CloudKitManager()
-    }
     
     // listen and post notification for other viewcontrollers to handle
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
@@ -82,11 +80,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        // user granted for apns
         if application.currentUserNotificationSettings?.types != .none {
-            ParseServerManager.shared.saveDeviceToken(with: deviceToken, completion: { (completed: Bool) in
-                if completed {
-                    KeychainManager.shared.persistDeviceToken(with: deviceToken)
+            parseManager?.saveDeviceToken(with: deviceToken, completion: { (completed: Bool, err: Error?) in
+                if err != nil {
+                    print(err!.localizedDescription)
+                } else {
+                    if completed {
+                        KeychainManager.shared.persistDeviceToken(with: deviceToken)
+                    }
                 }
             })
         }
@@ -123,7 +124,26 @@ extension AppDelegate {
 }
 
 
+// MARK: - CloudKit
 
+extension AppDelegate {
+    
+    func setupCKManager() {
+        ckManager = CloudKitManager()
+    }
+    
+}
+
+
+// MARK: - Parse
+
+extension AppDelegate {
+    
+    func setupParseManager() {
+        parseManager = ParseManager()
+    }
+    
+}
 
 
 

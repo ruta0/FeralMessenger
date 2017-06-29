@@ -12,7 +12,7 @@ import AVFoundation
 import CloudKit
 
 
-class DetailViewController: UIViewController {
+class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, KeyboardDockableDelegate {
     
     // MARK: - NavigationController
     
@@ -25,42 +25,49 @@ class DetailViewController: UIViewController {
     var titleButton: UIButton = {
         let button = UIButton()
         button.tintColor = UIColor.white
+        button.setTitle("Messages", for: UIControlState.normal)
         button.frame = CGRect(x: 0, y: 0, width: 35, height: 25)
         return button
     }()
     
     func beginLoadingAnime() {
         DispatchQueue.main.async {
-            self.view.layoutIfNeeded()
             self.navigationItem.titleView = self.activityIndicator
             self.activityIndicator.startAnimating()
         }
     }
     
-    func stopLoadingAnime() {
+    func endLoadingAnime() {
         DispatchQueue.main.async {
             self.activityIndicator.stopAnimating()
             self.navigationItem.titleView = self.titleButton
         }
     }
     
+    func flashErrorAnime(error: String) {
+        DispatchQueue.main.async {
+            self.titleButton.titleLabel?.text = error
+            self.navigationItem.titleView = self.titleButton
+        }
+    }
+    
     var rightBarButton: UIButton = {
         let button = UIButton()
+        let buttonWidth: Int = 33
         button.tintColor = UIColor.white
-        button.layer.cornerRadius = 16.5
+        button.layer.cornerRadius = CGFloat(buttonWidth/2)
         button.clipsToBounds = true
         button.contentMode = UIViewContentMode.scaleAspectFill
-        button.frame = CGRect(x: 0, y: 0, width: 33, height: 33)
+        button.frame = CGRect(x: 0, y: 0, width: buttonWidth, height: buttonWidth)
         return button
     }()
     
-    func setupNavigationController() {
+    private func setupNavigationController() {
+        navigationItem.titleView = titleButton
         navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: rightBarButton)]
     }
     
     // MARK: - InputContainerView
-    
-    var keyboardManager: KeyboardManager?
     
     var player: AVAudioPlayer?
     
@@ -72,15 +79,9 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var sendButton: UIButton!
     
     @IBAction func sendButton_tapped(_ sender: UIButton) {
-        let message = messageTextField.text
-        clearMessageTextField()
-        // sending message
-        if let sms = message, !sms.isEmpty, let receiverID = receiverID {
-            parseManager?.createMessageInParse(with: sms, receiverID: receiverID, senderID: PFUser.current()!.objectId!)
-        }
+        // override this
     }
     
-    // schwoof
     func playSound() {
         guard let sound = NSDataAsset(name: "sent") else {
             print("sound file not found")
@@ -92,7 +93,7 @@ class DetailViewController: UIViewController {
             player = try AVAudioPlayer(data: sound.data, fileTypeHint: AVFileTypeWAVE)
             DispatchQueue.main.async {
                 guard let player = self.player else { return }
-                player.play()
+                player.play() // schwoof
             }
         } catch let err {
             print(err.localizedDescription)
@@ -118,11 +119,11 @@ class DetailViewController: UIViewController {
         sendButton.backgroundColor = UIColor.clear
     }
     
-    // MARK: - TableView
+    // MARK: - UITableView
     
     @IBOutlet weak var tableView: UITableView!
     
-    func tableViewTapped(recognizer: UIGestureRecognizer) {
+    @objc private func tableViewTapped(recognizer: UIGestureRecognizer) {
         messageTextField.resignFirstResponder()
     }
     
@@ -137,137 +138,76 @@ class DetailViewController: UIViewController {
         }
     }
     
-    fileprivate func setupTableView() {
-        tableView.delegate = self
+    func tableViewReload() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    
+    private func setupTableView() {
         tableView.backgroundColor = UIColor.midNightBlack()
         let gesture = UITapGestureRecognizer(target: self, action: #selector(tableViewTapped(recognizer:)))
         tableView.addGestureRecognizer(gesture)
-    }
-    
-    // MARK: - CloudKit
-    
-    var ckManager: CloudKitManager?
-    
-    func setupCKManager() {
-        ckManager = CloudKitManager()
-    }
-    
-    let pubDatabase = CKContainer.default().publicCloudDatabase
-    
-    let subscriptionID = "iCloud_Messages_Notification_Creations_Updates_Deletions"
-    
-    // MARK: - Parse
-    
-    var parseManager: ParseManager?
-    
-    var receiverID: String? // initiated by previous viewController at prepareForSegue()
-    
-    func setupParseManager() {
-        parseManager = ParseManager()
-    }
-    
-    func fetchMessages() {
-        if let receiverID = receiverID {
-            beginLoadingAnime()
-            parseManager?.readMessagesInParse(with: receiverID, completion: { (messages: [PFObject]?) in
-                self.stopLoadingAnime()
-            })
-        } else {
-            print("receiverID is nil")
-        }
     }
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // UI
         setupTableView()
         setupInputContainerView()
         setupNavigationController()
-        // Parse
-        setupParseManager() // 1
-        fetchMessages() // 2
-        // CloudKit
-        setupCKManager()
-        // Keyboard
         setupKeyboardManager()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        ckManager?.subscribeToRecord(database: pubDatabase, subscriptionID: subscriptionID, dynamicRecordType: PFUser.current()!.username!)
-        ckManager?.setupLocalObserver()
         keyboardManager?.setupKeyboardDockableNotifications()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        ckManager?.unsubscribeToRecord(database: pubDatabase, subscriptionID: subscriptionID)
-        ckManager?.removeLocalObserver(observer: self)
         keyboardManager?.removeKeyboardNotifications()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
         messageTextField.resignFirstResponder()
     }
     
-}
-
-
-// MARK: - UITableViewDelegate
-
-extension DetailViewController: UITableViewDelegate {
+    // MARK: - UITableViewDelegate
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return nil
+        return nil // add a label to say something like 200 latest messages...
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return CGFloat(84)
     }
     
-}
-
-
-// MARK: - UITableViewDataSource
-
-extension DetailViewController: UITableViewDataSource {
+    // MARK: - UITableViewDataSource
     
-    // override this
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        guard let detailCell = tableView.dequeueReusableCell(withIdentifier: DetailCell.id, for: indexPath) as? DetailCell else {
+            return UITableViewCell()
+        }
+        return detailCell
     }
     
-    // override this
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    // override this
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
     
-}
-
-
-// MARK: - UITextFieldDelegate
-
-extension DetailViewController: UITextFieldDelegate {
+    // MARK: - UITextFieldDelegate
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
-}
-
-
-// MARK: - KeyboardDockableDelegate
-
-extension DetailViewController: KeyboardDockableDelegate {
+    // MARK: - KeyboardDockableDelegate
+    
+    var keyboardManager: KeyboardManager?
     
     func setupKeyboardManager() {
         keyboardManager = KeyboardManager()
@@ -287,6 +227,8 @@ extension DetailViewController: KeyboardDockableDelegate {
     }
     
 }
+
+
 
 
 

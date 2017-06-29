@@ -10,32 +10,25 @@ import UIKit
 import Parse
 import AudioToolbox
 import Locksmith
+import CloudKit
 
 
-class AuthViewController: UIViewController {
+class AuthViewController: AdaptiveScrollViewController {
     
-    // MARK: UIScrollView
-    
-    fileprivate enum AuthButtonType: String {
+    private enum AuthButtonType: String {
         case login = "Login"
         case signup = "Sign Up"
     }
     
-    fileprivate enum ToggleButtonType: String {
+    private enum ToggleButtonType: String {
         case returnToLogin = "Return to Login"
         case createAnAccount = "Create an Account"
     }
     
-    var keyboardManager: KeyboardManager?
-    
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var contentView: UIView!
-    @IBOutlet weak var infoStackView: UIStackView!
-    @IBOutlet weak var buttonStackView: UIStackView!
+    var ckManager: CloudKitManager?
+    var parseManager: ParseManager?
     
     @IBOutlet weak var dividerViewOne: UIView!
-    
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     @IBOutlet weak var logoImageView: UIImageView!
     @IBOutlet weak var errorLabel: UILabel!
@@ -64,7 +57,9 @@ class AuthViewController: UIViewController {
         } else {
             if nameTextField.text != "" && emailTextField.text != "" && passTextField.text != "" {
                 // signup
-                createUserInParse(with: nameTextField.text!, email: emailTextField.text!.lowercased(), pass: passTextField.text!)
+                authButton.isEnabled = false
+                beginLoadingAnime()
+                parseManager?.createCurrentUser(with: nameTextField.text, email: emailTextField.text, pass: passTextField.text)
             } else {
                 alertRespond(errorLabel, with: [nameTextField, emailTextField, passTextField], for: ResponseType.failure, with: "Fields cannot be blank", completion: { 
                     self.passTextField.text?.removeAll()
@@ -173,10 +168,6 @@ class AuthViewController: UIViewController {
     
     private let termsUrl: String = "https://sheltered-ridge-89457.herokuapp.com/terms"
     
-    private let serverConfigViewControllerSegue = "ServerConfigViewControllerSegue"
-    
-    private let chatsViewControllerSegue = "ChatsViewControllerSegue"
-    
     @IBAction func termsButton_tapped(_ sender: UIButton) {
         let alert = UIAlertController(title: "You will be redirected to your browser for the following URL", message: "\(termsUrl)", preferredStyle: UIAlertControllerStyle.alert)
         let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
@@ -188,18 +179,22 @@ class AuthViewController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
+    private let segueToServerConfigViewController = "SegueToServerConfigViewController"
+    
     @objc private func presentServerConfigView(gestureRecognizer: UITapGestureRecognizer) {
         if logoImageView.tintColor != UIColor.metallicGold() {
             DispatchQueue.main.async {
                 self.logoImageView.tintColor = UIColor.metallicGold()
-                self.performSegue(withIdentifier: self.serverConfigViewControllerSegue, sender: self)
+                self.performSegue(withIdentifier: self.segueToServerConfigViewController, sender: self)
             }
         }
     }
     
+    private let segueToTabBarController = "SegueToTabBarController"
+    
     fileprivate func presentMasterView() {
         DispatchQueue.main.async {
-            self.performSegue(withIdentifier: self.chatsViewControllerSegue, sender: self)
+            self.performSegue(withIdentifier: self.segueToTabBarController, sender: self)
         }
     }
     
@@ -217,8 +212,8 @@ class AuthViewController: UIViewController {
         setupViews()
         setupLogoImageViewGesture()
         setupTextFieldDelegates()
-        setupScrollViewGesture()
-        setupKeyboardManager()
+        setupParseManager()
+        setupKeyboardScrollableDelegate()
         // login
         KeychainManager.shared.loadAuthToken { (token: String?) in
             if token != nil {
@@ -227,36 +222,17 @@ class AuthViewController: UIViewController {
         }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        keyboardManager?.setupKeyboardScrollableNotifications()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        keyboardManager?.removeKeyboardNotifications()
-    }
-    
 }
 
 
 // MARK: - UITextFieldDelegate
 
-extension AuthViewController: UITextFieldDelegate {
+extension AuthViewController {
     
     func setupTextFieldDelegates() {
         nameTextField.delegate = self
         emailTextField.delegate = self
         passTextField.delegate = self
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        textField.resignFirstResponder()
     }
     
 }
@@ -266,8 +242,7 @@ extension AuthViewController: UITextFieldDelegate {
 
 extension AuthViewController: KeyboardScrollableDelegate {
     
-    func setupKeyboardManager() {
-        keyboardManager = KeyboardManager()
+    func setupKeyboardScrollableDelegate() {
         keyboardManager?.scrollableDelegate = self
     }
     
@@ -296,39 +271,40 @@ extension AuthViewController: KeyboardScrollableDelegate {
 }
 
 
-// MARK: - UIScrollViewDelegate
-
-extension AuthViewController: UIScrollViewDelegate {
-    
-    fileprivate func setupScrollViewGesture() {
-        scrollView.delegate = self
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(scrollViewTapped(recognizer:)))
-        scrollView.addGestureRecognizer(gesture)
-    }
-    
-    func scrollViewTapped(recognizer: UIGestureRecognizer) {
-        scrollView.endEditing(true)
-    }
-    
-}
-
-
 // MARK: - Parse
 
-extension AuthViewController {
+extension AuthViewController: ParseUsersManagerDelegate {
+    
+    func setupParseManager() {
+        parseManager = ParseManager()
+        parseManager?.userDelegate = self
+    }
+    
+    func didCreateUser(completed: Bool, error: Error?) {
+        self.authButton.isEnabled = true
+        self.endLoadingAnime()
+        self.passTextField.text?.removeAll()
+        if error != nil {
+            self.alertRespond(self.errorLabel, with: [self.nameTextField, self.emailTextField, self.passTextField], for: ResponseType.failure, with: error!.localizedDescription, completion: {
+            })
+        } else {
+            if completed == true {
+                self.alertRespond(self.errorLabel, with: [self.nameTextField, self.emailTextField, self.passTextField], for: ResponseType.success, with: "Success. Please proceed to login", completion: nil)
+            }
+        }
+    }
     
     func performLogin(name: String, pass: String, completion: @escaping (PFUser?) -> Void) {
         guard let name = nameTextField.text?.lowercased(), let pass = passTextField.text else { return }
-        ParseServerManager.shared.attemptToInitializeParse()
-        self.activityIndicator.startAnimating()
+        parseManager?.attemptToInitializeParse()
+        beginLoadingAnime()
         authButton.isEnabled = false
         PFUser.logInWithUsername(inBackground: name, password: pass, block: { [weak self] (pfUser: PFUser?, error: Error?) in
-            self?.activityIndicator.stopAnimating()
+            self?.endLoadingAnime()
             self?.authButton.isEnabled = true
-            self?.passTextField.text = ""
+            self?.passTextField.text?.removeAll()
             if error != nil {
                 self?.alertRespond((self?.errorLabel)!, with: [(self?.nameTextField)!, (self?.passTextField)!], for: ResponseType.failure, with: error!.localizedDescription, completion: {
-                    self?.passTextField.text?.removeAll()
                 })
             } else {
                 completion(pfUser)
@@ -337,46 +313,45 @@ extension AuthViewController {
     }
     
     func performLogin(token: String) {
-        ParseServerManager.shared.attemptToInitializeParse()
-        self.activityIndicator.startAnimating()
+        parseManager?.attemptToInitializeParse()
+        beginLoadingAnime()
         alertRespond(errorLabel, with: nil, for: ResponseType.normal, with: "Resumming to previous session", completion: nil)
         authButton.isEnabled = false
-        PFUser.become(inBackground: token, block: { [weak self] (pfUser: PFUser?, error: Error?) in
-            self?.activityIndicator.stopAnimating()
-            self?.authButton.isEnabled = true
+        PFUser.become(inBackground: token, block: { (pfUser: PFUser?, error: Error?) in
+            self.endLoadingAnime()
+            self.authButton.isEnabled = true
+            self.passTextField.text?.removeAll()
             if error != nil {
-                self?.alertRespond((self?.errorLabel)!, with: [(self?.nameTextField)!, (self?.passTextField)!], for: ResponseType.failure, with: error!.localizedDescription, completion: {
-                    self?.passTextField.text?.removeAll()
+                self.alertRespond((self.errorLabel)!, with: [(self.nameTextField)!, (self.passTextField)!], for: ResponseType.failure, with: error!.localizedDescription, completion: {
                 })
                 KeychainManager.shared.deleteAuthToken(in: KeychainConfiguration.accountType.auth_token.rawValue)
             } else {
                 KeychainManager.shared.persistAuthToken(with: token)
-                self?.presentMasterView()
+                self.presentMasterView()
             }
         })
     }
+
+}
+
+
+extension AuthViewController: CloudKitManagerDelegate {
     
-    func createUserInParse(with name: String, email: String, pass: String) {
-        guard let name = nameTextField.text?.lowercased(), let email = emailTextField.text?.lowercased(), let pass = passTextField.text else { return }
-        ParseServerManager.shared.attemptToInitializeParse()
-        self.activityIndicator.startAnimating()
-        authButton.isEnabled = false
-        let newUser = User()
-        newUser.constructUserInfo(name: name, email: email, pass: pass)
-        newUser.signUpInBackground(block: { [unowned self] (completed: Bool, error: Error?) in
-            self.authButton.isEnabled = true
-            self.activityIndicator.stopAnimating()
-            self.passTextField.text = ""
-            if error != nil {
-                self.alertRespond(self.errorLabel, with: [self.nameTextField, self.emailTextField, self.passTextField], for: ResponseType.failure, with: error!.localizedDescription, completion: {
-                    self.passTextField.text?.removeAll()
-                })
-            } else {
-                if completed == true {
-                    self.alertRespond(self.errorLabel, with: [self.nameTextField, self.emailTextField, self.passTextField], for: ResponseType.success, with: "Success. Please proceed to login", completion: nil)
-                }
-            }
-        })
+    func setupCloudKitManager() {
+        ckManager = CloudKitManager()
+        ckManager?.delegate = self
+    }
+    
+    func ckErrorHandler(error: CKError) {
+        print(error)
+    }
+    
+    func didCreateRecord(ckRecord: CKRecord?, error: Error?) {
+        //
+    }
+    
+    func didSubscribed(subscription: CKSubscription?, error: Error?) {
+        //
     }
     
 }

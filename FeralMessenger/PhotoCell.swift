@@ -14,6 +14,8 @@ class PhotoCell: UICollectionViewCell {
     @IBOutlet weak var wrapperView: UIView!
     @IBOutlet weak var avatarImageView: UIImageView!
     
+    static let id = "PhotoCell"
+    
     var avatar: Avatar? {
         didSet {
             updateCell()

@@ -11,37 +11,26 @@ import Parse
 import Locksmith
 
 
-class GroupViewController: UIViewController {
-    
-    // MARK: - TabBarController
-    
-    fileprivate func setupTabBar() {
-        guard let tabBar = tabBarController?.tabBar else { return }
-        tabBar.tintColor = UIColor.candyWhite()
-        tabBar.barTintColor = UIColor.midNightBlack()
-        tabBar.isHidden = false
-        tabBar.isTranslucent = false
-    }
+class GroupViewController: UITableViewController {
     
     // MARK: - NavigationController
     
-    @IBOutlet weak var logoutButton: UIBarButtonItem!
     @IBOutlet weak var editButton: UIBarButtonItem!
     
-    @IBAction func logoutButton_tapped(_ sender: UIBarButtonItem) {
-        let alert = UIAlertController(title: "What would you like to do?", message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
-        let logout = UIAlertAction(title: "Logout", style: UIAlertActionStyle.destructive) { (action: UIAlertAction) in
-            self.performLogout()
-        }
-        let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
-        alert.addAction(logout)
-        alert.addAction(cancel)
-        DispatchQueue.main.async {
-            self.present(alert, animated: true, completion: nil)
-        }
-    }
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
+        view.hidesWhenStopped = true
+        return view
+    }()
     
-    @IBAction func editButton(_ sender: UIBarButtonItem) {
+    lazy var titleButton: UIButton = {
+        let button = UIButton()
+        button.tintColor = UIColor.white
+        button.frame = CGRect(x: 0, y: 0, width: 35, height: 25)
+        return button
+    }()
+    
+    @IBAction func editButton_tapped(_ sender: UIBarButtonItem) {
         if sender.title == "Save" {
             animateSaveBio()
             updateBioInParse(with: bioTextView.text)
@@ -50,51 +39,17 @@ class GroupViewController: UIViewController {
         }
     }
     
-    lazy var titleButton: UIButton = {
-        let button = UIButton()
-        button.tintColor = UIColor.white
-        button.setTitle("Settings", for: UIControlState.normal)
-        button.frame = CGRect(x: 0, y: 0, width: 35, height: 21)
-        return button
-    }()
-    
-    fileprivate func setupNavigationController() {
-        guard let navigationController = navigationController else { return }
-        navigationController.navigationBar.isTranslucent = false
-        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
-        navigationController.navigationBar.tintColor = UIColor.white
-        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-        navigationItem.titleView = titleButton
-    }
-    
-    // MARK: - UIScrollView
-    
-    @IBOutlet weak var profileContainerView: UIView!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var avatarButton: UIButton!
-    @IBOutlet weak var usernameLabel: UILabel!
-    @IBOutlet weak var dividerView: UIView!
-    @IBOutlet weak var bioTextView: UITextView!
-    
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var contentView: UIView!
-    
-    @IBOutlet weak var headerView: UIView!
-    @IBOutlet weak var headerLabel: UILabel!
-    
-    func activityIndicatorStopAnime() {
-        if activityIndicator.isAnimating {
-            DispatchQueue.main.async(execute: {
-                self.activityIndicator.stopAnimating()
-            })
+    func beginLoadingAnime() {
+        DispatchQueue.main.async {
+            self.navigationItem.titleView = self.activityIndicator
+            self.activityIndicator.startAnimating()
         }
     }
     
-    func activityIndicatorStartAnime() {
-        if activityIndicator.isAnimating == false {
-            DispatchQueue.main.async(execute: {
-                self.activityIndicator.startAnimating()
-            })
+    func stopLoadingAnime() {
+        DispatchQueue.main.async {
+            self.activityIndicator.stopAnimating()
+            self.navigationItem.titleView = self.titleButton
         }
     }
     
@@ -126,20 +81,45 @@ class GroupViewController: UIViewController {
         }
     }
     
-    fileprivate func setupViews() {
-        // view
-        view.backgroundColor = UIColor.midNightBlack()
-        // scrollView
-        scrollView.backgroundColor = UIColor.midNightBlack()
-        // contentView
-        contentView.backgroundColor = UIColor.midNightBlack()
-        // headerView
-        headerView.backgroundColor = UIColor.clear
-        // headerLabel
-        headerLabel.backgroundColor = UIColor.clear
-        headerLabel.alpha = 0.0
-        // profileContainer
-        profileContainerView.backgroundColor = UIColor.mediumBlueGray()
+    private func setupNavigationController() {
+        guard let navigationController = navigationController else { return }
+        navigationController.navigationBar.isTranslucent = false
+        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
+        navigationController.navigationBar.tintColor = UIColor.white
+        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+        navigationItem.titleView = titleButton
+    }
+    
+    // MARK: - Profile section
+    
+    @IBOutlet weak var profileCell: UITableViewCell!
+    @IBOutlet weak var warningLabel: UILabel!
+    @IBOutlet weak var avatarButton: UIButton!
+    @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var dividerView: UIView!
+    @IBOutlet weak var bioTextView: UITextView!
+    
+    func activityIndicatorStopAnime() {
+        if activityIndicator.isAnimating {
+            DispatchQueue.main.async(execute: {
+                self.activityIndicator.stopAnimating()
+            })
+        }
+    }
+    
+    func activityIndicatorStartAnime() {
+        if activityIndicator.isAnimating == false {
+            DispatchQueue.main.async(execute: {
+                self.activityIndicator.startAnimating()
+            })
+        }
+    }
+    
+    private func setupProfileSection() {
+        // profileCell
+        profileCell.backgroundColor = UIColor.mediumBlueGray()
+        // warningLabel
+        warningLabel.backgroundColor = UIColor.clear
         // avatarButton
         avatarButton.layer.cornerRadius = 36
         avatarButton.layer.borderColor = UIColor.white.cgColor
@@ -150,6 +130,8 @@ class GroupViewController: UIViewController {
         usernameLabel.backgroundColor = UIColor.clear
         usernameLabel.textColor = UIColor.white
         usernameLabel.text = getCurrentUsernameInParse()
+        // dividerView
+        dividerView.backgroundColor = UIColor.darkGray
         // bioTextView
         bioTextView.backgroundColor = UIColor.clear
         bioTextView.isEditable = false
@@ -157,6 +139,57 @@ class GroupViewController: UIViewController {
         bioTextView.textContainerInset = UIEdgeInsets.zero
         bioTextView.textContainer.lineFragmentPadding = 0
         bioTextView.text = getCurrentUserBioInParse()
+    }
+    
+    // MARK: - About section
+    
+    @IBOutlet weak var termsCell: UITableViewCell!
+    @IBOutlet weak var privacyCell: UITableViewCell!
+    @IBOutlet weak var termsLabel: UILabel!
+    @IBOutlet weak var privacyLabel: UILabel!
+    
+    private func setupAboutSection() {
+        termsLabel.backgroundColor = UIColor.clear
+        privacyLabel.backgroundColor = UIColor.clear
+    }
+    
+    // MARK: - Account section
+    
+    @IBOutlet weak var logoutCell: UITableViewCell!
+    @IBOutlet weak var logoutLabel: UILabel!
+    @IBOutlet weak var logoutImageView: UIImageView!
+    
+    @IBAction func logoutButton_tapped(_ sender: UIBarButtonItem) {
+        let alert = UIAlertController(title: "What would you like to do?", message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+        let logout = UIAlertAction(title: "Logout", style: UIAlertActionStyle.destructive) { (action: UIAlertAction) in
+            self.performLogout()
+        }
+        let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
+        alert.addAction(logout)
+        alert.addAction(cancel)
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    private func setupAccountSection() {
+        logoutCell.backgroundColor = UIColor.mediumBlueGray()
+    }
+    
+    // MARK: - UITableView
+    
+    private func setupTableView() {
+        tableView.sectionIndexColor = UIColor.lightGray
+    }
+    
+    // MARK: - TabBarController
+    
+    private func setupTabBar() {
+        guard let tabBar = tabBarController?.tabBar else { return }
+        tabBar.tintColor = UIColor.candyWhite()
+        tabBar.barTintColor = UIColor.midNightBlack()
+        tabBar.isHidden = false
+        tabBar.isTranslucent = false
     }
     
     // MARK: - Lifecycle
@@ -171,12 +204,22 @@ class GroupViewController: UIViewController {
         super.viewDidLoad()
         setupTabBar()
         setupNavigationController()
-        setupViews()
+        setupProfileSection()
+        setupAboutSection()
+        setupAccountSection()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateAvatar()
+    }
+    
+    // MARK: - UITableViewDelegate
+    
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let headerView = view as? UITableViewHeaderFooterView {
+            headerView.textLabel?.textColor = UIColor.red
+        }
     }
     
     // MARK: - Parse
@@ -196,12 +239,8 @@ class GroupViewController: UIViewController {
     }
     
     func getCurrentUserBioInParse() -> String? {
-        if let bio = PFUser.current()?["bio"] as? String {
-            return bio
-        } else {
-            print("current user bio is nil")
-            return nil
-        }
+        let bio = PFUser.current()?["bio"] as? String
+        return bio
     }
     
     func getCurrentUsernameInParse() -> String {
@@ -215,7 +254,7 @@ class GroupViewController: UIViewController {
             self.activityIndicatorStopAnime()
             self.removeAuthTokenInKeychain(account: KeychainConfiguration.accountType.auth_token.rawValue)
             if error != nil {
-                self.alertRespond((self.headerLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
+                self.alertRespond((self.warningLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
             } else {
                 self.dismissTabBar()
             }
@@ -229,10 +268,10 @@ class GroupViewController: UIViewController {
         user.saveInBackground { (completed: Bool, error: Error?) in
             self.activityIndicatorStopAnime()
             if error != nil {
-                self.alertRespond((self.headerLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
+                self.alertRespond((self.warningLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
             } else {
                 if completed == true {
-                    self.alertRespond((self.headerLabel)!, with: nil, for: ResponseType.success, with: "Saved", completion: nil)
+                    self.alertRespond((self.warningLabel)!, with: nil, for: ResponseType.success, with: "Saved", completion: nil)
                 }
             }
         }
@@ -244,7 +283,7 @@ class GroupViewController: UIViewController {
         do {
             try Locksmith.deleteDataForUserAccount(userAccount: KeychainConfiguration.accountType.auth_token.rawValue, inService: KeychainConfiguration.serviceName)
         } catch let err {
-            alertRespond(headerLabel, with: nil, for: ResponseType.failure, with: err.localizedDescription, completion: nil)
+            alertRespond(warningLabel, with: nil, for: ResponseType.failure, with: err.localizedDescription, completion: nil)
         }
     }
 

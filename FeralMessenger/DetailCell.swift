@@ -14,6 +14,8 @@ class DetailCell: UITableViewCell {
     @IBOutlet weak var wrapperView: UIView!
     @IBOutlet weak var messageTextView: UITextView!
     
+    static let id = "DetailCell"
+    
     var coreMessage: CoreMessage? {
         didSet {
             updateCell()
