@@ -55,6 +55,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
         navigationController.navigationBar.isTranslucent = false
         navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
         navigationController.navigationBar.tintColor = UIColor.white
+        addButton.tintColor = UIColor.orange
     }
     
     // MARK: - TabBarController

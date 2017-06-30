@@ -26,9 +26,11 @@ class MPCMasterViewController: UITableViewController {
         if sender.isOn {
             sender.setOn(false, animated: true)
             stopAdvertising()
+            removeNavigationPrompt()
         } else {
             sender.setOn(true, animated: true)
             startAdvertising()
+            addNavigationPrompt()
         }
     }
     
@@ -75,12 +77,6 @@ class MPCMasterViewController: UITableViewController {
     
     // MARK: - NavigationController
     
-    lazy var activityIndicator: UIActivityIndicatorView = {
-        let view = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
-        view.hidesWhenStopped = true
-        return view
-    }()
-    
     lazy var titleButton: UIButton = {
         let button = UIButton()
         button.tintColor = UIColor.white
@@ -88,6 +84,20 @@ class MPCMasterViewController: UITableViewController {
         button.frame = CGRect(x: 0, y: 0, width: 35, height: 25)
         return button
     }()
+    
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
+        view.hidesWhenStopped = true
+        return view
+    }()
+    
+    func addNavigationPrompt() {
+        navigationItem.prompt = "Broadcasting..."
+    }
+    
+    func removeNavigationPrompt() {
+        navigationItem.prompt = nil
+    }
     
     func beginLoadingAnime() {
         DispatchQueue.main.async {
@@ -109,11 +119,13 @@ class MPCMasterViewController: UITableViewController {
         navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
         navigationController.navigationBar.tintColor = UIColor.white
         navigationItem.titleView = titleButton
+        let textAttributes = [NSForegroundColorAttributeName : UIColor.red]
+        navigationController.navigationBar.titleTextAttributes = textAttributes
     }
     
     // MARK: - Lifecycle
     
-    fileprivate let mpcChatViewControllerSegue = "MPCMessageViewControllerSegue"
+    private let mpcChatViewControllerSegue = "MPCMessageViewControllerSegue"
     
     private func showMPCChatsViewController() {
         DispatchQueue.main.async {

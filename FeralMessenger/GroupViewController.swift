@@ -26,23 +26,24 @@ class GroupViewController: UITableViewController {
     lazy var titleButton: UIButton = {
         let button = UIButton()
         button.tintColor = UIColor.white
+        button.setTitle("Settings", for: UIControlState.normal)
         button.frame = CGRect(x: 0, y: 0, width: 35, height: 25)
         return button
     }()
     
     @IBAction func editButton_tapped(_ sender: UIBarButtonItem) {
         if sender.title == "Save" {
-            animateSaveBio()
+            animateToEditMode()
             updateBioInParse(with: bioTextView.text)
         } else if sender.title == "Edit" {
-            animateEditBio()
+            animateToSaveMode()
         }
     }
     
     func beginLoadingAnime() {
         DispatchQueue.main.async {
-            self.navigationItem.titleView = self.activityIndicator
             self.activityIndicator.startAnimating()
+            self.navigationItem.titleView = self.activityIndicator
         }
     }
     
@@ -53,29 +54,30 @@ class GroupViewController: UITableViewController {
         }
     }
     
-    private func animateEditBio() {
+    // from "Edit" to "Save"
+    private func animateToSaveMode() {
         DispatchQueue.main.async {
             self.editButton.title = "Save"
             self.editButton.tintColor = UIColor.orange
-            UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: { [weak self] in
-                self?.bioTextView.textColor = UIColor.orange
-            }) { [weak self] (completed: Bool) in
+            UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+                self.bioTextView.textColor = UIColor.orange
+            }) { (completed: Bool) in
                 if completed {
-                    self?.bioTextView.isEditable = true
+                    self.bioTextView.isEditable = true
                 }
             }
         }
     }
     
-    private func animateSaveBio() {
+    // from "Save" to "Edit"
+    private func animateToEditMode() {
         DispatchQueue.main.async {
             self.editButton.title = "Edit"
-            self.editButton.tintColor = UIColor.white
-            UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: { [weak self] in
-                self?.bioTextView.textColor = UIColor.candyWhite()
-            }) { [weak self] (completed: Bool) in
+            UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+                self.bioTextView.textColor = UIColor.candyWhite()
+            }) { (completed: Bool) in
                 if completed {
-                    self?.bioTextView.isEditable = false
+                    self.bioTextView.isEditable = false
                 }
             }
         }
@@ -88,6 +90,7 @@ class GroupViewController: UITableViewController {
         navigationController.navigationBar.tintColor = UIColor.white
         navigationItem.rightBarButtonItem?.tintColor = UIColor.white
         navigationItem.titleView = titleButton
+        editButton.tintColor = UIColor.orange
     }
     
     // MARK: - Profile section
@@ -95,50 +98,31 @@ class GroupViewController: UITableViewController {
     @IBOutlet weak var profileCell: UITableViewCell!
     @IBOutlet weak var warningLabel: UILabel!
     @IBOutlet weak var avatarButton: UIButton!
-    @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var userLabel: UILabel!
     @IBOutlet weak var dividerView: UIView!
     @IBOutlet weak var bioTextView: UITextView!
-    
-    func activityIndicatorStopAnime() {
-        if activityIndicator.isAnimating {
-            DispatchQueue.main.async(execute: {
-                self.activityIndicator.stopAnimating()
-            })
-        }
-    }
-    
-    func activityIndicatorStartAnime() {
-        if activityIndicator.isAnimating == false {
-            DispatchQueue.main.async(execute: {
-                self.activityIndicator.startAnimating()
-            })
-        }
-    }
     
     private func setupProfileSection() {
         // profileCell
         profileCell.backgroundColor = UIColor.mediumBlueGray()
         // warningLabel
         warningLabel.backgroundColor = UIColor.clear
+        warningLabel.isHidden = true
         // avatarButton
         avatarButton.layer.cornerRadius = 36
         avatarButton.layer.borderColor = UIColor.white.cgColor
         avatarButton.layer.borderWidth = 2
-        let image = UIImage(named: getCurrentUserAvatarName()!)
-        avatarButton.setBackgroundImage(image!, for: UIControlState.normal)
         // usernameLabel
-        usernameLabel.backgroundColor = UIColor.clear
-        usernameLabel.textColor = UIColor.white
-        usernameLabel.text = getCurrentUsernameInParse()
+        userLabel.backgroundColor = UIColor.clear
+        userLabel.textColor = UIColor.white
         // dividerView
-        dividerView.backgroundColor = UIColor.darkGray
+        dividerView.backgroundColor = UIColor.lightGray
         // bioTextView
         bioTextView.backgroundColor = UIColor.clear
         bioTextView.isEditable = false
         bioTextView.textColor = UIColor.candyWhite()
         bioTextView.textContainerInset = UIEdgeInsets.zero
         bioTextView.textContainer.lineFragmentPadding = 0
-        bioTextView.text = getCurrentUserBioInParse()
     }
     
     // MARK: - About section
@@ -149,17 +133,24 @@ class GroupViewController: UITableViewController {
     @IBOutlet weak var privacyLabel: UILabel!
     
     private func setupAboutSection() {
+        // termsCell
+        termsCell.backgroundColor = UIColor.mediumBlueGray()
+        termsCell.contentView.backgroundColor = UIColor.clear
         termsLabel.backgroundColor = UIColor.clear
+        termsLabel.textColor = UIColor.white
+        // privacyCell
+        privacyCell.backgroundColor = UIColor.mediumBlueGray()
+        privacyCell.contentView.backgroundColor = UIColor.clear
         privacyLabel.backgroundColor = UIColor.clear
+        privacyLabel.textColor = UIColor.white
     }
     
     // MARK: - Account section
     
     @IBOutlet weak var logoutCell: UITableViewCell!
     @IBOutlet weak var logoutLabel: UILabel!
-    @IBOutlet weak var logoutImageView: UIImageView!
     
-    @IBAction func logoutButton_tapped(_ sender: UIBarButtonItem) {
+    func presentLogoutAlertView() {
         let alert = UIAlertController(title: "What would you like to do?", message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
         let logout = UIAlertAction(title: "Logout", style: UIAlertActionStyle.destructive) { (action: UIAlertAction) in
             self.performLogout()
@@ -172,14 +163,20 @@ class GroupViewController: UITableViewController {
         }
     }
     
-    private func setupAccountSection() {
-        logoutCell.backgroundColor = UIColor.mediumBlueGray()
+    func setupAccountSection() {
+        // logoutCell
+        logoutCell.backgroundColor = UIColor.darkGray
+        logoutCell.contentView.backgroundColor = UIColor.clear
+        // logoutTitleLabel
+        logoutLabel.backgroundColor = UIColor.clear
+        logoutLabel.textColor = UIColor.white
     }
     
     // MARK: - UITableView
     
     private func setupTableView() {
-        tableView.sectionIndexColor = UIColor.lightGray
+        tableView.backgroundColor = UIColor.midNightBlack()
+        tableView.sectionIndexColor = UIColor.mediumBlueGray()
     }
     
     // MARK: - TabBarController
@@ -202,6 +199,7 @@ class GroupViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupTableView()
         setupTabBar()
         setupNavigationController()
         setupProfileSection()
@@ -216,13 +214,40 @@ class GroupViewController: UITableViewController {
     
     // MARK: - UITableViewDelegate
     
-    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        if let headerView = view as? UITableViewHeaderFooterView {
-            headerView.textLabel?.textColor = UIColor.red
+    override func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
+        if indexPath.section == 1 {
+            if indexPath.row == 0 {
+                termsCell.backgroundColor = UIColor.miamiBlue()
+            } else {
+                privacyCell.backgroundColor = UIColor.miamiBlue()
+            }
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, didUnhighlightRowAt indexPath: IndexPath) {
+        if indexPath.section == 1 {
+            if indexPath.row == 0 {
+                termsCell.backgroundColor = UIColor.mediumBlueGray()
+            } else {
+                privacyCell.backgroundColor = UIColor.mediumBlueGray()
+            }
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // bad bad idea, I must fix this later
+        if indexPath.section == 1 {
+            print(123)
+        } else if indexPath.section == 2 {
+            presentLogoutAlertView()
         }
     }
     
     // MARK: - Parse
+    
+    var currentUser: PFUser {
+        return PFUser.current()!
+    }
     
     func updateAvatar() {
         DispatchQueue.main.async {
@@ -244,14 +269,12 @@ class GroupViewController: UITableViewController {
     }
     
     func getCurrentUsernameInParse() -> String {
-        let name = PFUser.current()!.username!
+        let name = currentUser.username!
         return name
     }
     
     func performLogout() {
-        activityIndicatorStartAnime()
         PFUser.logOutInBackground { (error: Error?) in
-            self.activityIndicatorStopAnime()
             self.removeAuthTokenInKeychain(account: KeychainConfiguration.accountType.auth_token.rawValue)
             if error != nil {
                 self.alertRespond((self.warningLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
@@ -264,9 +287,7 @@ class GroupViewController: UITableViewController {
     func updateBioInParse(with newBio: String?) {
         guard let newBio = newBio, let user = PFUser.current() else { return }
         user["bio"] = newBio
-        activityIndicatorStartAnime()
         user.saveInBackground { (completed: Bool, error: Error?) in
-            self.activityIndicatorStopAnime()
             if error != nil {
                 self.alertRespond((self.warningLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
             } else {

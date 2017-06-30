@@ -111,6 +111,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Chats" id="oId-ET-KaT">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Fkb-2T-gLH">
+                            <color key="tintColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="addButton_tapped:" destination="Lgi-FC-ons" id="hGh-vx-1pP"/>
                             </connections>

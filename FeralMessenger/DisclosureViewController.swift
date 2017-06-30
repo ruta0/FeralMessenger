@@ -10,11 +10,25 @@ import UIKit
 import Parse
 
 
-class DisclosureViewController: UICollectionViewController {
+class DisclosureViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     // MARK: - NavigationController
     
     @IBOutlet weak var saveButton: UIBarButtonItem!
+    
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
+        view.hidesWhenStopped = true
+        return view
+    }()
+    
+    lazy var titleButton: UIButton = {
+        let button = UIButton()
+        button.tintColor = UIColor.white
+        button.setTitle("Avatar", for: UIControlState.normal)
+        button.frame = CGRect(x: 0, y: 0, width: 35, height: 25)
+        return button
+    }()
     
     @IBAction func saveButton_tapped(_ sender: UIBarButtonItem) {
         if selectedAvatarName != nil {
@@ -22,34 +36,52 @@ class DisclosureViewController: UICollectionViewController {
         }
     }
     
-    fileprivate func animateSaveAvatar() {
+    func beginLoadingAnime() {
         DispatchQueue.main.async {
-            if self.saveButton.tintColor == UIColor.orange {
-                self.saveButton.tintColor = UIColor.white
-            }
+            self.navigationItem.titleView = self.activityIndicator
+            self.activityIndicator.startAnimating()
         }
+    }
+    
+    func endLoadingAnime() {
+        DispatchQueue.main.async {
+            self.activityIndicator.stopAnimating()
+            self.navigationItem.titleView = self.titleButton
+        }
+    }
+    
+    private func setupNavigationController() {
+        navigationItem.titleView = titleButton
+        navigationItem.backBarButtonItem?.tintColor = UIColor.orange
+        saveButton.tintColor = UIColor.orange
     }
     
     // MARK: - TabBarController
     
-    fileprivate func setupTabBar() {
+    private func setupTabBar() {
         guard let tabBar = tabBarController?.tabBar else { return }
         tabBar.isHidden = true
     }
     
     // MARK: - UICollectionView
     
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    
     var avatars: [Avatar]?
     var selectedAvatarName: String?
     
-    fileprivate func setupCollectionView() {
+    private func setupCollectionView() {
         guard let collectionView = collectionView else { return }
         collectionView.backgroundColor = UIColor.midNightBlack()
     }
     
-    fileprivate func fetchAvatarsFromPropertyList(for resource: String, of type: String) {
+    var fileName: String = {
+        if isSudoGranted == true {
+            return "SpecialAvatars"
+        } else {
+            return "Avatars"
+        }
+    }()
+    
+    private func fetchAvatarsFromPropertyList(for resource: String, of type: String) {
         var items = [Avatar]()
         guard let inputFile = Bundle.main.path(forResource: resource, ofType: type) else {
             print("DisclosureViewController: - Undefined property list")
@@ -65,7 +97,7 @@ class DisclosureViewController: UICollectionViewController {
     
     // MARK: - Lifecycle
     
-    fileprivate func popViewController() {
+    private func popViewController() {
         if let nav = self.navigationController {
             DispatchQueue.main.async {
                 nav.popViewController(animated: true)
@@ -76,22 +108,12 @@ class DisclosureViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
+        setupNavigationController()
         setupCollectionView()
-        var fileName = String()
-        if isSudoGranted == true {
-            fileName = "SpecialAvatars"
-        } else {
-            fileName = "Avatars"
-        }
         fetchAvatarsFromPropertyList(for: fileName, of: "plist")
     }
     
-}
-
-
-// MARK: - UICollectionViewDelegateFlowLayout
-
-extension DisclosureViewController: UICollectionViewDelegateFlowLayout {
+    // MARK: - UICollectionViewDelegateFlowLayout
     
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
         collectionViewLayout.invalidateLayout()
@@ -114,12 +136,7 @@ extension DisclosureViewController: UICollectionViewDelegateFlowLayout {
         return CGSize(width: view.frame.width/3, height: view.frame.width/3)
     }
     
-}
-
-
-// MARK: - UICollectionViewDataSource
-
-extension DisclosureViewController {
+    // MARK: - UICollectionViewDataSource
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedAvatarName = avatars?[indexPath.item].name
@@ -146,15 +163,14 @@ extension DisclosureViewController {
         return cell
     }
     
-}
-
-
-// MARK: - Parse
-
-extension DisclosureViewController {
+    // MARK: - Parse
+    
+    var currentUser: PFUser {
+        let user = PFUser.current()!
+        return user
+    }
     
     func updateAvatarInParse(with newAvatarName: String) {
-        guard let currentUser = PFUser.current() else { return }
         currentUser["avatar"] = newAvatarName
         activityIndicator.startAnimating()
         currentUser.saveInBackground { [unowned self] (completed: Bool, error: Error?) in
@@ -165,7 +181,6 @@ extension DisclosureViewController {
             } else {
                 if completed == true {
                     print("updateAvatarInParse - successfully saved to Parse")
-                    self.animateSaveAvatar()
                     self.popViewController()
                 }
             }
@@ -173,6 +188,8 @@ extension DisclosureViewController {
     }
     
 }
+
+
 
 
 

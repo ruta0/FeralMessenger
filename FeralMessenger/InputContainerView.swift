@@ -11,8 +11,6 @@ import UIKit
 
 class InputContainerView: UIView {
     
-    private let nibName = "InputContainerView"
-    
     @IBOutlet var view: UIView!
     @IBOutlet weak var dividerView: UIView!
     @IBOutlet weak var contentView: UIView!
@@ -29,12 +27,16 @@ class InputContainerView: UIView {
         dividerView.backgroundColor = UIColor.mediumBlueGray()
         // inputTextFied
         inputTextField.backgroundColor = UIColor.clear
+        inputTextField.textColor = UIColor.white
         inputTextField.attributedPlaceholder = NSAttributedString(string: "Message", attributes: [NSForegroundColorAttributeName: UIColor.darkGray])
         // sendButton
         sendButton.backgroundColor = UIColor.clear
+        sendButton.tintColor = UIColor.white
     }
     
     // MARK: - Lifecycle
+    
+    private let nibName = "InputContainerView"
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)

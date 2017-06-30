@@ -36,9 +36,6 @@ class MasterCell: UITableViewCell {
             if let avatar = UIImage(named: coreUser.profile_image!) {
                 // profile_image cannot be nil
                 avatarImageView.image = avatar
-            } else {
-                // just in case, Cat!
-                avatarImageView.image = UIImage(named: "Cat")!
             }
         }
     }
@@ -54,21 +51,17 @@ class MasterCell: UITableViewCell {
         avatarImageView.layer.cornerRadius = 32
         avatarImageView.layer.borderColor = UIColor.white.cgColor
         avatarImageView.layer.borderWidth = 2
-        avatarImageView.image = UIImage(named: "Cat")
         // titleLabel
         titleLabel.textColor = UIColor.white
         titleLabel.backgroundColor = UIColor.clear
-        titleLabel.text = "username"
         // subtitleLabel
         subtitleLabel.textColor = UIColor.candyWhite()
         subtitleLabel.backgroundColor = UIColor.clear
-        subtitleLabel.text = "bio"
     }
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted == true {
             contentView.backgroundColor = UIColor.miamiBlue()
-            
         } else {
             contentView.backgroundColor = UIColor.mediumBlueGray()
         }
