@@ -166,8 +166,7 @@ class DisclosureViewController: UICollectionViewController, UICollectionViewDele
     // MARK: - Parse
     
     var currentUser: PFUser {
-        let user = PFUser.current()!
-        return user
+        return PFUser.current()!
     }
     
     func updateAvatarInParse(with newAvatarName: String) {

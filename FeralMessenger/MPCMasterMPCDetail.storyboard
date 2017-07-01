@@ -130,7 +130,7 @@
                                     <outlet property="groupLabel" destination="9hc-52-1CZ" id="5hu-i8-y3B"/>
                                     <outlet property="titleLabel" destination="we0-Wa-7ov" id="6Gq-wC-NC1"/>
                                     <outlet property="wrapperView" destination="FpA-qe-QEU" id="ERp-nu-jzZ"/>
-                                    <segue destination="fWd-cn-vkD" kind="show" identifier="MPCChatViewControllerSegue" id="MFA-Dz-vcb">
+                                    <segue destination="fWd-cn-vkD" kind="show" identifier="SegueToMPCMessageViewController" id="MFA-Dz-vcb">
                                         <segue key="commit" inheritsFrom="parent" id="but-Qh-8zG"/>
                                         <segue key="preview" inheritsFrom="commit" id="5qR-AY-jUt"/>
                                     </segue>

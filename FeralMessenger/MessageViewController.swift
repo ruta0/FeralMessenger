@@ -20,7 +20,7 @@ final class MessageViewController: DetailViewController, NSFetchedResultsControl
         let message = inputContainerView.inputTextField.text
         clearMessageTextField() // 2
         if let sms = message, !sms.isEmpty, let receiverID = receiverID, let senderID = currentUser.objectId {
-            beginLoadingAnime()
+            beginLoadingAnime(message: "Loading")
             parseManager?.sendMessage(with: sms, receiverID: receiverID, senderID: senderID, completion: { [weak self] (completed: Bool, err: Error?) in
                 self?.playSound()
                 self?.endLoadingAnime()
@@ -252,7 +252,7 @@ final class MessageViewController: DetailViewController, NSFetchedResultsControl
     
     func fetchMessages() {
         if let receiverID = receiverID {
-            beginLoadingAnime()
+            beginLoadingAnime(message: "Loading")
             parseManager?.readMessages(with: receiverID, completion: { [weak self] (messages: [PFObject]?, err: Error?) in
                 self?.endLoadingAnime()
                 if err != nil {

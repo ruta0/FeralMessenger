@@ -30,7 +30,8 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return button
     }()
     
-    func beginLoadingAnime() {
+    func beginLoadingAnime(message: String) {
+        navigationItem.prompt = message
         DispatchQueue.main.async {
             self.navigationItem.titleView = self.activityIndicator
             self.activityIndicator.startAnimating()
@@ -38,15 +39,9 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func endLoadingAnime() {
+        navigationItem.prompt = nil
         DispatchQueue.main.async {
             self.activityIndicator.stopAnimating()
-            self.navigationItem.titleView = self.titleButton
-        }
-    }
-    
-    func flashErrorAnime(error: String) {
-        DispatchQueue.main.async {
-            self.titleButton.titleLabel?.text = error
             self.navigationItem.titleView = self.titleButton
         }
     }
@@ -54,7 +49,6 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var rightBarButton: UIButton = {
         let button = UIButton()
         let buttonWidth: Int = 33
-        button.tintColor = UIColor.white
         button.layer.cornerRadius = CGFloat(buttonWidth/2)
         button.clipsToBounds = true
         button.contentMode = UIViewContentMode.scaleAspectFill
@@ -63,8 +57,10 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }()
     
     private func setupNavigationController() {
+        guard let navigationController = navigationController else { return }
         navigationItem.titleView = titleButton
         navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: rightBarButton)]
+        navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.orange]
     }
     
     // MARK: - InputContainerView

@@ -165,11 +165,9 @@ class AuthViewController: AdaptiveScrollViewController {
     }
     
     // MARK: - Lifecycle
-    
-    private let termsUrl: String = "https://sheltered-ridge-89457.herokuapp.com/terms"
-    
+        
     @IBAction func termsButton_tapped(_ sender: UIButton) {
-        let alert = UIAlertController(title: "You will be redirected to your browser for the following URL", message: "\(termsUrl)", preferredStyle: UIAlertControllerStyle.alert)
+        let alert = UIAlertController(title: "You will be redirected to your browser for the following URL", message: "\(URL.termsUrl!.absoluteString)", preferredStyle: UIAlertControllerStyle.alert)
         let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
         let redirect = UIAlertAction(title: "Redirect", style: UIAlertActionStyle.default) { (action: UIAlertAction) in
             self.redirectToBrowserForTerms()
@@ -199,11 +197,10 @@ class AuthViewController: AdaptiveScrollViewController {
     }
     
     private func redirectToBrowserForTerms() {
-        guard let termsUrl = URL(string: termsUrl) else { return }
         if #available(iOS 10.0, *) {
-            UIApplication.shared.open(termsUrl, options: [:], completionHandler: nil)
+            UIApplication.shared.open(URL.termsUrl!, options: [:], completionHandler: nil)
         } else {
-            UIApplication.shared.openURL(termsUrl)
+            UIApplication.shared.openURL(URL.termsUrl!)
         }
     }
     

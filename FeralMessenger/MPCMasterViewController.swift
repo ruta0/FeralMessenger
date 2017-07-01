@@ -25,12 +25,10 @@ class MPCMasterViewController: UITableViewController {
     @IBAction func radarSwitch_tapped(_ sender: UISwitch) {
         if sender.isOn {
             sender.setOn(false, animated: true)
-            stopAdvertising()
-            removeNavigationPrompt()
+            appDelegate.mpcManager.stopAdvertise()
         } else {
             sender.setOn(true, animated: true)
-            startAdvertising()
-            addNavigationPrompt()
+            appDelegate.mpcManager.startAdvertise()
         }
     }
     
@@ -61,8 +59,8 @@ class MPCMasterViewController: UITableViewController {
         radarLabel.textColor = UIColor.white
         // radarSwitch
         radarSwitch.isOn = false
-        radarSwitch.tintColor = UIColor.miamiBlue()
-        radarSwitch.onTintColor = UIColor.miamiBlue()
+        radarSwitch.tintColor = UIColor.mandarinOrange()
+        radarSwitch.onTintColor = UIColor.orange
     }
     
     // MARK: - TabBarController
@@ -91,15 +89,15 @@ class MPCMasterViewController: UITableViewController {
         return view
     }()
     
-    func addNavigationPrompt() {
-        navigationItem.prompt = "Broadcasting..."
+    func addNavigationPrompt(message: String) {
+        navigationItem.prompt = message
     }
     
     func removeNavigationPrompt() {
         navigationItem.prompt = nil
     }
     
-    func beginLoadingAnime() {
+    func beginLoadingAnime(message: String) {
         DispatchQueue.main.async {
             self.navigationItem.titleView = self.activityIndicator
             self.activityIndicator.startAnimating()
@@ -119,13 +117,12 @@ class MPCMasterViewController: UITableViewController {
         navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
         navigationController.navigationBar.tintColor = UIColor.white
         navigationItem.titleView = titleButton
-        let textAttributes = [NSForegroundColorAttributeName : UIColor.red]
-        navigationController.navigationBar.titleTextAttributes = textAttributes
+        navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.orange]
     }
     
     // MARK: - Lifecycle
     
-    private let mpcChatViewControllerSegue = "MPCMessageViewControllerSegue"
+    private let mpcChatViewControllerSegue = "SegueToMPCMessageViewController"
     
     private func showMPCChatsViewController() {
         DispatchQueue.main.async {
@@ -191,14 +188,12 @@ extension MPCMasterViewController: MPCManagerDelegate {
         appDelegate.mpcManager.delegate = self
     }
     
-    func startAdvertising() {
-        appDelegate.mpcManager.serviceAdvertiser.startAdvertisingPeer()
-        // implement some cool animation
+    func didStartAdvertising() {
+        addNavigationPrompt(message: "Broadcasting")
     }
     
-    func stopAdvertising() {
-        appDelegate.mpcManager.serviceAdvertiser.stopAdvertisingPeer()
-        // implement some cool animation
+    func didStopAdvertising() {
+        removeNavigationPrompt()
     }
     
     func foundPeer() {

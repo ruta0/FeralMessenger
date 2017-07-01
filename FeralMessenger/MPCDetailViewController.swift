@@ -10,7 +10,7 @@ import UIKit
 import MultipeerConnectivity
 
 
-class MPCDetailViewContrller: UIViewController, UITextFieldDelegate {
+class MPCDetailViewContrller: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
     var messagesArray: [Dictionary<String, String>] = []
     var messages = [Array<CoreMessage>]() // this is better data structure
@@ -130,24 +130,14 @@ class MPCDetailViewContrller: UIViewController, UITextFieldDelegate {
         setupObservers()
     }
     
-}
+    // MARK: - UITableViewDelegate
 
-
-// MARK: - UITableViewDelegate
-
-extension MPCDetailViewContrller: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
     }
     
-}
-
-
-// MARK: - UITableViewDataSource
-
-extension MPCDetailViewContrller: UITableViewDataSource {
+    // MARK: - UITableViewDataSource
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -156,7 +146,7 @@ extension MPCDetailViewContrller: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messagesArray.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MPCDetailCell.id, for: indexPath) as! MPCDetailCell
         let message = messagesArray[indexPath.row] as Dictionary<String, String>
@@ -185,7 +175,11 @@ extension MPCDetailViewContrller: UITableViewDataSource {
         inputTextField.resignFirstResponder()
     }
     
+    
 }
+
+
+
 
 
 

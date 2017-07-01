@@ -24,6 +24,6 @@
     </entity>
     <elements>
         <element name="CoreMessage" positionX="-308" positionY="-27" width="128" height="180"/>
-        <element name="CoreUser" positionX="-549" positionY="-27" width="128" height="178"/>
+        <element name="CoreUser" positionX="-549" positionY="-27" width="128" height="180"/>
     </elements>
 </model>

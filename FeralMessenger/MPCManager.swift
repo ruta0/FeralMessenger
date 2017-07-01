@@ -15,9 +15,21 @@ protocol MPCManagerDelegate {
     func lostPeer()
     func didReceivedInvitation(fromPeer: String, group: String)
     func didConnect(fromPeer: MCPeerID, group: String)
+    func didStartAdvertising()
+    func didStopAdvertising()
+}
+
+extension MPCManagerDelegate {
+    func foundPeer() {}
+    func lostPeer() {}
+    func didReceivedInvitation(fromPeer: String, group: String) {}
+    func didConnect(fromPeer: MCPeerID, group: String) {}
+    func didStartAdvertising() {}
+    func didStopAdvertising() {}
 }
 
 
+/// Implement this class on AppDelegate
 class MPCManager: NSObject {
     
     let myPeerId = MCPeerID(displayName: UIDevice.current.name)
@@ -44,6 +56,16 @@ class MPCManager: NSObject {
             print(err.localizedDescription)
             return false
         }
+    }
+    
+    func startAdvertise() {
+        serviceAdvertiser.startAdvertisingPeer()
+        delegate?.didStartAdvertising()
+    }
+    
+    func stopAdvertise() {
+        serviceAdvertiser.stopAdvertisingPeer()
+        delegate?.didStopAdvertising()
     }
     
     override init() {

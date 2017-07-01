@@ -58,11 +58,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FeralMessenger/MPCManager.swift"
-            timestampString = "518642914.11723"
+            timestampString = "520550209.416984"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "145"
-            endingLineNumber = "145">
+            startingLineNumber = "162"
+            endingLineNumber = "162"
+            landmarkName = "advertiser(_:didNotStartAdvertisingPeer:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -72,11 +74,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FeralMessenger/MPCManager.swift"
-            timestampString = "518642914.11723"
+            timestampString = "520550209.416984"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "129"
-            endingLineNumber = "129">
+            startingLineNumber = "150"
+            endingLineNumber = "150"
+            landmarkName = "MPCManager"
+            landmarkType = "4">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -150,12 +154,12 @@
                   moduleName = "FeralMessenger"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rightmeow/Documents/Developer/FeralMessenger/FeralMessenger/ParseManager.swift"
-                  timestampString = "520549545.326118"
+                  timestampString = "520588126.729562"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "196"
                   endingLineNumber = "196"
-                  offsetFromSymbolStart = "1641">
+                  offsetFromSymbolStart = "1316">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -165,12 +169,12 @@
                   moduleName = "FeralMessenger"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rightmeow/Documents/Developer/FeralMessenger/FeralMessenger/ParseManager.swift"
-                  timestampString = "520549545.332447"
+                  timestampString = "520588126.731793"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "196"
                   endingLineNumber = "196"
-                  offsetFromSymbolStart = "37">
+                  offsetFromSymbolStart = "36">
                </Location>
             </Locations>
          </BreakpointContent>
