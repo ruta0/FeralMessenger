@@ -178,7 +178,6 @@ final class ChatsViewController: MasterViewController, ParseUsersManagerDelegate
     /// this method is called before performFetch!
     override func numberOfSections(in tableView: UITableView) -> Int {
         guard let sections = fetchedResultsController.sections else {
-            print("sections.count == 0")
             return 0
         }
         return sections.count

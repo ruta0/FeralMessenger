@@ -10,6 +10,8 @@ import UIKit
 import MultipeerConnectivity
 
 
+// MARK: - MPCManagerDelegate
+
 protocol MPCManagerDelegate {
     func foundPeer()
     func lostPeer()
@@ -69,7 +71,7 @@ class MPCManager: NSObject {
     }
     
     override init() {
-        // peer must be the first one to be initialized
+        // session must be the first one to be initialized
         session = MCSession(peer: myPeerId, securityIdentity: nil, encryptionPreference: MCEncryptionPreference.none)
         serviceBrowser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: serviceType)
         serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: nil, serviceType: serviceType)

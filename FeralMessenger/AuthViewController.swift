@@ -13,7 +13,7 @@ import Locksmith
 import CloudKit
 
 
-class AuthViewController: AdaptiveScrollViewController {
+class AuthViewController: AdaptiveScrollViewController, KeyboardScrollableDelegate {
     
     private enum AuthButtonType: String {
         case login = "Login"
@@ -219,26 +219,16 @@ class AuthViewController: AdaptiveScrollViewController {
         }
     }
     
-}
+    // MARK: - UITextFieldDelegate
 
-
-// MARK: - UITextFieldDelegate
-
-extension AuthViewController {
-    
     func setupTextFieldDelegates() {
         nameTextField.delegate = self
         emailTextField.delegate = self
         passTextField.delegate = self
     }
     
-}
+    // MARK: - KeyboardScrollableDelegate
 
-
-// MARK: - KeyboardScrollableDelegate
-
-extension AuthViewController: KeyboardScrollableDelegate {
-    
     func setupKeyboardScrollableDelegate() {
         keyboardManager?.scrollableDelegate = self
     }

@@ -149,7 +149,7 @@ class GroupViewController: UITableViewController {
     @IBOutlet weak var logoutLabel: UILabel!
     
     func presentLogoutAlertView() {
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+        let alert = UIAlertController(title: nil, message: "Are you sure your want to logout?", preferredStyle: UIAlertControllerStyle.actionSheet)
         let action = UIAlertAction(title: "Logout", style: UIAlertActionStyle.destructive) { (action: UIAlertAction) in
             self.performLogout()
         }
