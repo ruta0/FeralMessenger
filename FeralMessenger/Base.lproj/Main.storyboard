@@ -2101,9 +2101,9 @@
                         </variation>
                     </view>
                     <connections>
-                        <outlet property="activityIndicator" destination="e2j-w2-F41" id="9yd-aO-jH8"/>
+                        <outlet property="activityIndicator" destination="e2j-w2-F41" id="Wjh-Lg-UR9"/>
                         <outlet property="application_idTextField" destination="kVc-Ql-dJ3" id="6qu-U9-Uen"/>
-                        <outlet property="contentView" destination="vRS-Ph-L3r" id="uhI-7H-TH7"/>
+                        <outlet property="contentView" destination="vRS-Ph-L3r" id="n2d-9T-op3"/>
                         <outlet property="defaultButton" destination="shg-fA-Uz0" id="7lU-dc-iS3"/>
                         <outlet property="errorLabel" destination="y2J-hM-MKB" id="riC-hK-ueD"/>
                         <outlet property="master_keyTextField" destination="AHW-Jy-5Ja" id="I8D-FL-5xH"/>

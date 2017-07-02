@@ -12,8 +12,9 @@ import Parse
 // MARK: - ParseUsersManagerDelegate protocol
 
 protocol ParseUsersManagerDelegate {
+    func didLogin(pfUser: PFUser?, error: Error?)
+    func didSignup(completed: Bool, error: Error?)
     func didReadUsers(with users: [PFObject]?, error: Error?)
-    func didCreateUser(completed: Bool, error: Error?)
     func didDestroyCurrentUser(completed: Bool, error: Error?)
     func didUpdateCurrentUser(completed: Bool, error: Error?)
     func didAddFriend(completed: Bool, error: Error?)
@@ -21,8 +22,9 @@ protocol ParseUsersManagerDelegate {
 }
 
 extension ParseUsersManagerDelegate {
+    func didLogin(pfUser: PFUser?, error: Error?) {}
+    func didSignup(completed: Bool, error: Error?) {}
     func didReadUsers(with users: [PFObject]?, error: Error?) {}
-    func didCreateUser(completed: Bool, error: Error?) {}
     func didDestroyCurrentUser(completed: Bool, error: Error?) {}
     func didUpdateCurrentUser(completed: Bool, error: Error?) {}
     func didAddFriend(completed: Bool, error: Error?) {}
@@ -63,17 +65,12 @@ class ParseManager: NSObject {
     
     // MARK: - Create
     
-    func createCurrentUser(with name: String?, email: String?, pass: String?) {
-        guard let name = name, let email = email, let pass = pass else {
-            print("fields cannot be nil")
-            return
-        }
-        attemptToInitializeParse()
+    func signup(with name: String, email: String, pass: String) {
         let lowerCasedEmail = email.lowercased()
         let newUser = User()
         newUser.constructUserInfo(name: name, email: lowerCasedEmail, pass: pass)
         newUser.signUpInBackground { [weak self] (completed: Bool, err: Error?) in
-            self?.userDelegate?.didCreateUser(completed: completed, error: err)
+            self?.userDelegate?.didSignup(completed: completed, error: err)
         }
     }
     
@@ -146,6 +143,20 @@ class ParseManager: NSObject {
         query.findObjectsInBackground { [weak self] (messages: [PFObject]?, err: Error?) in
             completion(messages, err)
             self?.messengerDelegate?.didReceiveMessages(with: messages, error: err)
+        }
+    }
+    
+    /// Make sure to attemptToInitializeParse first!
+    func login(token: String) {
+        PFUser.become(inBackground: token) { [weak self] (pfUser: PFUser?, error: Error?) in
+            self?.userDelegate?.didLogin(pfUser: pfUser, error: error)
+        }
+    }
+    
+    /// Make sure to attemptToInitializeParse first!
+    func login(user: String, pass: String) {
+        PFUser.logInWithUsername(inBackground: user, password: pass) { [weak self] (pfUser: PFUser?, error: Error?) in
+            self?.userDelegate?.didLogin(pfUser: pfUser, error: error)
         }
     }
     

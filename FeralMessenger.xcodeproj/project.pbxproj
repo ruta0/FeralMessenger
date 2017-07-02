@@ -10,6 +10,7 @@
 		3C529BD04307FB8AEE50BBBD /* Pods_FeralMessengerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC04006C827BFC56EA402FA /* Pods_FeralMessengerTests.framework */; };
 		86AA0CE399E870ED1A13EDEE /* Pods_FeralMessenger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BD907D41C88F95D883A784D /* Pods_FeralMessenger.framework */; };
 		C50C161A1EF586D9007CB20D /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50C16191EF586D9007CB20D /* NotificationCell.swift */; };
+		C50E5A591F0878E5005B7B86 /* StaticScrollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C50E5A581F0878E5005B7B86 /* StaticScrollViewController.swift */; };
 		C51B1FE11F0705BD00843C89 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51B1FE01F0705BD00843C89 /* SettingsViewController.swift */; };
 		C525BC341ED02C77006BEEA3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C525BC331ED02C77006BEEA3 /* AppDelegate.swift */; };
 		C525BC391ED02C77006BEEA3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C525BC371ED02C77006BEEA3 /* Main.storyboard */; };
@@ -96,6 +97,7 @@
 		BC10FAB8FECDA137C6373323 /* Pods-FeralMessenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeralMessenger.release.xcconfig"; path = "Pods/Target Support Files/Pods-FeralMessenger/Pods-FeralMessenger.release.xcconfig"; sourceTree = "<group>"; };
 		BCC04006C827BFC56EA402FA /* Pods_FeralMessengerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FeralMessengerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C50C16191EF586D9007CB20D /* NotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
+		C50E5A581F0878E5005B7B86 /* StaticScrollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StaticScrollViewController.swift; sourceTree = "<group>"; };
 		C51B1FE01F0705BD00843C89 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		C525BC301ED02C77006BEEA3 /* FeralMessenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeralMessenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C525BC331ED02C77006BEEA3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -437,8 +439,9 @@
 			isa = PBXGroup;
 			children = (
 				C55D62F71EE3525300AEE16D /* AdaptiveScrollViewController.swift */,
-				C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */,
 				C5439B741ED2094500FBD7D3 /* AuthViewController.swift */,
+				C50E5A581F0878E5005B7B86 /* StaticScrollViewController.swift */,
+				C5D7C38D1ED4360B00ECE44C /* ServerConfigViewController.swift */,
 			);
 			name = "Auth & Server";
 			sourceTree = "<group>";
@@ -793,6 +796,7 @@
 				C53D0A601EDA75800048CC44 /* CoreUser.swift in Sources */,
 				C537FB8C1EE8619100556AF2 /* MPCManager.swift in Sources */,
 				C5419C521F073927007122C2 /* AvatarViewController.swift in Sources */,
+				C50E5A591F0878E5005B7B86 /* StaticScrollViewController.swift in Sources */,
 				C55D62EE1EE22E3A00AEE16D /* DisclosureViewController.swift in Sources */,
 				C54393201EE7D0B8006B73C3 /* KeychainConfiguration.swift in Sources */,
 				C5D7C38E1ED4360B00ECE44C /* ServerConfigViewController.swift in Sources */,

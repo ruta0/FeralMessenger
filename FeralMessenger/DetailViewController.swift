@@ -30,8 +30,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return button
     }()
     
-    func beginLoadingAnime(message: String) {
-        navigationItem.prompt = message
+    func beginLoadingAnime() {
         DispatchQueue.main.async {
             self.navigationItem.titleView = self.activityIndicator
             self.activityIndicator.startAnimating()
@@ -39,7 +38,6 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func endLoadingAnime() {
-        navigationItem.prompt = nil
         DispatchQueue.main.async {
             self.activityIndicator.stopAnimating()
             self.navigationItem.titleView = self.titleButton
