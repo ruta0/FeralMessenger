@@ -9,35 +9,35 @@
 import CloudKit
 import UIKit
 
-protocol CloudKitSubscriptionDelegate {
-    
-    // MARK: - Protocol
-    
-    func didSubscribed(subscription: CKSubscription?, error: Error?) // add observers to AppDelegate and handle notification
-    func didUnsubscribed(subscription: String?, error: Error?) // ignore
-    func didCreateRecord(ckRecord: CKRecord?, error: Error?) // handle this and update UI
-    func didDeleteRecord() // handle this and update UI
-    
+
+// MARK: - CloudKitSubscriptionDelegate
+
+protocol CloudKitManagerDelegate {
+    func ckErrorHandler(error: CKError)
 }
 
-extension CloudKitSubscriptionDelegate {
-    
-    // MARK: - Optional protocol methods
-    
+extension CloudKitManagerDelegate {
+    func didCreateRecord(ckRecord: CKRecord?) {} // handle this and update UI
+    func didDeleteRecord() {} // handle this and update UI within Settings
+    func didSubscribed(subscription: CKSubscription?) {} // add observers to AppDelegate and handle notification
+    func didUnsubscribed(result: String?) {} // ignore
     func didReceiveNotificationFromSubscription(ckqn: CKQueryNotification) {}
-    
 }
 
+
+// MARK: - CloudKitManager
 
 class CloudKitManager: NSObject {
-    
-    // MARK: - Lifecycle
-        
-    var delegate: CloudKitSubscriptionDelegate?
+
+    var delegate: CloudKitManagerDelegate?
     
     // MARK: - Subscription
     
+    var isSubscriptionLocallyCached: Bool?
+    
     /// dynamicRecordType should be the current user's username
+    /// subscription must be called either upon app launch or user login
+    /// this is an asynchronous call
     func subscribeToRecord(database: CKDatabase, subscriptionID: String, dynamicRecordType: String) {
         let predicate = NSPredicate(format: "TRUEPREDICATE")
         let subscription = CKQuerySubscription(recordType: dynamicRecordType,
@@ -45,18 +45,35 @@ class CloudKitManager: NSObject {
                                                options: [.firesOnRecordUpdate, .firesOnRecordCreation, .firesOnRecordDeletion])
         // setup notification type
         let notificationInfo = CKNotificationInfo()
-        notificationInfo.shouldBadge = true
-        notificationInfo.shouldSendContentAvailable = true // do NOT remove
-        notificationInfo.alertBody = "You have a new message"
+        notificationInfo.shouldSendContentAvailable = true // this is a silent push
         subscription.notificationInfo = notificationInfo
         database.save(subscription) { (subscription: CKSubscription?, err: Error?) in
-            self.delegate?.didSubscribed(subscription: subscription, error: err)
+            if err != nil {
+                if let ckError = err as? CKError {
+                    self.delegate?.ckErrorHandler(error: ckError)
+                } else {
+                    print("failed to downcast Error to CKError")
+                }
+            } else {
+                self.isSubscriptionLocallyCached = true
+                self.delegate?.didSubscribed(subscription: subscription)
+            }
         }
     }
     
+    /// optional: unsubscribe to database can be an option provided at the Settings viewController
     func unsubscribeToRecord(database: CKDatabase, subscriptionID: String) {
-        database.delete(withSubscriptionID: subscriptionID) { (subscriptionString: String?, err: Error?) in
-            self.delegate?.didUnsubscribed(subscription: subscriptionString, error: err)
+        database.delete(withSubscriptionID: subscriptionID) { (result: String?, err: Error?) in
+            if err != nil {
+                if let ckError = err as? CKError {
+                    self.delegate?.ckErrorHandler(error: ckError)
+                } else {
+                    print("failed to downcast Error to CKError")
+                }
+            } else {
+                self.isSubscriptionLocallyCached = false
+                self.delegate?.didUnsubscribed(result: result)
+            }
         }
     }
     
@@ -71,8 +88,37 @@ class CloudKitManager: NSObject {
         } else {
             print("createCKRecord: - payload is nil")
         }
-        database.save(payloadRecord) { (record: CKRecord?, error: Error?) in
-            self.delegate?.didCreateRecord(ckRecord: record, error: error)
+        database.save(payloadRecord) { (record: CKRecord?, err: Error?) in
+            if err != nil {
+                if let ckError = err as? CKError {
+                    self.delegate?.ckErrorHandler(error: ckError)
+                } else {
+                    print("failed to downcast Error to CKError")
+                }
+            } else {
+                self.delegate?.didCreateRecord(ckRecord: record)
+            }
+        }
+    }
+    
+    func updateCKRecord(in database: CKDatabase, dataToSend: [String : Bool]?, dynamicRecordType: String) {
+        let payloadRecord = CKRecord(recordType: dynamicRecordType)
+        if let data = dataToSend {
+            payloadRecord.setValuesForKeys(data)
+            print(payloadRecord)
+        } else {
+            print("createCKRecord: - payload is nil")
+        }
+        database.save(payloadRecord) { (record: CKRecord?, err: Error?) in
+            if err != nil {
+                if let ckError = err as? CKError {
+                    self.delegate?.ckErrorHandler(error: ckError)
+                } else {
+                    print("failed to downcast Error to CKError")
+                }
+            } else {
+                self.delegate?.didCreateRecord(ckRecord: record)
+            }
         }
     }
     
@@ -82,6 +128,14 @@ class CloudKitManager: NSObject {
     }
     
     // MARK: - Notification
+    
+    /// Configure a silent remote notification at AppDelegate
+    func registerForRemoteCKNotification(with application: UIApplication, completion: (CKNotificationInfo) -> Void) {
+        let notificationInfo = CKNotificationInfo()
+        notificationInfo.shouldSendContentAvailable = true //  I am not alerting the user in anyway, so no need to request for authorization
+        application.registerForRemoteNotifications()
+        completion(notificationInfo)
+    }
     
     /// This method will broadcast "iCloudRemoteNotificationReceived" in userInfo
     func postNotifications(userInfo: [AnyHashable : Any], object: Any?) {
@@ -118,18 +172,20 @@ class CloudKitManager: NSObject {
     
     func removeLocalObserver(observer: Any) {
         if #available(iOS 9, *) {
+            // ignore
+        } else {
             NotificationCenter.default.removeObserver(observer, name: Notification.Name(CloudKitNotifications.NotificationReceived), object: nil)
         }
     }
     
     // MARK: - Error handler
     
-    func retryAfterError(error: NSError?, withSelector selector: Selector) {
+    func retryAfterError(target: Any, error: NSError?, withSelector selector: Selector) {
         if let retryInterval = error?.userInfo[CKErrorRetryAfterKey] as? TimeInterval {
             DispatchQueue.main.async {
                 Timer.scheduledTimer(
                     timeInterval: retryInterval,
-                    target: self,
+                    target: target,
                     selector: selector,
                     userInfo: nil,
                     repeats: false)

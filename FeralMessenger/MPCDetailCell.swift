@@ -15,6 +15,8 @@ class MPCDetailCell: UITableViewCell {
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var smsTextView: UITextView!
     
+    static let id = "MPCDetailCell"
+    
     var mpcMessage: CoreMessage? {
         didSet {
             updateCell()

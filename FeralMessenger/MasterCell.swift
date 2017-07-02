@@ -11,10 +11,12 @@ import UIKit
 
 class MasterCell: UITableViewCell {
     
-    @IBOutlet weak var wrapperView: UIView!
+    @IBOutlet weak var dividerView: UIView!
     @IBOutlet weak var avatarImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
+    
+    static let id = "MasterCell"
     
     var coreUser: CoreUser? {
         didSet {
@@ -34,9 +36,6 @@ class MasterCell: UITableViewCell {
             if let avatar = UIImage(named: coreUser.profile_image!) {
                 // profile_image cannot be nil
                 avatarImageView.image = avatar
-            } else {
-                // just in case, Cat!
-                avatarImageView.image = UIImage(named: "Cat")!
             }
         }
     }
@@ -44,29 +43,27 @@ class MasterCell: UITableViewCell {
     private func setupViews() {
         // tableViewCell
         backgroundColor = UIColor.clear
-        // wrapperView
-        wrapperView.backgroundColor = UIColor.mediumBlueGray()
+        // dividerView
+        dividerView.backgroundColor = UIColor.midNightBlack()
+        // contentView
+        contentView.backgroundColor = UIColor.mediumBlueGray()
         // avatarImageView
         avatarImageView.layer.cornerRadius = 32
         avatarImageView.layer.borderColor = UIColor.white.cgColor
         avatarImageView.layer.borderWidth = 2
-        avatarImageView.image = UIImage(named: "Cat")
         // titleLabel
         titleLabel.textColor = UIColor.white
         titleLabel.backgroundColor = UIColor.clear
-        titleLabel.text = "username"
         // subtitleLabel
         subtitleLabel.textColor = UIColor.candyWhite()
         subtitleLabel.backgroundColor = UIColor.clear
-        subtitleLabel.text = "bio"
     }
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted == true {
-            self.wrapperView.backgroundColor = UIColor.miamiBlue()
-            
+            contentView.backgroundColor = UIColor.miamiBlue()
         } else {
-            self.wrapperView.backgroundColor = UIColor.mediumBlueGray()
+            contentView.backgroundColor = UIColor.mediumBlueGray()
         }
     }
     

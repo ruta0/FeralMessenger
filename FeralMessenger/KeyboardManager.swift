@@ -24,13 +24,15 @@ protocol KeyboardScrollableDelegate {
 }
 
 
+// MARK: - KeyboardManager
+
 /// - To use KeyboardDockableDelegate, first initiate KeyboardManager and then setup the add and remove observers. Then answer to the delegate methods.
 class KeyboardManager: NSObject {
     
-    // MARK: - Class wide implementation
-    
     func removeKeyboardNotifications() {
         if #available(iOS 9, *) {
+            // ignore
+        } else {
             NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillShow, object: nil)
             NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
         }

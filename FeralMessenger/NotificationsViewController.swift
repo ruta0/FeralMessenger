@@ -72,11 +72,9 @@ class NotificationsViewController: UIViewController, UITableViewDataSource {
     }
     
     // MARK: - UITableViewDataSource
-    
-    private let cellID = "NotificationCell"
-    
+        
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? NotificationCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: NotificationCell.id, for: indexPath) as? NotificationCell {
             return cell
         } else {
             return UITableViewCell()

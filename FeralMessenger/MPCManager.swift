@@ -10,14 +10,28 @@ import UIKit
 import MultipeerConnectivity
 
 
+// MARK: - MPCManagerDelegate
+
 protocol MPCManagerDelegate {
     func foundPeer()
     func lostPeer()
     func didReceivedInvitation(fromPeer: String, group: String)
     func didConnect(fromPeer: MCPeerID, group: String)
+    func didStartAdvertising()
+    func didStopAdvertising()
+}
+
+extension MPCManagerDelegate {
+    func foundPeer() {}
+    func lostPeer() {}
+    func didReceivedInvitation(fromPeer: String, group: String) {}
+    func didConnect(fromPeer: MCPeerID, group: String) {}
+    func didStartAdvertising() {}
+    func didStopAdvertising() {}
 }
 
 
+/// Implement this class on AppDelegate
 class MPCManager: NSObject {
     
     let myPeerId = MCPeerID(displayName: UIDevice.current.name)
@@ -46,8 +60,18 @@ class MPCManager: NSObject {
         }
     }
     
+    func startAdvertise() {
+        serviceAdvertiser.startAdvertisingPeer()
+        delegate?.didStartAdvertising()
+    }
+    
+    func stopAdvertise() {
+        serviceAdvertiser.stopAdvertisingPeer()
+        delegate?.didStopAdvertising()
+    }
+    
     override init() {
-        // peer must be the first one to be initialized
+        // session must be the first one to be initialized
         session = MCSession(peer: myPeerId, securityIdentity: nil, encryptionPreference: MCEncryptionPreference.none)
         serviceBrowser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: serviceType)
         serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: nil, serviceType: serviceType)
@@ -80,11 +104,9 @@ extension MPCManager: MCSessionDelegate {
     }
     
     func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
-        
     }
     
     func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL, withError error: Error?) {
-        
     }
     
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {

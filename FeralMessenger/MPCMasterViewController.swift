@@ -7,17 +7,13 @@
 //
 
 import UIKit
-import Parse
-import CoreData
 import MultipeerConnectivity
 import AudioToolbox
 
 
 class MPCMasterViewController: UITableViewController {
     
-    fileprivate let cellID = "MPCGroupCell"
-    fileprivate let headerID = "MPCGroupViewHeader" // could add group count
-    fileprivate let mpcChatViewControllerSegue = "MPCMessageViewControllerSegue"
+    // MARK: - RadarView
     
     @IBOutlet weak var radarView: UIView!
     @IBOutlet weak var radarImageView: UIImageView!
@@ -26,80 +22,30 @@ class MPCMasterViewController: UITableViewController {
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
-    lazy var fetchedResultsController: NSFetchedResultsController<CoreUser> = {
-        let frc = NSFetchedResultsController(fetchRequest: CoreUser.defaultFetchRequest(with: nil), managedObjectContext: CoreDataManager.viewContext, sectionNameKeyPath: nil, cacheName: nil)
-        frc.delegate = self
-        return frc
-    }()
-
-    lazy var refreshController: UIRefreshControl = {
-        let control = UIRefreshControl()
-        control.tintColor = UIColor.candyWhite()
-        control.addTarget(self, action: #selector(handleRefresh), for: UIControlEvents.valueChanged)
-        return control
-    }()
-    
-    lazy var titleButton: UIButton = {
-        let button = UIButton()
-        button.tintColor = UIColor.white
-        button.setTitle("Proximity", for: UIControlState.normal)
-        button.frame = CGRect(x: 0, y: 0, width: 35, height: 21)
-        return button
-    }()
-    
     @IBAction func radarSwitch_tapped(_ sender: UISwitch) {
         if sender.isOn {
             sender.setOn(false, animated: true)
-            appDelegate.mpcManager.serviceAdvertiser.stopAdvertisingPeer()
-            print("it's off")
+            appDelegate.mpcManager.stopAdvertise()
         } else {
             sender.setOn(true, animated: true)
-            appDelegate.mpcManager.serviceAdvertiser.startAdvertisingPeer()
-            print("it's on")
+            appDelegate.mpcManager.startAdvertise()
         }
     }
     
-    func beginRefresh() {
-        DispatchQueue.main.async {
-            self.tableView.refreshControl?.beginRefreshing()
-        }
-    }
+    // MARK: - UITableView
     
-    func endRefresh() {
-        DispatchQueue.main.async {
-            self.tableView.refreshControl?.endRefreshing()
-        }
-    }
-    
-    func handleRefresh() {
-        refreshController.beginRefreshing()
-        DispatchQueue.main.async {
-            self.tableView?.reloadData()
-            self.refreshController.endRefreshing()
-        }
-    }
-    
-    func reloadTableView() {
+    func tableViewReloadData() {
         DispatchQueue.main.async {
             self.tableView?.reloadData()
         }
     }
     
-    fileprivate func setupNavigationController() {
-        guard let navigationController = navigationController else { return }
-        navigationController.navigationBar.isTranslucent = false
-        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
-        navigationController.navigationBar.tintColor = UIColor.white
-        navigationItem.titleView = titleButton
-    }
-    
-    fileprivate func setupViews() {
+    private func setupViews() {
         // tableView
         tableView.contentInset = UIEdgeInsets(top: 1, left: 0, bottom: 0, right: 0)
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.backgroundColor = UIColor.midNightBlack()
-        tableView.addSubview(refreshController)
         // radarView
         radarView.backgroundColor = UIColor.mediumBlueGray()
         // radarImageView
@@ -113,30 +59,82 @@ class MPCMasterViewController: UITableViewController {
         radarLabel.textColor = UIColor.white
         // radarSwitch
         radarSwitch.isOn = false
-        radarSwitch.tintColor = UIColor.miamiBlue()
-        radarSwitch.onTintColor = UIColor.miamiBlue()
+        radarSwitch.tintColor = UIColor.mandarinOrange()
+        radarSwitch.onTintColor = UIColor.orange
     }
     
-    fileprivate func setupTabBar() {
+    // MARK: - TabBarController
+    
+    private func setupTabBar() {
         guard let tabBar = tabBarController?.tabBar else { return }
         tabBar.tintColor = UIColor.candyWhite()
         tabBar.barTintColor = UIColor.midNightBlack()
         tabBar.isHidden = false
         tabBar.isTranslucent = false
     }
+    
+    // MARK: - NavigationController
+    
+    lazy var titleButton: UIButton = {
+        let button = UIButton()
+        button.tintColor = UIColor.white
+        button.setTitle("Proximity", for: UIControlState.normal)
+        button.frame = CGRect(x: 0, y: 0, width: 35, height: 25)
+        return button
+    }()
+    
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
+        view.hidesWhenStopped = true
+        return view
+    }()
+    
+    func addNavigationPrompt(message: String) {
+        navigationItem.prompt = message
+    }
+    
+    func removeNavigationPrompt() {
+        navigationItem.prompt = nil
+    }
+    
+    func beginLoadingAnime(message: String) {
+        DispatchQueue.main.async {
+            self.navigationItem.titleView = self.activityIndicator
+            self.activityIndicator.startAnimating()
+        }
+    }
+    
+    func stopLoadingAnime() {
+        DispatchQueue.main.async {
+            self.activityIndicator.stopAnimating()
+            self.navigationItem.titleView = self.titleButton
+        }
+    }
 
-}
-
-
-// MARK: - Lifecycle
-
-extension MPCMasterViewController {
+    private func setupNavigationController() {
+        guard let navigationController = navigationController else { return }
+        navigationController.navigationBar.isTranslucent = false
+        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
+        navigationController.navigationBar.tintColor = UIColor.white
+        navigationItem.titleView = titleButton
+        navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.orange]
+    }
+    
+    // MARK: - Lifecycle
+    
+    private let mpcChatViewControllerSegue = "SegueToMPCMessageViewController"
+    
+    private func showMPCChatsViewController() {
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: self.mpcChatViewControllerSegue, sender: self)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         setupNavigationController()
-        appDelegate.mpcManager.delegate = self
+        setupMPCManagerDelegate()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -154,13 +152,8 @@ extension MPCMasterViewController {
         // implement this
     }
     
-}
-
-
-// MARK: - UITableViewDataSource
-
-extension MPCMasterViewController {
-    
+    // MARK: - UITableViewDataSource
+        
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -175,7 +168,7 @@ extension MPCMasterViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! MPCMasterCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: MPCMasterCell.id, for: indexPath) as! MPCMasterCell
         // implement this
         cell.groupLabel.text = appDelegate.mpcManager.foundPeers[indexPath.row].displayName
         let numberOfPeers = appDelegate.mpcManager.foundPeers.count
@@ -183,7 +176,7 @@ extension MPCMasterViewController {
         cell.titleLabel.text = "hello world"
         return cell
     }
-    
+
 }
 
 
@@ -191,31 +184,29 @@ extension MPCMasterViewController {
 
 extension MPCMasterViewController: MPCManagerDelegate {
     
-    func startAdvertising() {
-        appDelegate.mpcManager.serviceAdvertiser.startAdvertisingPeer()
-        // implement some cool animation
+    func setupMPCManagerDelegate() {
+        appDelegate.mpcManager.delegate = self
     }
     
-    func stopAdvertising() {
-        appDelegate.mpcManager.serviceAdvertiser.stopAdvertisingPeer()
-        // implement some cool animation
+    func didStartAdvertising() {
+        addNavigationPrompt(message: "Broadcasting")
+    }
+    
+    func didStopAdvertising() {
+        removeNavigationPrompt()
     }
     
     func foundPeer() {
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
+        tableViewReloadData()
     }
     
     func lostPeer() {
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
+        tableViewReloadData()
     }
     
     func didReceivedInvitation(fromPeer: String, group: String) {
         AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-        let alert = UIAlertController(title: "", message: "\(group) wants to chat with you", preferredStyle: UIAlertControllerStyle.alert)
+        let alert = UIAlertController(title: "\(group) wants to chat with you", message: nil, preferredStyle: UIAlertControllerStyle.alert)
         let accept = UIAlertAction(title: "Accept", style: UIAlertActionStyle.default) { (action: UIAlertAction) in
             self.appDelegate.mpcManager.invitationHandler(true, self.appDelegate.mpcManager.session)
         }
@@ -230,51 +221,10 @@ extension MPCMasterViewController: MPCManagerDelegate {
     }
     
     func didConnect(fromPeer: MCPeerID, group: String) {
-        DispatchQueue.main.async {
-            self.performSegue(withIdentifier: self.mpcChatViewControllerSegue, sender: self)
-            // perform some cool anime as well
-        }
+        // perform some cool anime as well
     }
     
 }
-
-
-// MARK: - NSFetchedResultsControllerDelegate
-
-extension MPCMasterViewController: NSFetchedResultsControllerDelegate {
-    
-    public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.beginUpdates()
-    }
-    
-    public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.endUpdates()
-    }
-    
-    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        switch type {
-        case .insert: tableView.insertSections([sectionIndex], with: .fade)
-        case .delete: tableView.deleteSections([sectionIndex], with: .fade)
-        default: break
-        }
-    }
-    
-    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        switch type {
-        case .insert:
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
-        case .delete:
-            tableView.deleteRows(at: [indexPath!], with: .fade)
-        case .update:
-            tableView.reloadRows(at: [indexPath!], with: .fade)
-        case .move:
-            tableView.deleteRows(at: [indexPath!], with: .fade)
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
-        }
-    }
-    
-}
-
 
 
 

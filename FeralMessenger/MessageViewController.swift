@@ -10,28 +10,38 @@ import UIKit
 import Parse
 import CoreData
 import CloudKit
-import Locksmith
 
 
-final class MessageViewController: DetailViewController {
+final class MessageViewController: DetailViewController, NSFetchedResultsControllerDelegate, ParseMessengerManagerDelegate, CloudKitManagerDelegate {
+    
+    var receiverID: String?
+    
+    override func sendButton_tapped(_ sender: UIButton) {
+        let message = inputContainerView.inputTextField.text
+        clearMessageTextField() // 2
+        if let sms = message, !sms.isEmpty, let receiverID = receiverID, let senderID = currentUser.objectId {
+            beginLoadingAnime()
+            parseManager?.sendMessage(with: sms, receiverID: receiverID, senderID: senderID, completion: { [weak self] (completed: Bool, err: Error?) in
+                self?.playSound()
+                self?.endLoadingAnime()
+            })
+        } // 3
+    }
     
     // MARK: - NavigationController
     
-    override func setupNavigationController() {
-        super.setupNavigationController()
-        // profileButton
+    func updateNavigationController() {
         rightBarButton.addTarget(self, action: #selector(showProfileViewController(_:)), for: UIControlEvents.touchUpInside)
         if let avatarName = selectedCoreUser?.profile_image, let image = UIImage(named: avatarName) {
             rightBarButton.setBackgroundImage(image, for: UIControlState.normal)
         }
-        // titleButton
         if let username = selectedCoreUser?.username {
             titleButton.setTitle(username, for: UIControlState.normal)
         }
     }
     
-    // MARK: - Core Data
-    
+    // MARK: - Core Data + NSFetchedResultsControllerDelegate
+
     var container: NSPersistentContainer? = CoreDataManager.persistentContainer
     
     var selectedCoreUser: CoreUser?
@@ -55,98 +65,6 @@ final class MessageViewController: DetailViewController {
         }
     }
     
-    // MARK: - Lifecycle
-    
-    // animate a popover instead of performing yet another segue
-    func showProfileViewController(_ sender: UIButton) {
-        print("Not supported at this moment")
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupParseManagerDelegate()
-        setupCKManagerDelegates()
-    }
-    
-    private let segueID = "SettingsViewControllerSegue"
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == segueID {
-            print("segueID is registered")
-        }
-    }
-    
-    // MARK: - UITableViewDataSource
-    
-    private let cellID = "DetailCell"
-    
-    /// Note: notice that there is a footer in the storyboard to offer the additional space offset for the textfield
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? DetailCell {
-            if let coreMessage = fetchedResultsController?.object(at: indexPath) {
-                cell.messageTextView.text = coreMessage.sms!
-                let size = CGSize(width: 250, height: 300)
-                let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
-                let estimatedFrame = NSString(string: coreMessage.sms!).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
-                // outgoing message
-                if coreMessage.senderID == PFUser.current()!.objectId {
-                    cell.messageTextView.backgroundColor = UIColor.miamiBlue()
-                    cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8, y: 8, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
-                } else if coreMessage.receiverID == PFUser.current()!.objectId {
-                    // incoming message
-                    cell.messageTextView.backgroundColor = UIColor.mediumBlueGray()
-                    cell.messageTextView.frame = CGRect(x: 8, y: 8, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
-                }
-            }
-            return cell
-        } else {
-            return UITableViewCell()
-        }
-    }
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return fetchedResultsController?.sections?.count ?? 0
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let sections = fetchedResultsController?.sections, sections.count > 0 {
-            return sections[section].numberOfObjects
-        } else {
-            return 0
-        }
-    }
-    
-    // MARK: - UITableViewDelegate
-    
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard let section = fetchedResultsController?.sections?[section] else {
-            print("fetchedResultsController?.sections?[section] is nil")
-            return nil
-        }
-        return section.name
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if let sms = fetchedResultsController?.object(at: indexPath).sms {
-            let size = CGSize(width: 250, height: 300)
-            let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
-            let estimatedFrame = NSString(string: sms).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
-            return estimatedFrame.height + 16 + 16
-        }
-        return CGFloat(84)
-    }
-    
-}
-
-
-// MARK: - ParseMessengerManagerDelegate
-
-extension MessageViewController: ParseMessengerManagerDelegate {
-    
-    fileprivate func setupParseManagerDelegate() {
-        parseManager?.messengerDelegate = self
-    }
-    
     func updateCoreMessage(with pfObjects: [PFObject]) {
         self.container?.performBackgroundTask { context in
             for pfObject in pfObjects {
@@ -162,7 +80,7 @@ extension MessageViewController: ParseMessengerManagerDelegate {
     }
     
     private func performFetchFromCoreData() {
-        guard let context = container?.viewContext, let senderID = selectedCoreUser?.id, let receiverID = PFUser.current()?.objectId else { return }
+        guard let context = container?.viewContext, let senderID = selectedCoreUser?.id, let receiverID = currentUser.objectId else { return }
         context.perform {
             let request: NSFetchRequest<CoreMessage> = CoreMessage.defaultFetchRequest(from: senderID, to: receiverID)
             request.fetchLimit = 200
@@ -179,37 +97,224 @@ extension MessageViewController: ParseMessengerManagerDelegate {
         }
     }
     
-    func didReceiveMessages(with messages: [PFObject]) {
-        updateCoreMessage(with: messages)
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        self.tableView.beginUpdates()
     }
     
-    func didReceiveMessage(with message: Message) {
-        insertToCoreMessage(with: message)
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+        switch type {
+        case .insert:
+            self.tableView.insertSections([sectionIndex], with: UITableViewRowAnimation.fade)
+        case .delete:
+            self.tableView.deleteSections([sectionIndex], with: UITableViewRowAnimation.fade)
+        default:
+            break
+        }
     }
     
-    func didSendMessage(with message: Message) {
-        // 1. play sound to confirm successfully upload to Parse
-        playSound()
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            if let newIndexPath = newIndexPath {
+                self.tableView.insertRows(at: [newIndexPath], with: UITableViewRowAnimation.fade)
+            }
+        case .delete:
+            if let indexPath = indexPath {
+                self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+                
+            }
+        case .update:
+            if let indexPath = indexPath {
+                self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            }
+        case .move:
+            if let indexPath = indexPath {
+                self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            }
+            if let newIndexPath = newIndexPath {
+                self.tableView.insertRows(at: [newIndexPath], with: UITableViewRowAnimation.fade)
+                
+            }
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        self.tableView.endUpdates()
         
-        // 2. create record in the CloudKit's pubDatabase to receiver's subscription
-        if let receiver_name = selectedCoreUser?.username, let sender_name = PFUser.current()?.username {
-            let dataToSend: [String : Bool] = [sender_name : false]
-            ckManager?.createCKRecord(in: pubDatabase, dataToSend: dataToSend, dynamicRecordType: receiver_name)
-            
-            // 3. fetch for new message when a PUSH payload comes in
+        // a little too expensive, think of something better!
+        self.tableView.reloadData()
+        self.scrollToLastCellItem()
+    }
+    
+    // MARK: - Lifecycle
+    
+    // animate a popover instead of performing yet another segue
+    func showProfileViewController(_ sender: UIButton) {
+        // implement this
+//        performSegue(withIdentifier: segueToProfileViewController, sender: self)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        updateNavigationController()
+        setupParseManager() // 1
+        fetchMessages() // 2
+        setupCKManager()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        ckManager?.subscribeToRecord(database: pubDatabase, subscriptionID: subscriptionID, dynamicRecordType: currentUser.username!)
+        ckManager?.setupLocalObserver()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        ckManager?.unsubscribeToRecord(database: pubDatabase, subscriptionID: subscriptionID)
+        ckManager?.removeLocalObserver(observer: self)
+    }
+    
+    private let segueToProfileViewController = "SegueToProfileViewController"
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == segueToProfileViewController {
+            print("Not supported at this moment")
+        }
+    }
+    
+    // MARK: - UITableViewDataSource
+    
+    /// Note: notice that there is a footer in the storyboard to offer the additional space offset for the textfield
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: DetailCell.id, for: indexPath) as? DetailCell {
+            if let coreMessage = fetchedResultsController?.object(at: indexPath) {
+                cell.messageTextView.text = coreMessage.sms!
+                let size = CGSize(width: 250, height: 300)
+                let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
+                let estimatedFrame = NSString(string: coreMessage.sms!).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
+                // outgoing message
+                if coreMessage.senderID == currentUser.objectId {
+                    cell.messageTextView.backgroundColor = UIColor.miamiBlue()
+                    cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8, y: 8, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
+                } else if coreMessage.receiverID == currentUser.objectId {
+                    // incoming message
+                    cell.messageTextView.backgroundColor = UIColor.mediumBlueGray()
+                    cell.messageTextView.frame = CGRect(x: 8, y: 8, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
+                }
+            }
+            return cell
+        } else {
+            return UITableViewCell()
+        }
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        guard let sections = fetchedResultsController?.sections else {
+            print("sections.count == 0")
+            return 0
+        }
+        return sections.count
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let sections = fetchedResultsController?.sections, sections.count > 0 else {
+            print("sections.count == 0")
+            return 0
+        }
+        return sections[section].numberOfObjects
+    }
+    
+    // MARK: - UITableViewDelegate
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if let sms = fetchedResultsController?.object(at: indexPath).sms {
+            let size = CGSize(width: 250, height: 300)
+            let options = NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin)
+            let estimatedFrame = NSString(string: sms).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
+            return estimatedFrame.height + 16 + 16
+        }
+        return CGFloat(84)
+    }
+    
+    // MARK: - ParseManager + ParseMessengerManagerDelegate
+    
+    var currentUser: PFUser {
+        let user = PFUser.current()!
+        return user
+    }
+    
+    var parseManager: ParseManager?
+    
+    func setupParseManager() {
+        parseManager = ParseManager()
+        parseManager?.messengerDelegate = self
+    }
+    
+    func fetchMessages() {
+        if let receiverID = receiverID {
+            beginLoadingAnime()
+            parseManager?.readMessages(with: receiverID, completion: { [weak self] (messages: [PFObject]?, err: Error?) in
+                self?.endLoadingAnime()
+                if err != nil {
+                    print(err!.localizedDescription)
+                } else {
+                    // ignore
+                }
+            })
+        } else {
+            print("receiverID is nil")
+        }
+    }
+    
+    func didReceiveMessages(with messages: [PFObject]?, error: Error?) {
+        if error != nil {
+            print(error!.localizedDescription)
+        } else {
+            if let messages = messages {
+                updateCoreMessage(with: messages)
+            }
+        }
+    }
+    
+    func didReceiveMessage(with message: Message, error: Error?) {
+        if error != nil {
+            print(error!.localizedDescription)
+        } else {
             insertToCoreMessage(with: message)
         }
     }
     
-}
-
-
-// MARK: - CloudKitSubscriptionDelegate
-
-extension MessageViewController: CloudKitSubscriptionDelegate {
+    func didSendMessage(with message: Message, error: Error?) {
+        if error != nil {
+            print(error!.localizedDescription)
+        } else {
+            // 1. play sound to confirm successfully upload to Parse
+            playSound()
+            // 2. create record in the CloudKit's pubDatabase to receiver's subscription
+            if let receiver_name = selectedCoreUser?.username, let sender_name = currentUser.username {
+                let dataToSend: [String : Bool] = [sender_name : false]
+                ckManager?.createCKRecord(in: pubDatabase, dataToSend: dataToSend, dynamicRecordType: receiver_name)
+                // 3. fetch for new message when a PUSH payload comes in
+                insertToCoreMessage(with: message)
+            }
+        }
+    }
     
-    fileprivate func setupCKManagerDelegates() {
+    // MARK: - CloudKitSubscriptionDelegate
+    
+    var ckManager: CloudKitManager?
+    
+    let pubDatabase = CKContainer.default().publicCloudDatabase
+    
+    let subscriptionID = "iCloud_Messages_Notification_Creations_Updates_Deletions"
+    
+    func setupCKManager() {
+        ckManager = CloudKitManager()
         ckManager?.delegate = self
+    }
+
+    func ckErrorHandler(error: CKError) {
+        print(error)
     }
     
     func didReceiveNotificationFromSubscription(ckqn: CKQueryNotification) {
@@ -248,8 +353,8 @@ extension MessageViewController: CloudKitSubscriptionDelegate {
             print(error!)
             if let err = error as? CKError {
                 if err.code == CKError.Code.unknownItem {
-                    ckManager?.createCKRecord(in: pubDatabase, dataToSend: nil, dynamicRecordType: PFUser.current()!.username!)
-                    ckManager?.subscribeToRecord(database: pubDatabase, subscriptionID: subscriptionID, dynamicRecordType: PFUser.current()!.username!)
+                    ckManager?.createCKRecord(in: pubDatabase, dataToSend: nil, dynamicRecordType: currentUser.username!)
+                    ckManager?.subscribeToRecord(database: pubDatabase, subscriptionID: subscriptionID, dynamicRecordType: currentUser.username!)
                 } else if err.code == CKError.Code.serverRejectedRequest {
                     print(err.localizedDescription) // [development]: mostly about duplicate subs -> ignore
                 }
@@ -307,60 +412,7 @@ extension MessageViewController: CloudKitSubscriptionDelegate {
 }
 
 
-// MARK: - NSFetchedResultsControllerDelegate
 
-extension MessageViewController: NSFetchedResultsControllerDelegate {
-    
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        self.tableView.beginUpdates()
-    }
-    
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        switch type {
-        case .insert:
-            self.tableView.insertSections([sectionIndex], with: UITableViewRowAnimation.fade)
-        case .delete:
-            self.tableView.deleteSections([sectionIndex], with: UITableViewRowAnimation.fade)
-        default:
-            break
-        }
-    }
-    
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        switch type {
-        case .insert:
-            if let newIndexPath = newIndexPath {
-                self.tableView.insertRows(at: [newIndexPath], with: UITableViewRowAnimation.fade)
-            }
-        case .delete:
-            if let indexPath = indexPath {
-                self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
-
-            }
-        case .update:
-            if let indexPath = indexPath {
-                self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.fade)
-            }
-        case .move:
-            if let indexPath = indexPath {
-                self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
-            }
-            if let newIndexPath = newIndexPath {
-                self.tableView.insertRows(at: [newIndexPath], with: UITableViewRowAnimation.fade)
-
-            }
-        }
-    }
-    
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        self.tableView.endUpdates()
-        
-        // a little too expensive, think of something better!
-        self.tableView.reloadData()
-        self.scrollToLastCellItem()
-    }
-    
-}
 
 
 

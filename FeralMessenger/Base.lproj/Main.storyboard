@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Mnx-Eg-w9t">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Mnx-Eg-w9t">
     <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -980,22 +980,20 @@
                         </variation>
                     </view>
                     <connections>
-                        <outlet property="activityIndicator" destination="UE3-Ru-9Xm" id="Ga1-Bd-26Y"/>
+                        <outlet property="activityIndicator" destination="UE3-Ru-9Xm" id="OAN-dI-XGp"/>
                         <outlet property="authButton" destination="L7X-aO-d13" id="yhu-bq-PMC"/>
-                        <outlet property="buttonStackView" destination="XDK-hf-8JW" id="64f-j3-Lw3"/>
-                        <outlet property="contentView" destination="8de-pX-FQT" id="9dD-aO-kNs"/>
+                        <outlet property="contentView" destination="8de-pX-FQT" id="HfN-G5-zKo"/>
                         <outlet property="dividerViewOne" destination="04B-iv-SdU" id="T4s-gS-oNo"/>
                         <outlet property="emailTextField" destination="Anb-Sd-27S" id="ZMN-2x-elc"/>
                         <outlet property="errorLabel" destination="OLH-wu-Mec" id="jKp-x2-wn2"/>
-                        <outlet property="infoStackView" destination="6h1-1C-kVP" id="F35-b8-HpL"/>
                         <outlet property="logoImageView" destination="UCg-AI-ZqB" id="U7S-S3-9JQ"/>
                         <outlet property="nameTextField" destination="Ml6-YU-WPc" id="Ype-nt-SVB"/>
                         <outlet property="passTextField" destination="ho4-ar-5PG" id="2d0-tA-IfV"/>
-                        <outlet property="scrollView" destination="KiB-aZ-2iw" id="SBv-1h-eGk"/>
+                        <outlet property="scrollView" destination="KiB-aZ-2iw" id="BXZ-W3-Yy9"/>
                         <outlet property="termsButton" destination="4vZ-vp-BVN" id="h0F-LG-eyU"/>
                         <outlet property="toggleButton" destination="hXp-MJ-i5h" id="sdK-pR-7SN"/>
-                        <segue destination="Myi-mJ-GiT" kind="presentation" identifier="ServerConfigViewControllerSegue" modalTransitionStyle="flipHorizontal" id="1n2-zL-6ae"/>
-                        <segue destination="stg-7x-c5V" kind="presentation" identifier="ChatsViewControllerSegue" id="qd5-wj-LSv"/>
+                        <segue destination="Myi-mJ-GiT" kind="presentation" identifier="SegueToServerConfigViewController" modalTransitionStyle="flipHorizontal" id="1n2-zL-6ae"/>
+                        <segue destination="stg-7x-c5V" kind="presentation" identifier="SegueToTabBarController" id="qd5-wj-LSv"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yoW-lY-Jam" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1012,7 +1010,7 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
                     <connections>
-                        <segue destination="7fi-Jp-PF4" kind="relationship" relationship="viewControllers" id="dBJ-X4-0Vr"/>
+                        <segue destination="7fi-Jp-PF4" kind="relationship" relationship="viewControllers" id="CNu-GJ-Mub"/>
                         <segue destination="3Su-Pj-mdY" kind="relationship" relationship="viewControllers" id="iFa-kB-wtF"/>
                         <segue destination="4er-rV-dlH" kind="relationship" relationship="viewControllers" id="BGi-ZI-724"/>
                         <segue destination="YNH-a3-xtI" kind="relationship" relationship="viewControllers" id="VmA-Bs-VOz"/>
@@ -1051,7 +1049,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QjJ-zs-rMI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3658" y="-776"/>
+            <point key="canvasLocation" x="3646" y="-776"/>
         </scene>
         <!--Wallet-->
         <scene sceneID="Qgj-bH-l5W">
@@ -1061,17 +1059,17 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="11M-KN-eja" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3568" y="-578"/>
+            <point key="canvasLocation" x="3577" y="-579"/>
         </scene>
-        <!--Settings-->
+        <!--GroupDisclosure-->
         <scene sceneID="Rov-CI-dhe">
             <objects>
-                <viewControllerPlaceholder storyboardName="Settings" id="YdC-L2-VyE" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardName="GroupDisclosure" id="YdC-L2-VyE" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Settings" image="Settings" id="LL7-hS-KJd"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GdM-cl-ZQN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3580" y="-476"/>
+            <point key="canvasLocation" x="3633" y="-482"/>
         </scene>
         <!--Server Config View Controller-->
         <scene sceneID="Pzs-db-oGL">
@@ -1645,13 +1643,13 @@
                                                 </variation>
                                             </stackView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$ printf &quot;%s\n&quot; &quot;Great power comes with great responsibility&quot;" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1mn-8Q-486">
-                                                <rect key="frame" x="36" y="273" width="342" height="32"/>
+                                                <rect key="frame" x="36" y="273.66666666666674" width="342" height="31.333333333333314"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <color key="textColor" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="e2j-w2-F41">
-                                                <rect key="frame" x="197" y="237" width="20" height="20"/>
+                                                <rect key="frame" x="197" y="237.66666666666669" width="20" height="20.000000000000057"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="20" id="1QY-lk-fHV"/>
                                                     <constraint firstAttribute="width" secondItem="e2j-w2-F41" secondAttribute="height" multiplier="1:1" id="gkD-kZ-Zza"/>
@@ -2103,14 +2101,15 @@
                         </variation>
                     </view>
                     <connections>
-                        <outlet property="activityIndicator" destination="e2j-w2-F41" id="lTV-uJ-9rU"/>
+                        <outlet property="activityIndicator" destination="e2j-w2-F41" id="Wjh-Lg-UR9"/>
                         <outlet property="application_idTextField" destination="kVc-Ql-dJ3" id="6qu-U9-Uen"/>
+                        <outlet property="contentView" destination="vRS-Ph-L3r" id="n2d-9T-op3"/>
                         <outlet property="defaultButton" destination="shg-fA-Uz0" id="7lU-dc-iS3"/>
                         <outlet property="errorLabel" destination="y2J-hM-MKB" id="riC-hK-ueD"/>
                         <outlet property="master_keyTextField" destination="AHW-Jy-5Ja" id="I8D-FL-5xH"/>
                         <outlet property="returnButton" destination="G2U-5N-oCE" id="f7c-ip-Lx3"/>
                         <outlet property="saveButton" destination="CBQ-Sv-rXQ" id="1DC-Yi-mVU"/>
-                        <outlet property="scrollView" destination="lZ1-j0-ssB" id="EDN-Ty-6CB"/>
+                        <outlet property="scrollView" destination="lZ1-j0-ssB" id="ilY-vG-FkU"/>
                         <outlet property="server_urlTextField" destination="oaK-L7-63m" id="4Dd-qU-zWs"/>
                         <outlet property="warningLabel" destination="1mn-8Q-486" id="yaf-Tv-Z0Q"/>
                     </connections>

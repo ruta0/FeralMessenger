@@ -11,6 +11,8 @@ import UIKit
 
 class NotificationCell: UITableViewCell {
     
+    static let id = "NotificationCell"
+    
     override func awakeFromNib() {
         super.awakeFromNib()
     }

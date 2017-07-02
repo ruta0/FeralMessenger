@@ -12,7 +12,7 @@ import AVFoundation
 import CloudKit
 
 
-class DetailViewController: UIViewController {
+class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, KeyboardDockableDelegate {
     
     // MARK: - NavigationController
     
@@ -25,19 +25,19 @@ class DetailViewController: UIViewController {
     var titleButton: UIButton = {
         let button = UIButton()
         button.tintColor = UIColor.white
+        button.setTitle("Messages", for: UIControlState.normal)
         button.frame = CGRect(x: 0, y: 0, width: 35, height: 25)
         return button
     }()
     
     func beginLoadingAnime() {
         DispatchQueue.main.async {
-            self.view.layoutIfNeeded()
             self.navigationItem.titleView = self.activityIndicator
             self.activityIndicator.startAnimating()
         }
     }
     
-    func stopLoadingAnime() {
+    func endLoadingAnime() {
         DispatchQueue.main.async {
             self.activityIndicator.stopAnimating()
             self.navigationItem.titleView = self.titleButton
@@ -46,41 +46,32 @@ class DetailViewController: UIViewController {
     
     var rightBarButton: UIButton = {
         let button = UIButton()
-        button.tintColor = UIColor.white
-        button.layer.cornerRadius = 16.5
+        let buttonWidth: Int = 33
+        button.layer.cornerRadius = CGFloat(buttonWidth/2)
         button.clipsToBounds = true
         button.contentMode = UIViewContentMode.scaleAspectFill
-        button.frame = CGRect(x: 0, y: 0, width: 33, height: 33)
+        button.frame = CGRect(x: 0, y: 0, width: buttonWidth, height: buttonWidth)
         return button
     }()
     
-    func setupNavigationController() {
+    private func setupNavigationController() {
+        guard let navigationController = navigationController else { return }
+        navigationItem.titleView = titleButton
         navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: rightBarButton)]
+        navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.orange]
     }
     
     // MARK: - InputContainerView
     
-    var keyboardManager: KeyboardManager?
-    
     var player: AVAudioPlayer?
     
     @IBOutlet weak var heightContraint: NSLayoutConstraint!
+    @IBOutlet weak var inputContainerView: InputContainerView!
     
-    @IBOutlet weak var inputContainerView: UIView!
-    @IBOutlet weak var dividerView: UIView!
-    @IBOutlet weak var messageTextField: UITextField!
-    @IBOutlet weak var sendButton: UIButton!
-    
-    @IBAction func sendButton_tapped(_ sender: UIButton) {
-        let message = messageTextField.text
-        clearMessageTextField()
-        // sending message
-        if let sms = message, !sms.isEmpty, let receiverID = receiverID {
-            parseManager?.createMessageInParse(with: sms, receiverID: receiverID, senderID: PFUser.current()!.objectId!)
-        }
+    func sendButton_tapped(_ sender: UIButton) {
+        // override this
     }
     
-    // schwoof
     func playSound() {
         guard let sound = NSDataAsset(name: "sent") else {
             print("sound file not found")
@@ -92,7 +83,7 @@ class DetailViewController: UIViewController {
             player = try AVAudioPlayer(data: sound.data, fileTypeHint: AVFileTypeWAVE)
             DispatchQueue.main.async {
                 guard let player = self.player else { return }
-                player.play()
+                player.play() // schwoof
             }
         } catch let err {
             print(err.localizedDescription)
@@ -101,29 +92,20 @@ class DetailViewController: UIViewController {
     
     func clearMessageTextField() {
         DispatchQueue.main.async {
-            self.messageTextField.text?.removeAll()
+            self.inputContainerView.inputTextField.text?.removeAll()
         }
     }
     
     private func setupInputContainerView() {
-        // inputContainerView
-        inputContainerView.backgroundColor = UIColor.midNightBlack()
-        // dividerView
-        dividerView.backgroundColor = UIColor.mediumBlueGray()
-        // messageTextField
-        messageTextField.backgroundColor = UIColor.clear
-        messageTextField.attributedPlaceholder = NSAttributedString(string: "Message", attributes: [NSForegroundColorAttributeName: UIColor.darkGray])
-        messageTextField.delegate = self
-        // sendButton
-        sendButton.backgroundColor = UIColor.clear
+        inputContainerView.sendButton?.addTarget(self, action: #selector(self.sendButton_tapped(_:)), for: UIControlEvents.touchUpInside)
     }
     
-    // MARK: - TableView
+    // MARK: - UITableView
     
     @IBOutlet weak var tableView: UITableView!
     
-    func tableViewTapped(recognizer: UIGestureRecognizer) {
-        messageTextField.resignFirstResponder()
+    @objc private func tableViewTapped(recognizer: UIGestureRecognizer) {
+        inputContainerView.inputTextField.resignFirstResponder()
     }
     
     // this method is still very buggy
@@ -137,132 +119,76 @@ class DetailViewController: UIViewController {
         }
     }
     
-    fileprivate func setupTableView() {
-        tableView.delegate = self
+    func tableViewReload() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    
+    private func setupTableView() {
         tableView.backgroundColor = UIColor.midNightBlack()
         let gesture = UITapGestureRecognizer(target: self, action: #selector(tableViewTapped(recognizer:)))
         tableView.addGestureRecognizer(gesture)
-    }
-    
-    // MARK: - CloudKit
-    
-    var ckManager: CloudKitManager?
-    
-    func setupCKManager() {
-        ckManager = CloudKitManager()
-    }
-    
-    let pubDatabase = CKContainer.default().publicCloudDatabase
-    
-    let subscriptionID = "iCloud_Messages_Notification_Creations_Updates_Deletions"
-    
-    // MARK: - Parse
-    
-    var parseManager: ParseManager?
-    
-    var receiverID: String? // initiated by previous viewController at prepareForSegue()
-    
-    func setupParseManager() {
-        parseManager = ParseManager()
-    }
-    
-    func fetchMessages() {
-        if let receiverID = receiverID {
-            beginLoadingAnime()
-            parseManager?.readMessagesInParse(with: receiverID, completion: { (messages: [PFObject]?) in
-                self.stopLoadingAnime()
-            })
-        } else {
-            print("receiverID is nil")
-        }
     }
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // UI
         setupTableView()
         setupInputContainerView()
         setupNavigationController()
-        // Parse
-        setupParseManager() // 1
-        fetchMessages() // 2
-        // CloudKit
-        setupCKManager()
-        // Keyboard
         setupKeyboardManager()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        ckManager?.subscribeToRecord(database: pubDatabase, subscriptionID: subscriptionID, dynamicRecordType: PFUser.current()!.username!)
-        ckManager?.setupLocalObserver()
         keyboardManager?.setupKeyboardDockableNotifications()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        ckManager?.unsubscribeToRecord(database: pubDatabase, subscriptionID: subscriptionID)
-        ckManager?.removeLocalObserver(observer: self)
         keyboardManager?.removeKeyboardNotifications()
+        inputContainerView.inputTextField.resignFirstResponder()
     }
     
-}
-
-
-// MARK: - UITableViewDelegate
-
-extension DetailViewController: UITableViewDelegate {
+    // MARK: - UITableViewDelegate
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return nil
+        return nil // add a label to say something like 200 latest messages...
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return CGFloat(84)
     }
     
-}
-
-
-// MARK: - UITableViewDataSource
-
-extension DetailViewController: UITableViewDataSource {
+    // MARK: - UITableViewDataSource
     
-    // override this
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        guard let detailCell = tableView.dequeueReusableCell(withIdentifier: DetailCell.id, for: indexPath) as? DetailCell else {
+            return UITableViewCell()
+        }
+        return detailCell
     }
     
-    // override this
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    // override this
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
     
-}
-
-
-// MARK: - UITextFieldDelegate
-
-extension DetailViewController: UITextFieldDelegate {
+    // MARK: - UITextFieldDelegate
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
-}
-
-
-// MARK: - KeyboardDockableDelegate
-
-extension DetailViewController: KeyboardDockableDelegate {
+    // MARK: - KeyboardDockableDelegate
+    
+    var keyboardManager: KeyboardManager?
     
     func setupKeyboardManager() {
         keyboardManager = KeyboardManager()
@@ -282,5 +208,20 @@ extension DetailViewController: KeyboardDockableDelegate {
     }
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

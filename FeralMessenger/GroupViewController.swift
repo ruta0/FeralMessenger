@@ -7,156 +7,188 @@
 //
 
 import UIKit
-import Parse
-import Locksmith
 
 
-class GroupViewController: UIViewController {
-    
-    // MARK: - TabBarController
-    
-    fileprivate func setupTabBar() {
-        guard let tabBar = tabBarController?.tabBar else { return }
-        tabBar.tintColor = UIColor.candyWhite()
-        tabBar.barTintColor = UIColor.midNightBlack()
-        tabBar.isHidden = false
-        tabBar.isTranslucent = false
-    }
+/// This class comes with a logout button by default, please override the logout method in its subclass
+class GroupViewController: UITableViewController {
     
     // MARK: - NavigationController
     
-    @IBOutlet weak var logoutButton: UIBarButtonItem!
     @IBOutlet weak var editButton: UIBarButtonItem!
     
-    @IBAction func logoutButton_tapped(_ sender: UIBarButtonItem) {
-        let alert = UIAlertController(title: "What would you like to do?", message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
-        let logout = UIAlertAction(title: "Logout", style: UIAlertActionStyle.destructive) { (action: UIAlertAction) in
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
+        view.hidesWhenStopped = true
+        return view
+    }()
+    
+    lazy var titleButton: UIButton = {
+        let button = UIButton()
+        button.tintColor = UIColor.white
+        button.setTitle("Settings", for: UIControlState.normal)
+        button.frame = CGRect(x: 0, y: 0, width: 35, height: 25)
+        return button
+    }()
+    
+    @IBAction func editButton_tapped(_ sender: UIBarButtonItem) {
+        if sender.title == "Save" {
+            disableEditMode()
+        } else if sender.title == "Edit" {
+            enableEditMode()
+        }
+    }
+    
+    func beginLoadingAnime() {
+        DispatchQueue.main.async {
+            self.activityIndicator.startAnimating()
+            self.navigationItem.titleView = self.activityIndicator
+        }
+    }
+    
+    func endLoadingAnime() {
+        DispatchQueue.main.async {
+            self.activityIndicator.stopAnimating()
+            self.navigationItem.titleView = self.titleButton
+        }
+    }
+    
+    func enableEditMode() {
+        DispatchQueue.main.async {
+            self.editButton.title = "Save"
+            UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+                self.bioTextView.textColor = UIColor.orange
+            }) { (completed: Bool) in
+                if completed {
+                    self.bioTextView.isSelectable = true
+                    self.bioTextView.isEditable = true
+                }
+            }
+        }
+    }
+    
+    func disableEditMode() {
+        DispatchQueue.main.async {
+            self.editButton.title = "Edit"
+            UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+                self.bioTextView.textColor = UIColor.candyWhite()
+            }) { (completed: Bool) in
+                if completed {
+                    self.bioTextView.isSelectable = false
+                    self.bioTextView.isEditable = false
+                }
+            }
+        }
+    }
+    
+    private func setupNavigationController() {
+        guard let navigationController = navigationController else { return }
+        navigationController.navigationBar.isTranslucent = false
+        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
+        navigationController.navigationBar.tintColor = UIColor.white
+        navigationItem.titleView = titleButton
+        editButton.tintColor = UIColor.orange
+        navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.orange]
+    }
+    
+    // MARK: - Profile section
+    
+    @IBOutlet weak var profileCell: UITableViewCell!
+    @IBOutlet weak var warningLabel: UILabel!
+    @IBOutlet weak var avatarButton: UIButton!
+    @IBOutlet weak var userLabel: UILabel!
+    @IBOutlet weak var dividerView: UIView!
+    @IBOutlet weak var bioTextView: UITextView!
+    
+    private func setupProfileSection() {
+        // profileCell
+        profileCell.backgroundColor = UIColor.mediumBlueGray()
+        // warningLabel
+        warningLabel.backgroundColor = UIColor.clear
+        warningLabel.isHidden = true
+        // avatarButton
+        avatarButton.layer.cornerRadius = 36
+        avatarButton.layer.borderColor = UIColor.white.cgColor
+        avatarButton.layer.borderWidth = 2
+        // usernameLabel
+        userLabel.backgroundColor = UIColor.clear
+        userLabel.textColor = UIColor.white
+        // dividerView
+        dividerView.backgroundColor = UIColor.lightGray
+        // bioTextView
+        bioTextView.backgroundColor = UIColor.clear
+        bioTextView.isEditable = false
+        bioTextView.isSelectable = false
+        bioTextView.textColor = UIColor.candyWhite()
+        bioTextView.textContainerInset = UIEdgeInsets.zero
+        bioTextView.textContainer.lineFragmentPadding = 0
+    }
+    
+    // MARK: - About section
+    
+    @IBOutlet weak var termsCell: UITableViewCell!
+    @IBOutlet weak var privacyCell: UITableViewCell!
+    @IBOutlet weak var termsLabel: UILabel!
+    @IBOutlet weak var privacyLabel: UILabel!
+    
+    private func setupAboutSection() {
+        // termsCell
+        termsCell.backgroundColor = UIColor.darkGray
+        termsCell.contentView.backgroundColor = UIColor.clear
+        termsLabel.backgroundColor = UIColor.clear
+        termsLabel.textColor = UIColor.white
+        // privacyCell
+        privacyCell.backgroundColor = UIColor.darkGray
+        privacyCell.contentView.backgroundColor = UIColor.clear
+        privacyLabel.backgroundColor = UIColor.clear
+        privacyLabel.textColor = UIColor.white
+    }
+    
+    // MARK: - Account section
+    
+    @IBOutlet weak var logoutCell: UITableViewCell!
+    @IBOutlet weak var logoutLabel: UILabel!
+    
+    func presentLogoutAlertView() {
+        let alert = UIAlertController(title: nil, message: "Are you sure your want to logout?", preferredStyle: UIAlertControllerStyle.actionSheet)
+        let action = UIAlertAction(title: "Logout", style: UIAlertActionStyle.destructive) { (action: UIAlertAction) in
             self.performLogout()
         }
         let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
-        alert.addAction(logout)
+        alert.addAction(action)
         alert.addAction(cancel)
         DispatchQueue.main.async {
             self.present(alert, animated: true, completion: nil)
         }
     }
     
-    @IBAction func editButton(_ sender: UIBarButtonItem) {
-        if sender.title == "Save" {
-            animateSaveBio()
-            updateBioInParse(with: bioTextView.text)
-        } else if sender.title == "Edit" {
-            animateEditBio()
-        }
+    func performLogout() {
+        // override this to implement
     }
     
-    lazy var titleButton: UIButton = {
-        let button = UIButton()
-        button.tintColor = UIColor.white
-        button.setTitle("Settings", for: UIControlState.normal)
-        button.frame = CGRect(x: 0, y: 0, width: 35, height: 21)
-        return button
-    }()
-    
-    fileprivate func setupNavigationController() {
-        guard let navigationController = navigationController else { return }
-        navigationController.navigationBar.isTranslucent = false
-        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
-        navigationController.navigationBar.tintColor = UIColor.white
-        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-        navigationItem.titleView = titleButton
+    private func setupAccountSection() {
+        // logoutCell
+        logoutCell.backgroundColor = UIColor.darkGray
+        logoutCell.contentView.backgroundColor = UIColor.clear
+        // logoutTitleLabel
+        logoutLabel.backgroundColor = UIColor.clear
+        logoutLabel.textColor = UIColor.white
     }
     
-    // MARK: - UIScrollView
+    // MARK: - UITableView
     
-    @IBOutlet weak var profileContainerView: UIView!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var avatarButton: UIButton!
-    @IBOutlet weak var usernameLabel: UILabel!
-    @IBOutlet weak var dividerView: UIView!
-    @IBOutlet weak var bioTextView: UITextView!
-    
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var contentView: UIView!
-    
-    @IBOutlet weak var headerView: UIView!
-    @IBOutlet weak var headerLabel: UILabel!
-    
-    func activityIndicatorStopAnime() {
-        if activityIndicator.isAnimating {
-            DispatchQueue.main.async(execute: {
-                self.activityIndicator.stopAnimating()
-            })
-        }
+    private func setupTableView() {
+        tableView.backgroundColor = UIColor.midNightBlack()
+        tableView.sectionIndexColor = UIColor.mediumBlueGray()
     }
     
-    func activityIndicatorStartAnime() {
-        if activityIndicator.isAnimating == false {
-            DispatchQueue.main.async(execute: {
-                self.activityIndicator.startAnimating()
-            })
-        }
-    }
+    // MARK: - TabBarController
     
-    private func animateEditBio() {
-        DispatchQueue.main.async {
-            self.editButton.title = "Save"
-            self.editButton.tintColor = UIColor.orange
-            UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: { [weak self] in
-                self?.bioTextView.textColor = UIColor.orange
-            }) { [weak self] (completed: Bool) in
-                if completed {
-                    self?.bioTextView.isEditable = true
-                }
-            }
-        }
-    }
-    
-    private func animateSaveBio() {
-        DispatchQueue.main.async {
-            self.editButton.title = "Edit"
-            self.editButton.tintColor = UIColor.white
-            UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: { [weak self] in
-                self?.bioTextView.textColor = UIColor.candyWhite()
-            }) { [weak self] (completed: Bool) in
-                if completed {
-                    self?.bioTextView.isEditable = false
-                }
-            }
-        }
-    }
-    
-    fileprivate func setupViews() {
-        // view
-        view.backgroundColor = UIColor.midNightBlack()
-        // scrollView
-        scrollView.backgroundColor = UIColor.midNightBlack()
-        // contentView
-        contentView.backgroundColor = UIColor.midNightBlack()
-        // headerView
-        headerView.backgroundColor = UIColor.clear
-        // headerLabel
-        headerLabel.backgroundColor = UIColor.clear
-        headerLabel.alpha = 0.0
-        // profileContainer
-        profileContainerView.backgroundColor = UIColor.mediumBlueGray()
-        // avatarButton
-        avatarButton.layer.cornerRadius = 36
-        avatarButton.layer.borderColor = UIColor.white.cgColor
-        avatarButton.layer.borderWidth = 2
-        let image = UIImage(named: getCurrentUserAvatarName()!)
-        avatarButton.setBackgroundImage(image!, for: UIControlState.normal)
-        // usernameLabel
-        usernameLabel.backgroundColor = UIColor.clear
-        usernameLabel.textColor = UIColor.white
-        usernameLabel.text = getCurrentUsernameInParse()
-        // bioTextView
-        bioTextView.backgroundColor = UIColor.clear
-        bioTextView.isEditable = false
-        bioTextView.textColor = UIColor.candyWhite()
-        bioTextView.textContainerInset = UIEdgeInsets.zero
-        bioTextView.textContainer.lineFragmentPadding = 0
-        bioTextView.text = getCurrentUserBioInParse()
+    private func setupTabBar() {
+        guard let tabBar = tabBarController?.tabBar else { return }
+        tabBar.tintColor = UIColor.candyWhite()
+        tabBar.barTintColor = UIColor.midNightBlack()
+        tabBar.isHidden = false
+        tabBar.isTranslucent = false
     }
     
     // MARK: - Lifecycle
@@ -169,116 +201,39 @@ class GroupViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupTableView()
         setupTabBar()
         setupNavigationController()
-        setupViews()
+        setupProfileSection()
+        setupAboutSection()
+        setupAccountSection()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        updateAvatar()
-    }
+    // MARK: - UITableViewDelegate
     
-    // MARK: - Parse
-    
-    func updateAvatar() {
-        DispatchQueue.main.async {
-            self.avatarButton.setBackgroundImage(UIImage(named: self.getCurrentUserAvatarName()!), for: UIControlState.normal)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // bad bad idea, I must fix this later
+        if indexPath.section == 2 {
+            presentLogoutAlertView()
         }
     }
     
-    func getCurrentUserAvatarName() -> String? {
-        if let name = PFUser.current()?["avatar"] as? String {
-            return name
+    override func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
+        if indexPath.section == 0 {
+            // ignore
         } else {
-            return nil
+            tableView.cellForRow(at: indexPath)?.backgroundColor = UIColor.miamiBlue()
         }
     }
     
-    func getCurrentUserBioInParse() -> String? {
-        if let bio = PFUser.current()?["bio"] as? String {
-            return bio
+    override func tableView(_ tableView: UITableView, didUnhighlightRowAt indexPath: IndexPath) {
+        if indexPath.section == 0 {
+            // ignore
         } else {
-            print("current user bio is nil")
-            return nil
-        }
-    }
-    
-    func getCurrentUsernameInParse() -> String {
-        let name = PFUser.current()!.username!
-        return name
-    }
-    
-    func performLogout() {
-        activityIndicatorStartAnime()
-        PFUser.logOutInBackground { (error: Error?) in
-            self.activityIndicatorStopAnime()
-            self.removeAuthTokenInKeychain(account: KeychainConfiguration.accountType.auth_token.rawValue)
-            if error != nil {
-                self.alertRespond((self.headerLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
-            } else {
-                self.dismissTabBar()
-            }
-        }
-    }
-    
-    func updateBioInParse(with newBio: String?) {
-        guard let newBio = newBio, let user = PFUser.current() else { return }
-        user["bio"] = newBio
-        activityIndicatorStartAnime()
-        user.saveInBackground { (completed: Bool, error: Error?) in
-            self.activityIndicatorStopAnime()
-            if error != nil {
-                self.alertRespond((self.headerLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
-            } else {
-                if completed == true {
-                    self.alertRespond((self.headerLabel)!, with: nil, for: ResponseType.success, with: "Saved", completion: nil)
-                }
-            }
-        }
-    }
-    
-    // MARK: - Keychain
-
-    private func removeAuthTokenInKeychain(account: String) {
-        do {
-            try Locksmith.deleteDataForUserAccount(userAccount: KeychainConfiguration.accountType.auth_token.rawValue, inService: KeychainConfiguration.serviceName)
-        } catch let err {
-            alertRespond(headerLabel, with: nil, for: ResponseType.failure, with: err.localizedDescription, completion: nil)
+            tableView.cellForRow(at: indexPath)?.backgroundColor = UIColor.darkGray
         }
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

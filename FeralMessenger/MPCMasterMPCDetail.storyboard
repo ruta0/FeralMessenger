@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="iRn-2e-Esl">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="iRn-2e-Esl">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Segues with Peek and Pop" minToolsVersion="7.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -64,7 +64,7 @@
                             </constraints>
                         </view>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MPCGroupCell" rowHeight="103" id="80a-nn-Mj5" customClass="MPCMasterCell" customModule="FeralMessenger" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MPCMasterCell" rowHeight="103" id="80a-nn-Mj5" customClass="MPCMasterCell" customModule="FeralMessenger" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="92" width="375" height="103"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="80a-nn-Mj5" id="5k2-p2-8XK">
@@ -74,33 +74,36 @@
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FpA-qe-QEU" userLabel="Wrapper View">
                                             <rect key="frame" x="0.0" y="1" width="375" height="102"/>
                                             <subviews>
-                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="CdP-eJ-pWa">
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="CdP-eJ-pWa">
                                                     <rect key="frame" x="8" y="8" width="359" height="86"/>
                                                     <subviews>
                                                         <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Kdf-9i-BeC">
-                                                            <rect key="frame" x="0.0" y="0.0" width="162" height="18"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="359" height="18"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="groupLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9hc-52-1CZ">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="77.5" height="18"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="279" height="18"/>
                                                                     <color key="backgroundColor" red="1" green="1" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="countLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aAz-7W-axH">
-                                                                    <rect key="frame" x="85.5" y="0.0" width="76.5" height="18"/>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="countLabel" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aAz-7W-axH">
+                                                                    <rect key="frame" x="287" y="0.0" width="72" height="18"/>
                                                                     <color key="backgroundColor" red="0.094117647060000004" green="0.50588235290000005" blue="0.51764705879999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="72" id="v6f-zO-wHc"/>
+                                                                    </constraints>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                             </subviews>
                                                         </stackView>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="titleLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="we0-Wa-7ov">
-                                                            <rect key="frame" x="0.0" y="26" width="59.5" height="60"/>
+                                                            <rect key="frame" x="0.0" y="26" width="359" height="60"/>
                                                             <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
@@ -127,7 +130,7 @@
                                     <outlet property="groupLabel" destination="9hc-52-1CZ" id="5hu-i8-y3B"/>
                                     <outlet property="titleLabel" destination="we0-Wa-7ov" id="6Gq-wC-NC1"/>
                                     <outlet property="wrapperView" destination="FpA-qe-QEU" id="ERp-nu-jzZ"/>
-                                    <segue destination="fWd-cn-vkD" kind="show" identifier="MPCChatViewControllerSegue" id="MFA-Dz-vcb">
+                                    <segue destination="fWd-cn-vkD" kind="show" identifier="SegueToMPCMessageViewController" id="MFA-Dz-vcb">
                                         <segue key="commit" inheritsFrom="parent" id="but-Qh-8zG"/>
                                         <segue key="preview" inheritsFrom="commit" id="5qR-AY-jUt"/>
                                     </segue>
@@ -283,7 +286,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="70C-Ta-Vbo">
-                        <barButtonItem key="rightBarButtonItem" image="Exit" id="arn-CX-XAk">
+                        <barButtonItem key="rightBarButtonItem" systemItem="stop" id="arn-CX-XAk">
                             <connections>
                                 <action selector="exitButton_tapped:" destination="fWd-cn-vkD" id="ksK-qN-Nzk"/>
                             </connections>
@@ -324,7 +327,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Exit" width="25" height="25"/>
         <image name="Proximity" width="25" height="25"/>
         <image name="Radar" width="25" height="25"/>
         <image name="Send" width="25" height="25"/>

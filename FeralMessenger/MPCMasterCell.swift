@@ -15,6 +15,8 @@ class MPCMasterCell: UITableViewCell {
     @IBOutlet weak var countLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
     
+    static let id = "MPCMasterCell"
+    
     var mpcGroup: MPCGroup? {
         didSet {
             updateCell()

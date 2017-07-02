@@ -11,13 +11,50 @@ import Parse
 import CoreData
 
 
-final class ChatsViewController: MasterViewController {
+final class ChatsViewController: MasterViewController, ParseUsersManagerDelegate, NSFetchedResultsControllerDelegate {
     
-    // MARK: - CoreData
+    // MARK: - ParseManager + ParseUsersManagerDelegate
     
-    var container: NSPersistentContainer? = CoreDataManager.persistentContainer // default container
+    var parseUsers: [PFObject]?
     
-    lazy fileprivate var fetchedResultsController: NSFetchedResultsController<CoreUser> = {
+    var parseManager: ParseManager?
+    
+    private func setupParseManager() {
+        parseManager = ParseManager()
+        parseManager?.userDelegate = self
+    }
+    
+    func fetchUsers() {
+        beginLoadingAnime()
+        parseManager?.readFriends()
+//        parseManager?.readAllUsers(with: nil)
+    }
+    
+    func didReadUsers(with users: [PFObject]?, error: Error?) {
+        endLoadingAnime()
+        if error != nil {
+            print(error!.localizedDescription)
+        } else {
+            guard let users = users else { return }
+            parseUsers = users
+            updateCoreUser(with: users)
+        }
+    }
+    
+    // MARK: - CloudKitManager
+    
+    var ckManager: CloudKitManager?
+    
+    private func setupCKManager() {
+        ckManager = CloudKitManager()
+//        ckManager?.delegate = self
+    }
+    
+    // MARK: - CoreData + NSFetchedResultsControllerDelegate
+    
+    var container: NSPersistentContainer? = CoreDataManager.persistentContainer
+    
+    lazy private var fetchedResultsController: NSFetchedResultsController<CoreUser> = {
         let frc = NSFetchedResultsController(fetchRequest: CoreUser.defaultFetchRequest(with: nil), managedObjectContext: CoreDataManager.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         frc.delegate = self
         return frc
@@ -48,79 +85,7 @@ final class ChatsViewController: MasterViewController {
             self.performFetchFromCoreData()
         }
     }
-    
-    // MARK: - Lifecycle
-    
-    fileprivate let segueID = "DetailViewControllerSegue"
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupParseDelegate()
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == segueID {
-            if let selectedCell = sender as? MasterCell {
-                guard let messageViewController = segue.destination as? MessageViewController else {
-                    print("unexpected sender of cell")
-                    return
-                }
-                let receiverID = selectedCell.coreUser?.id
-                messageViewController.receiverID = receiverID // a handle for the Parse layer only
-                messageViewController.selectedCoreUser = selectedCell.coreUser // a handle for the CoreData layer
-                messageViewController.container = container
-            }
-        }
-    }
-    
-    // MARK: - UITableViewDataSource
-    
-    fileprivate let masterCellID = "MasterCell"
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return fetchedResultsController.sections?.count ?? 0
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let sections = fetchedResultsController.sections, sections.count > 0 else {
-            return 0
-        }
-        return sections[section].numberOfObjects
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: masterCellID, for: indexPath) as? MasterCell {
-            cell.selectionStyle = UITableViewCellSelectionStyle.none
-            let coreUser = fetchedResultsController.object(at: indexPath)
-            cell.coreUser = coreUser
-            return cell
-        } else {
-            return UITableViewCell()
-        }
-    }
-    
-}
-
-
-// MARK: - ParseUserManagerDelegate
-
-extension ChatsViewController: ParseUsersManagerDelegate {
-    
-    fileprivate func setupParseDelegate() {
-        parseManager?.userDelegate = self
-    }
-    
-    func didReceiveUsers(with users: [PFObject]) {
-        updateCoreUser(with: users)
-    }
-    
-}
-
-
-// MARK: - NSFetchedResultsControllerDelegate
-
-extension ChatsViewController: NSFetchedResultsControllerDelegate {
-    
+        
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         self.tableView.beginUpdates()
     }
@@ -166,6 +131,74 @@ extension ChatsViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         self.tableView.endUpdates()
+    }
+    
+    // MARK: - Lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupParseManager()
+        fetchUsers()
+        setupCKManager()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        ckManager?.setupLocalObserver()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        ckManager?.removeLocalObserver(observer: self)
+    }
+        
+    private let segueToDetailViewController = "SegueToDetailViewController"
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == segueToDetailViewController {
+            if let selectedCell = sender as? MasterCell {
+                guard let messageViewController = segue.destination as? MessageViewController else {
+                    print("unexpected sender of cell")
+                    return
+                }
+                let receiverID = selectedCell.coreUser?.id
+                messageViewController.receiverID = receiverID
+                messageViewController.selectedCoreUser = selectedCell.coreUser
+                messageViewController.container = container
+            }
+        }
+    }
+    
+    // MARK: - UITableViewDataSource
+    
+    /// this method is called before performFetch!
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        guard let sections = fetchedResultsController.sections else {
+            return 0
+        }
+        return sections.count
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let sections = fetchedResultsController.sections, sections.count > 0 else {
+            print("sections.count == 0")
+            return 0
+        }
+        return sections[section].numberOfObjects
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let masterCell = tableView.dequeueReusableCell(withIdentifier: MasterCell.id, for: indexPath) as? MasterCell else {
+            return UITableViewCell()
+        }
+        masterCell.selectionStyle = UITableViewCellSelectionStyle.none
+        let coreUser = fetchedResultsController.object(at: indexPath)
+        masterCell.coreUser = coreUser
+        return masterCell
     }
     
 }

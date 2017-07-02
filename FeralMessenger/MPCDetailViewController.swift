@@ -10,57 +10,12 @@ import UIKit
 import MultipeerConnectivity
 
 
-// MARK: - UI
-
-class MPCDetailViewContrller: UIViewController {
-    
-    fileprivate let cellId = "MPCDetailCell"
-    
-    @IBOutlet weak var inputContainerView: UIView!
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var inputTextField: UITextField!
-    @IBOutlet weak var sendButton: UIButton!
-    @IBOutlet weak var exitButton: UIBarButtonItem!
-    
-    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
+class MPCDetailViewContrller: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
     var messagesArray: [Dictionary<String, String>] = []
     var messages = [Array<CoreMessage>]() // this is better data structure
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    
-    @IBAction func sendButton_tapped(_ sender: UIButton) {
-        inputTextField.resignFirstResponder()
-        let messageDictionary: [String : String] = ["message": inputTextField.text!]
-        if appDelegate.mpcManager.sendData(dictionaryWithData: messageDictionary, toPeer: appDelegate.mpcManager.session.connectedPeers[0] as MCPeerID) {
-            let dictionary: [String : String] = ["sender": appDelegate.mpcManager.myPeerId.displayName, "message": inputTextField.text!]
-            messagesArray.append(dictionary)
-            self.reloadTableView()
-        } else {
-            print("Could not send data")
-        }
-        inputTextField.text = ""
-    }
-    
-    @IBAction func exitButton_tapped(_ sender: UIBarButtonItem) {
-        let messageDictionary: [String : String] = ["message": "_end_chat_"]
-        if appDelegate.mpcManager.sendData(dictionaryWithData: messageDictionary, toPeer: appDelegate.mpcManager.session.connectedPeers[0]) {
-            self.appDelegate.mpcManager.session.disconnect()
-            DispatchQueue.main.async(execute: { 
-                self.navigationController?.popViewController(animated: true)
-            })
-        }
-    }
-    
-    func reloadTableView() {
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-            if self.tableView.contentSize.height > self.tableView.frame.height {
-                let updatedIndexPath = IndexPath(row: self.messagesArray.count - 1, section: 0)
-                self.tableView.scrollToRow(at: updatedIndexPath, at: UITableViewScrollPosition.bottom, animated: true)
-            }
-        }
-    }
     
     func mpcManagerDidReceivedData(with notification: Notification) {
         let receivedData = notification.object as! Dictionary<String, AnyObject>
@@ -88,11 +43,25 @@ class MPCDetailViewContrller: UIViewController {
         }
     }
     
-    fileprivate func setupObservers() {
+    private func setupObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(mpcManagerDidReceivedData(with:)), name: NSNotification.Name("receivedMPCDataNotification"), object: nil)
     }
     
-    fileprivate func setupViews() {
+    // MARK: - UITableView
+    
+    @IBOutlet weak var tableView: UITableView!
+    
+    func reloadTableView() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+            if self.tableView.contentSize.height > self.tableView.frame.height {
+                let updatedIndexPath = IndexPath(row: self.messagesArray.count - 1, section: 0)
+                self.tableView.scrollToRow(at: updatedIndexPath, at: UITableViewScrollPosition.bottom, animated: true)
+            }
+        }
+    }
+    
+    private func setupViews() {
         // tableView
         tableView.delegate = self
         tableView.dataSource = self
@@ -112,12 +81,41 @@ class MPCDetailViewContrller: UIViewController {
         sendButton.contentMode = UIViewContentMode.scaleAspectFill
     }
     
-}
-
-
-// MARK: - Lifecycle
-
-extension MPCDetailViewContrller {
+    // MARK: - InputContainerView
+    
+    @IBOutlet weak var inputContainerView: UIView!
+    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var inputTextField: UITextField!
+    @IBOutlet weak var sendButton: UIButton!
+    
+    @IBAction func sendButton_tapped(_ sender: UIButton) {
+        inputTextField.resignFirstResponder()
+        let messageDictionary: [String : String] = ["message": inputTextField.text!]
+        if appDelegate.mpcManager.sendData(dictionaryWithData: messageDictionary, toPeer: appDelegate.mpcManager.session.connectedPeers[0] as MCPeerID) {
+            let dictionary: [String : String] = ["sender": appDelegate.mpcManager.myPeerId.displayName, "message": inputTextField.text!]
+            messagesArray.append(dictionary)
+            self.reloadTableView()
+        } else {
+            print("Could not send data")
+        }
+        inputTextField.text = ""
+    }
+    
+    // MARK: - NavigationController
+    
+    @IBOutlet weak var exitButton: UIBarButtonItem!
+    
+    @IBAction func exitButton_tapped(_ sender: UIBarButtonItem) {
+        let messageDictionary: [String : String] = ["message": "_end_chat_"]
+        if appDelegate.mpcManager.sendData(dictionaryWithData: messageDictionary, toPeer: appDelegate.mpcManager.session.connectedPeers[0]) {
+            self.appDelegate.mpcManager.session.disconnect()
+            DispatchQueue.main.async(execute: {
+                self.navigationController?.popViewController(animated: true)
+            })
+        }
+    }
+    
+    // MARK: - Lifecycle
     
     fileprivate func popViewController() {
         if let nav = self.navigationController {
@@ -132,24 +130,14 @@ extension MPCDetailViewContrller {
         setupObservers()
     }
     
-}
+    // MARK: - UITableViewDelegate
 
-
-// MARK: - UITableViewDelegate
-
-extension MPCDetailViewContrller: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
     }
     
-}
-
-
-// MARK: - UITableViewDataSource
-
-extension MPCDetailViewContrller: UITableViewDataSource {
+    // MARK: - UITableViewDataSource
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -158,9 +146,9 @@ extension MPCDetailViewContrller: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messagesArray.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! MPCDetailCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: MPCDetailCell.id, for: indexPath) as! MPCDetailCell
         let message = messagesArray[indexPath.row] as Dictionary<String, String>
         if let sender = message["sender"] {
             cell.usernameLabel.text = sender
@@ -171,12 +159,7 @@ extension MPCDetailViewContrller: UITableViewDataSource {
         return cell
     }
     
-}
-
-
-// MARK: - UITextFieldDelegate
-
-extension MPCDetailViewContrller: UITextFieldDelegate {
+    // MARK: - UITextFieldDelegate
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
@@ -192,7 +175,13 @@ extension MPCDetailViewContrller: UITextFieldDelegate {
         inputTextField.resignFirstResponder()
     }
     
+    
 }
+
+
+
+
+
 
 
 

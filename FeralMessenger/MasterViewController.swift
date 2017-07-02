@@ -7,14 +7,13 @@
 //
 
 import UIKit
-import Parse
-import AVFoundation
-import CloudKit
 
 
-class MasterViewController: UITableViewController {
+class MasterViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - NavigationController
+    
+    @IBOutlet weak var addButton: UIBarButtonItem!
     
     lazy var activityIndicator: UIActivityIndicatorView = {
         let view = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
@@ -30,6 +29,10 @@ class MasterViewController: UITableViewController {
         return button
     }()
     
+    @IBAction func addButton_tapped(_ sender: UIBarButtonItem) {
+        print(123)
+    }
+    
     func beginLoadingAnime() {
         DispatchQueue.main.async {
             self.navigationItem.titleView = self.activityIndicator
@@ -37,7 +40,7 @@ class MasterViewController: UITableViewController {
         }
     }
     
-    func stopLoadingAnime() {
+    func endLoadingAnime() {
         DispatchQueue.main.async {
             self.activityIndicator.stopAnimating()
             self.navigationItem.titleView = self.titleButton
@@ -45,16 +48,23 @@ class MasterViewController: UITableViewController {
     }
     
     private func setupNavigationController() {
-        guard let navigationController = navigationController else { return }
+        guard let navigationController = navigationController else {
+            print("navigationController cannot be nil")
+            return
+        }
         navigationController.navigationBar.isTranslucent = false
         navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
         navigationController.navigationBar.tintColor = UIColor.white
+        addButton.tintColor = UIColor.orange
     }
     
     // MARK: - TabBarController
     
     private func setupTabBar() {
-        guard let tabBar = tabBarController?.tabBar else { return }
+        guard let tabBar = tabBarController?.tabBar else {
+            print("tabBarController cannot be nil")
+            return
+        }
         tabBar.tintColor = UIColor.candyWhite()
         tabBar.barTintColor = UIColor.midNightBlack()
         tabBar.isHidden = false
@@ -62,6 +72,14 @@ class MasterViewController: UITableViewController {
     }
     
     // MARK: - UITableView
+    
+    @IBOutlet weak var tableView: UITableView!
+    
+    func tableViewReload() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
     
     private func setupTableView() {
         tableView.estimatedRowHeight = tableView.rowHeight
@@ -74,14 +92,8 @@ class MasterViewController: UITableViewController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
-        // UI
         setupTableView()
         setupNavigationController()
-        // Parse
-        setupParseManager() // 1
-        fetchUsers() // 2
-        // CloudKit
-        setupCKManager()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -89,41 +101,23 @@ class MasterViewController: UITableViewController {
         setupTabBar()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        ckManager?.setupLocalObserver()
+    // MARK: - UITableViewDelegate
+    
+    // MARK: - UITableViewDataSource
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let masterCell = tableView.dequeueReusableCell(withIdentifier: MasterCell.id, for: indexPath) as? MasterCell else {
+            return UITableViewCell()
+        }
+        return masterCell
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        ckManager?.removeLocalObserver(observer: self)
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
     }
     
-    // MARK: - Parse
-    
-    var parseUsers = [PFObject]()
-    
-    var parseManager: ParseManager?
-    
-    private func setupParseManager() {
-        parseManager = ParseManager()
-    }
-    
-    func fetchUsers() {
-        beginLoadingAnime()
-        parseManager?.readUsersInParse(with: nil, completion: { (users: [PFObject]?) in
-            guard let users = users else { return }
-            self.parseUsers = users
-            self.stopLoadingAnime()
-        })
-    }
-    
-    // MARK: - CloudKit
-    
-    var ckManager: CloudKitManager?
-    
-    private func setupCKManager() {
-        ckManager = CloudKitManager()
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
     }
     
 }

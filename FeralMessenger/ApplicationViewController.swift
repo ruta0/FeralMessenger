@@ -18,6 +18,14 @@ enum ResponseType {
     case failure
 }
 
+
+extension URL {
+    
+    static var termsUrl = URL(string: "https://sheltered-ridge-89457.herokuapp.com/terms")
+    
+}
+
+
 extension UIViewController {
     
     // Alert for error / success handling
@@ -88,14 +96,6 @@ extension UIView {
 
 extension UIColor {
     
-    static func mediumBlueGray() -> UIColor {
-        return UIColor(red: 84/255, green: 84/255, blue: 94/255, alpha: 1)
-    }
-    
-    static func mildBlueGray() -> UIColor {
-        return UIColor(red: 105/255, green: 105/255, blue: 117.5/255, alpha: 1)
-    }
-    
     static func midNightBlack() -> UIColor {
         return UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 1)
     }
@@ -116,12 +116,20 @@ extension UIColor {
         return UIColor(red: 189/255, green: 100/255, blue: 57/255, alpha: 1)
     }
     
+    static func metallicGold() -> UIColor {
+        return UIColor(red: 212/255, green: 175/255, blue: 55/255, alpha: 1)
+    }
+    
     static func deepSeaBlue() -> UIColor {
         return UIColor(red: 40/255, green: 44/255, blue: 59/255, alpha: 1)
     }
     
-    static func metallicGold() -> UIColor {
-        return UIColor(red: 212/255, green: 175/255, blue: 55/255, alpha: 1)
+    static func mediumBlueGray() -> UIColor {
+        return UIColor(red: 84/255, green: 84/255, blue: 94/255, alpha: 1)
+    }
+    
+    static func mildBlueGray() -> UIColor {
+        return UIColor(red: 105/255, green: 105/255, blue: 117.5/255, alpha: 1)
     }
     
     static func lightBlue() -> UIColor {
