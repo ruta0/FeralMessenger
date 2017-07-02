@@ -74,7 +74,7 @@ class ParseManager: NSObject {
         }
     }
     
-    func addFriend(with id: String, completion: @escaping (Bool, Error?) -> Void) {
+    func addFriend(with id: String) {
         guard var friends = currentUser["friends"] as? [String] else {
             print("current user is nil")
             return
@@ -83,7 +83,6 @@ class ParseManager: NSObject {
         currentUser["friends"] = friends
         print(currentUser)
         currentUser.saveInBackground { [weak self] (completed: Bool, err: Error?) in
-            completion(completed, err)
             self?.userDelegate?.didAddFriend(completed: completed, error: err)
         }
     }
@@ -110,8 +109,8 @@ class ParseManager: NSObject {
             dispatchGroup.enter()
             guard let query = User.query() else { return }
             query.getObjectInBackground(withId: id, block: { (result: PFObject?, error: Error?) in
-                if error != nil {
-                    print(error!.localizedDescription)
+                if let err = error {
+                    print(err.localizedDescription)
                 } else {
                     guard let friend = result else { return }
                     friends.append(friend)
@@ -135,14 +134,13 @@ class ParseManager: NSObject {
         }
     }
     
-    func readMessages(with receiverID: String, completion: @escaping ([PFObject]?, Error?) -> Void) {
+    func readMessages(with receiverID: String) {
         guard let query = Message.query(receiverID: receiverID, senderID: currentUser.objectId!) else {
             print("query is nil")
             return
         }
-        query.findObjectsInBackground { [weak self] (messages: [PFObject]?, err: Error?) in
-            completion(messages, err)
-            self?.messengerDelegate?.didReceiveMessages(with: messages, error: err)
+        query.findObjectsInBackground { [weak self] (messages: [PFObject]?, error: Error?) in
+            self?.messengerDelegate?.didReceiveMessages(with: messages, error: error)
         }
     }
     
@@ -163,40 +161,36 @@ class ParseManager: NSObject {
     // MARK: - Update
     
     /// update currentUser's field: String, that is not "friends", async. i.e. bio and avatar
-    func updateUser(for field: String, newString: String, completion: @escaping (Bool, Error?) -> Void) {
-        currentUser[field] = newString
+    func updateUser(for field: String, newValue: String) {
+        currentUser[field] = newValue
         currentUser.saveInBackground { [weak self] (completed: Bool, err: Error?) in
-            completion(completed, err)
             self?.userDelegate?.didUpdateCurrentUser(completed: completed, error: err)
         }
     }
     
-    func updatePassword(with newPass: String, completion: @escaping (Bool, Error?) -> Void) {
+    func updatePassword(with newPass: String) {
         currentUser.password = newPass
         currentUser.saveInBackground { [weak self] (completed: Bool, err: Error?) in
-            completion(completed, err)
             self?.userDelegate?.didUpdateCurrentUser(completed: completed, error: err)
         }
     }
     
-    func updateEmail(with newEmail: String, completion: @escaping (Bool, Error?) -> Void) {
+    func updateEmail(with newEmail: String) {
         currentUser.email = newEmail.lowercased()
         currentUser.saveInBackground { [weak self] (completed: Bool, err: Error?) in
-            completion(completed, err)
             self?.userDelegate?.didUpdateCurrentUser(completed: completed, error: err)
         }
     }
     
     // MARK: - Destroy
     
-    func destroyCurrentUser(completion: @escaping (Bool, Error?) -> Void) {
+    func destroyCurrentUser() {
         currentUser.deleteInBackground { [weak self] (completed: Bool, err: Error?) in
-            completion(completed, err)
             self?.userDelegate?.didDestroyCurrentUser(completed: completed, error: err)
         }
     }
     
-    func removeFriend(with id: String, completion: @escaping (Bool, Error?) -> Void) {
+    func removeFriend(with id: String) {
         guard let friends = currentUser["friends"] as? [String] else {
             print("current user is nil")
             return
@@ -205,7 +199,6 @@ class ParseManager: NSObject {
         currentUser["friends"] = updatedFriends
         print(updatedFriends)
         currentUser.saveInBackground { [weak self] (completed: Bool, err: Error?) in
-            completion(completed, err)
             self?.userDelegate?.didRemoveFriend(completed: completed, error: err)
         }
     }

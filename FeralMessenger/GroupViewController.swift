@@ -80,6 +80,28 @@ class GroupViewController: UITableViewController {
         }
     }
     
+    var timer: Timer?
+    
+    func scheduleNavigationPrompt(with message: String, duration: TimeInterval) {
+        DispatchQueue.main.async {
+            self.navigationItem.prompt = message
+            self.timer = Timer.scheduledTimer(timeInterval: duration,
+                                         target: self,
+                                         selector: #selector(self.removePrompt),
+                                         userInfo: nil,
+                                         repeats: false)
+            self.timer?.tolerance = 5
+        }
+    }
+    
+    @objc private func removePrompt() {
+        if navigationItem.prompt != nil {
+            DispatchQueue.main.async {
+                self.navigationItem.prompt = nil
+            }
+        }
+    }
+    
     private func setupNavigationController() {
         guard let navigationController = navigationController else { return }
         navigationController.navigationBar.isTranslucent = false
@@ -93,7 +115,6 @@ class GroupViewController: UITableViewController {
     // MARK: - Profile section
     
     @IBOutlet weak var profileCell: UITableViewCell!
-    @IBOutlet weak var warningLabel: UILabel!
     @IBOutlet weak var avatarButton: UIButton!
     @IBOutlet weak var userLabel: UILabel!
     @IBOutlet weak var dividerView: UIView!
@@ -102,9 +123,6 @@ class GroupViewController: UITableViewController {
     private func setupProfileSection() {
         // profileCell
         profileCell.backgroundColor = UIColor.mediumBlueGray()
-        // warningLabel
-        warningLabel.backgroundColor = UIColor.clear
-        warningLabel.isHidden = true
         // avatarButton
         avatarButton.layer.cornerRadius = 36
         avatarButton.layer.borderColor = UIColor.white.cgColor

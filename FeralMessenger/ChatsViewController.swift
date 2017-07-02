@@ -26,14 +26,14 @@ final class ChatsViewController: MasterViewController, ParseUsersManagerDelegate
     
     func fetchUsers() {
         beginLoadingAnime()
-        parseManager?.readFriends()
-//        parseManager?.readAllUsers(with: nil)
+//        parseManager?.readFriends()
+        parseManager?.readAllUsers(with: nil)
     }
     
     func didReadUsers(with users: [PFObject]?, error: Error?) {
         endLoadingAnime()
-        if error != nil {
-            print(error!.localizedDescription)
+        if let err = error {
+            scheduleNavigationPrompt(with: err.localizedDescription, duration: 4)
         } else {
             guard let users = users else { return }
             parseUsers = users
@@ -66,7 +66,7 @@ final class ChatsViewController: MasterViewController, ParseUsersManagerDelegate
             do {
                 try self.fetchedResultsController.performFetch()
             } catch let err {
-                print("performFetchFromCoreData failed to fetch: - \(err)")
+                self.scheduleNavigationPrompt(with: err.localizedDescription, duration: 4)
             }
             self.tableView.reloadData()
         }
@@ -80,7 +80,7 @@ final class ChatsViewController: MasterViewController, ParseUsersManagerDelegate
             do {
                 try context.save()
             } catch let err {
-                print("updateCoreUserFromParse - Failed to save context", err)
+                self.scheduleNavigationPrompt(with: err.localizedDescription, duration: 4)
             }
             self.performFetchFromCoreData()
         }

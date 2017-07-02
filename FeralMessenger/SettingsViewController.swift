@@ -52,11 +52,11 @@ class SettingsViewController: GroupViewController {
         beginLoadingAnime()
         currentUser.saveInBackground { (completed: Bool, error: Error?) in
             self.endLoadingAnime()
-            if error != nil {
-                self.alertRespond((self.warningLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
+            if let err = error {
+                self.scheduleNavigationPrompt(with: err.localizedDescription, duration: 4)
             } else {
-                if completed == true {
-                    self.alertRespond((self.warningLabel)!, with: nil, for: ResponseType.success, with: "Saved", completion: nil)
+                if completed {
+                    self.scheduleNavigationPrompt(with: "Updated successfully", duration: 4)
                 }
             }
         }
@@ -67,8 +67,8 @@ class SettingsViewController: GroupViewController {
         PFUser.logOutInBackground { (error: Error?) in
             self.endLoadingAnime()
             self.removeAuthTokenInKeychain(account: KeychainConfiguration.accountType.auth_token.rawValue)
-            if error != nil {
-                self.alertRespond((self.warningLabel)!, with: nil, for: ResponseType.failure, with: error!.localizedDescription, completion: nil)
+            if let err = error {
+                self.scheduleNavigationPrompt(with: err.localizedDescription, duration: 4)
             } else {
                 self.dismissTabBar()
             }
@@ -81,7 +81,7 @@ class SettingsViewController: GroupViewController {
         do {
             try Locksmith.deleteDataForUserAccount(userAccount: KeychainConfiguration.accountType.auth_token.rawValue, inService: KeychainConfiguration.serviceName)
         } catch let err {
-            alertRespond(warningLabel, with: nil, for: ResponseType.failure, with: err.localizedDescription, completion: nil)
+            scheduleNavigationPrompt(with: err.localizedDescription, duration: 4)
         }
     }
     
@@ -100,16 +100,17 @@ class SettingsViewController: GroupViewController {
     
     private let segueToTermsWebViewController = "SegueToTermsWebViewController"
     private let segueToPrivacyWebViewController = "SegueToPrivacyWebViewController"
+    private let segueToAvatarViewController = "SegueToAvatarViewController"
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let webViewController = segue.destination as? WebViewController else {
-            print("Unexpected sender of cell")
-            return
-        }
-        if segue.identifier == segueToTermsWebViewController {
+        if segue.identifier == segueToTermsWebViewController || segue.identifier == segueToPrivacyWebViewController {
+            guard let webViewController = segue.destination as? WebViewController else {
+                print("Unexpected sender of cell: ", segue.identifier!)
+                return
+            }
             webViewController.link = URL.termsUrl
-        } else if segue.identifier == segueToPrivacyWebViewController {
-            webViewController.link = URL.termsUrl
+        } else if segue.identifier == segueToAvatarViewController {
+            // ignore for now...
         }
     }
     

@@ -47,6 +47,28 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
+    var timer: Timer?
+    
+    func scheduleNavigationPrompt(with message: String, duration: TimeInterval) {
+        DispatchQueue.main.async {
+            self.navigationItem.prompt = message
+            self.timer = Timer.scheduledTimer(timeInterval: duration,
+                                              target: self,
+                                              selector: #selector(self.removePrompt),
+                                              userInfo: nil,
+                                              repeats: false)
+            self.timer?.tolerance = 5
+        }
+    }
+    
+    @objc private func removePrompt() {
+        if navigationItem.prompt != nil {
+            DispatchQueue.main.async {
+                self.navigationItem.prompt = nil
+            }
+        }
+    }
+    
     private func setupNavigationController() {
         guard let navigationController = navigationController else {
             print("navigationController cannot be nil")

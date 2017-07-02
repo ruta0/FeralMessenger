@@ -100,7 +100,6 @@ extension MPCManager: MCSessionDelegate {
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
-        
     }
     
     func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
@@ -121,7 +120,7 @@ extension MPCManager: MCSessionDelegate {
         }
     }
     
-    // if didReceiveCertificate is not defined. Then it will accept any certificate, otherwise it must be handled
+    // if didReceiveCertificate is not defined. Hence it will accept any certificate, otherwise it must be handled
     
 }
 

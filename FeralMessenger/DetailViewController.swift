@@ -44,6 +44,28 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
+    var timer: Timer?
+    
+    func scheduleNavigationPrompt(with message: String, duration: TimeInterval) {
+        DispatchQueue.main.async {
+            self.navigationItem.prompt = message
+            self.timer = Timer.scheduledTimer(timeInterval: duration,
+                                              target: self,
+                                              selector: #selector(self.removePrompt),
+                                              userInfo: nil,
+                                              repeats: false)
+            self.timer?.tolerance = 5
+        }
+    }
+    
+    @objc private func removePrompt() {
+        if navigationItem.prompt != nil {
+            DispatchQueue.main.async {
+                self.navigationItem.prompt = nil
+            }
+        }
+    }
+    
     var rightBarButton: UIButton = {
         let button = UIButton()
         let buttonWidth: Int = 33

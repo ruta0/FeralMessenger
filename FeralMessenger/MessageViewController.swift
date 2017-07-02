@@ -239,8 +239,7 @@ final class MessageViewController: DetailViewController, NSFetchedResultsControl
     // MARK: - ParseManager + ParseMessengerManagerDelegate
     
     var currentUser: PFUser {
-        let user = PFUser.current()!
-        return user
+        return PFUser.current()!
     }
     
     var parseManager: ParseManager?
@@ -253,50 +252,42 @@ final class MessageViewController: DetailViewController, NSFetchedResultsControl
     func fetchMessages() {
         if let receiverID = receiverID {
             beginLoadingAnime()
-            parseManager?.readMessages(with: receiverID, completion: { [weak self] (messages: [PFObject]?, err: Error?) in
-                self?.endLoadingAnime()
-                if err != nil {
-                    print(err!.localizedDescription)
-                } else {
-                    // ignore
-                }
-            })
+            parseManager?.readMessages(with: receiverID)
         } else {
             print("receiverID is nil")
         }
     }
     
     func didReceiveMessages(with messages: [PFObject]?, error: Error?) {
-        if error != nil {
-            print(error!.localizedDescription)
+        endLoadingAnime()
+        if let err = error {
+            scheduleNavigationPrompt(with: err.localizedDescription, duration: 4)
         } else {
-            if let messages = messages {
-                updateCoreMessage(with: messages)
-            }
+            guard let messages = messages else { return }
+            updateCoreMessage(with: messages)
         }
     }
     
     func didReceiveMessage(with message: Message, error: Error?) {
-        if error != nil {
-            print(error!.localizedDescription)
+        if let err = error {
+            scheduleNavigationPrompt(with: err.localizedDescription, duration: 4)
         } else {
             insertToCoreMessage(with: message)
         }
     }
     
     func didSendMessage(with message: Message, error: Error?) {
-        if error != nil {
-            print(error!.localizedDescription)
+        if let err = error {
+            scheduleNavigationPrompt(with: err.localizedDescription, duration: 4)
         } else {
             // 1. play sound to confirm successfully upload to Parse
             playSound()
+            guard let receiver_name = selectedCoreUser?.username, let sender_name = currentUser.username else { return }
             // 2. create record in the CloudKit's pubDatabase to receiver's subscription
-            if let receiver_name = selectedCoreUser?.username, let sender_name = currentUser.username {
-                let dataToSend: [String : Bool] = [sender_name : false]
-                ckManager?.createCKRecord(in: pubDatabase, dataToSend: dataToSend, dynamicRecordType: receiver_name)
-                // 3. fetch for new message when a PUSH payload comes in
-                insertToCoreMessage(with: message)
-            }
+            let dataToSend: [String : Bool] = [sender_name : false]
+            ckManager?.createCKRecord(in: pubDatabase, dataToSend: dataToSend, dynamicRecordType: receiver_name)
+            // 3. fetch for new message when a PUSH payload comes in
+            insertToCoreMessage(with: message)
         }
     }
     

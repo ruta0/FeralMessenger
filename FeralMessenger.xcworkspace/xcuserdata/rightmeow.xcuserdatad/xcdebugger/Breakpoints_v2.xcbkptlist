@@ -95,7 +95,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "84"
             endingLineNumber = "84"
-            landmarkName = "addFriend(with:completion:)"
+            landmarkName = "addFriend(with:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -106,45 +106,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FeralMessenger/ParseManager.swift"
-            timestampString = "520652723.19117"
+            timestampString = "520685046.216914"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "207"
-            endingLineNumber = "207"
-            landmarkName = "removeFriend(with:completion:)"
+            startingLineNumber = "200"
+            endingLineNumber = "200"
+            landmarkName = "removeFriend(with:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "FeralMessenger.ParseManager.removeFriend (with : Swift.String, completion : (Swift.Bool, Swift.Optional&lt;Swift.Error&gt;) -&gt; ()) -&gt; ()"
-                  moduleName = "FeralMessenger"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rightmeow/Documents/Developer/FeralMessenger/FeralMessenger/ParseManager.swift"
-                  timestampString = "520654912.923172"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "207"
-                  endingLineNumber = "207"
-                  offsetFromSymbolStart = "1641">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "FeralMessenger.ParseManager.(removeFriend (with : Swift.String, completion : (Swift.Bool, Swift.Optional&lt;Swift.Error&gt;) -&gt; ()) -&gt; ()).(closure #2)"
-                  moduleName = "FeralMessenger"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rightmeow/Documents/Developer/FeralMessenger/FeralMessenger/ParseManager.swift"
-                  timestampString = "520654912.926395"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "207"
-                  endingLineNumber = "207"
-                  offsetFromSymbolStart = "37">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

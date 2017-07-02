@@ -7,10 +7,13 @@
 //
 
 import UIKit
-import Parse
 
 
 class DisclosureViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+    
+    var selectedAvatarName: String?
+    
+    var avatars: [Avatar]?
     
     // MARK: - NavigationController
     
@@ -31,9 +34,12 @@ class DisclosureViewController: UICollectionViewController, UICollectionViewDele
     }()
     
     @IBAction func saveButton_tapped(_ sender: UIBarButtonItem) {
-        if selectedAvatarName != nil {
-            updateAvatarInParse(with: selectedAvatarName!)
-        }
+        guard let name = selectedAvatarName else { return }
+        updateAvatar(with: name)
+    }
+    
+    func updateAvatar(with name: String) {
+        // override this to implement
     }
     
     func beginLoadingAnime() {
@@ -47,6 +53,28 @@ class DisclosureViewController: UICollectionViewController, UICollectionViewDele
         DispatchQueue.main.async {
             self.activityIndicator.stopAnimating()
             self.navigationItem.titleView = self.titleButton
+        }
+    }
+    
+    var timer: Timer?
+    
+    func scheduleNavigationPrompt(with message: String, duration: TimeInterval) {
+        DispatchQueue.main.async {
+            self.navigationItem.prompt = message
+            self.timer = Timer.scheduledTimer(timeInterval: duration,
+                                              target: self,
+                                              selector: #selector(self.removePrompt),
+                                              userInfo: nil,
+                                              repeats: false)
+            self.timer?.tolerance = 5
+        }
+    }
+    
+    @objc private func removePrompt() {
+        if navigationItem.prompt != nil {
+            DispatchQueue.main.async {
+                self.navigationItem.prompt = nil
+            }
         }
     }
     
@@ -65,39 +93,20 @@ class DisclosureViewController: UICollectionViewController, UICollectionViewDele
     
     // MARK: - UICollectionView
     
-    var avatars: [Avatar]?
-    var selectedAvatarName: String?
+    func collectionViewReloadData() {
+        DispatchQueue.main.async {
+            self.collectionView?.reloadData()
+        }
+    }
     
     private func setupCollectionView() {
         guard let collectionView = collectionView else { return }
         collectionView.backgroundColor = UIColor.midNightBlack()
     }
     
-    var fileName: String = {
-        if isSudoGranted == true {
-            return "SpecialAvatars"
-        } else {
-            return "Avatars"
-        }
-    }()
-    
-    private func fetchAvatarsFromPropertyList(for resource: String, of type: String) {
-        var items = [Avatar]()
-        guard let inputFile = Bundle.main.path(forResource: resource, ofType: type) else {
-            print("DisclosureViewController: - Undefined property list")
-            return
-        }
-        let inputArray = NSArray(contentsOfFile: inputFile)
-        for inputItem in inputArray as! [Dictionary<String, String>] {
-            let imageNameItem = Avatar(nameDictionary: inputItem)
-            items.append(imageNameItem)
-        }
-        self.avatars = items
-    }
-    
     // MARK: - Lifecycle
     
-    private func popViewController() {
+    func popViewController() {
         if let nav = self.navigationController {
             DispatchQueue.main.async {
                 nav.popViewController(animated: true)
@@ -110,7 +119,6 @@ class DisclosureViewController: UICollectionViewController, UICollectionViewDele
         setupTabBar()
         setupNavigationController()
         setupCollectionView()
-        fetchAvatarsFromPropertyList(for: fileName, of: "plist")
     }
     
     // MARK: - UICollectionViewDelegateFlowLayout
@@ -134,56 +142,6 @@ class DisclosureViewController: UICollectionViewController, UICollectionViewDele
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width/3, height: view.frame.width/3)
-    }
-    
-    // MARK: - UICollectionViewDataSource
-    
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        selectedAvatarName = avatars?[indexPath.item].name
-        DispatchQueue.main.async {
-            self.saveButton.tintColor = UIColor.orange
-        }
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return avatars?.count ?? 0
-    }
-    
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as? PhotoCell else {
-            fatalError("failed to dequeue photoCell")
-        }
-        if let avatar = avatars?[indexPath.item] {
-            cell.avatar = avatar
-        }
-        return cell
-    }
-    
-    // MARK: - Parse
-    
-    var currentUser: PFUser {
-        return PFUser.current()!
-    }
-    
-    func updateAvatarInParse(with newAvatarName: String) {
-        currentUser["avatar"] = newAvatarName
-        activityIndicator.startAnimating()
-        currentUser.saveInBackground { [unowned self] (completed: Bool, error: Error?) in
-            self.activityIndicator.stopAnimating()
-            if error != nil {
-                print("updateAvatarInParse - failed to update avatar name To Parse")
-                return
-            } else {
-                if completed == true {
-                    print("updateAvatarInParse - successfully saved to Parse")
-                    self.popViewController()
-                }
-            }
-        }
     }
     
 }

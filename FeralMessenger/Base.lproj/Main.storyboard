@@ -1011,9 +1011,9 @@
                     </tabBar>
                     <connections>
                         <segue destination="7fi-Jp-PF4" kind="relationship" relationship="viewControllers" id="CNu-GJ-Mub"/>
-                        <segue destination="3Su-Pj-mdY" kind="relationship" relationship="viewControllers" id="iFa-kB-wtF"/>
-                        <segue destination="4er-rV-dlH" kind="relationship" relationship="viewControllers" id="BGi-ZI-724"/>
-                        <segue destination="YNH-a3-xtI" kind="relationship" relationship="viewControllers" id="VmA-Bs-VOz"/>
+                        <segue destination="3Su-Pj-mdY" kind="relationship" relationship="viewControllers" id="aWa-vz-cHZ"/>
+                        <segue destination="4er-rV-dlH" kind="relationship" relationship="viewControllers" id="w89-2j-oN5"/>
+                        <segue destination="YNH-a3-xtI" kind="relationship" relationship="viewControllers" id="6QA-fX-kb7"/>
                         <segue destination="YdC-L2-VyE" kind="relationship" relationship="viewControllers" id="4uM-jB-FEC"/>
                     </connections>
                 </tabBarController>

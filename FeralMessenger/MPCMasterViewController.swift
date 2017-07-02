@@ -11,7 +11,7 @@ import MultipeerConnectivity
 import AudioToolbox
 
 
-class MPCMasterViewController: UITableViewController {
+class MPCMasterViewController: UITableViewController, MPCManagerDelegate {
     
     // MARK: - RadarView
     
@@ -176,13 +176,8 @@ class MPCMasterViewController: UITableViewController {
         cell.titleLabel.text = "hello world"
         return cell
     }
-
-}
-
-
-// MARK: - MPCManagerDelegate
-
-extension MPCMasterViewController: MPCManagerDelegate {
+    
+    // MARK: - MPCManagerDelegate
     
     func setupMPCManagerDelegate() {
         appDelegate.mpcManager.delegate = self
@@ -223,8 +218,9 @@ extension MPCMasterViewController: MPCManagerDelegate {
     func didConnect(fromPeer: MCPeerID, group: String) {
         // perform some cool anime as well
     }
-    
+
 }
+
 
 
 
