@@ -30,7 +30,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="HDd-my-Mib">
-                                                    <rect key="frame" x="16" y="8" width="343" height="196.5"/>
+                                                    <rect key="frame" x="16" y="16" width="343" height="180.5"/>
                                                     <subviews>
                                                         <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Df5-Z0-ATa">
                                                             <rect key="frame" x="0.0" y="0.0" width="72" height="72"/>
@@ -81,9 +81,9 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="trailing" secondItem="HDd-my-Mib" secondAttribute="trailing" constant="16" id="JXS-qq-tTP"/>
-                                                <constraint firstItem="HDd-my-Mib" firstAttribute="top" secondItem="aLL-or-ZDC" secondAttribute="top" constant="8" id="KaE-uI-0RA"/>
+                                                <constraint firstItem="HDd-my-Mib" firstAttribute="top" secondItem="aLL-or-ZDC" secondAttribute="top" constant="16" id="KaE-uI-0RA"/>
                                                 <constraint firstItem="HDd-my-Mib" firstAttribute="leading" secondItem="aLL-or-ZDC" secondAttribute="leading" constant="16" id="Mab-Zt-eAf"/>
-                                                <constraint firstAttribute="bottom" secondItem="HDd-my-Mib" secondAttribute="bottom" constant="8" id="Yvc-Ar-QIR"/>
+                                                <constraint firstAttribute="bottom" secondItem="HDd-my-Mib" secondAttribute="bottom" constant="16" id="Yvc-Ar-QIR"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.74117647060000003" green="0.3921568627" blue="0.22352941179999999" alpha="1" colorSpace="calibratedRGB"/>

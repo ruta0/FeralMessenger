@@ -10,7 +10,7 @@ import UIKit
 
 
 /// This class comes with a logout button by default, please override the logout method in its subclass
-class GroupViewController: UITableViewController {
+class GroupViewController: UITableViewController, UITextViewDelegate {
     
     // MARK: - NavigationController
     
@@ -56,12 +56,13 @@ class GroupViewController: UITableViewController {
         DispatchQueue.main.async {
             self.editButton.title = "Save"
         }
-        UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+        UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             self.bioTextView.textColor = UIColor.orange
         }) { (completed: Bool) in
             if completed {
                 self.bioTextView.isSelectable = true
                 self.bioTextView.isEditable = true
+                self.bioTextView.becomeFirstResponder()
             }
         }
     }
@@ -70,12 +71,13 @@ class GroupViewController: UITableViewController {
         DispatchQueue.main.async {
             self.editButton.title = "Edit"
         }
-        UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+        UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
             self.bioTextView.textColor = UIColor.candyWhite()
         }) { (completed: Bool) in
             if completed {
                 self.bioTextView.isSelectable = false
                 self.bioTextView.isEditable = false
+                self.bioTextView.resignFirstResponder()
             }
         }
     }
@@ -133,6 +135,7 @@ class GroupViewController: UITableViewController {
         // dividerView
         dividerView.backgroundColor = UIColor.lightGray
         // bioTextView
+        bioTextView.delegate = self
         bioTextView.backgroundColor = UIColor.clear
         bioTextView.isEditable = false
         bioTextView.isSelectable = false
