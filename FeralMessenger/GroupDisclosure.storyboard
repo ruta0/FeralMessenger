@@ -47,7 +47,7 @@
                                                             </connections>
                                                         </button>
                                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="BVv-2k-iah">
-                                                            <rect key="frame" x="88" y="0.0" width="255" height="162.5"/>
+                                                            <rect key="frame" x="88" y="0.0" width="255" height="119.5"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="userLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vzc-ou-xl2">
                                                                     <rect key="frame" x="0.0" y="0.0" width="255" height="19.5"/>
@@ -64,7 +64,7 @@
                                                                     </constraints>
                                                                 </view>
                                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="4ns-RF-C6A">
-                                                                    <rect key="frame" x="0.0" y="36.5" width="255" height="126"/>
+                                                                    <rect key="frame" x="0.0" y="36.5" width="255" height="83"/>
                                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="64" id="iiE-aB-T8W"/>
@@ -252,7 +252,7 @@
         <scene sceneID="t7O-xZ-yKY">
             <objects>
                 <collectionViewController hidesBottomBarWhenPushed="YES" id="esW-8p-mff" customClass="AvatarViewController" customModule="FeralMessenger" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" indicatorStyle="black" delaysContentTouches="NO" bouncesZoom="NO" dataMode="prototypes" id="QlJ-JO-lzl">
+                    <collectionView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" indicatorStyle="black" delaysContentTouches="NO" bouncesZoom="NO" dataMode="prototypes" id="QlJ-JO-lzl">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.13725490200000001" green="0.13725490200000001" blue="0.13725490200000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -272,28 +272,28 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v4G-mz-afz">
-                                            <rect key="frame" x="8" y="8" width="68" height="68"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="84" height="84"/>
                                             <subviews>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Cat" translatesAutoresizingMaskIntoConstraints="NO" id="hJf-zC-PhL">
-                                                    <rect key="frame" x="0.0" y="0.0" width="68" height="68"/>
+                                                    <rect key="frame" x="8" y="8" width="68" height="68"/>
                                                 </imageView>
                                             </subviews>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
-                                                <constraint firstItem="hJf-zC-PhL" firstAttribute="leading" secondItem="v4G-mz-afz" secondAttribute="leading" id="4UB-RM-R0t"/>
-                                                <constraint firstAttribute="bottom" secondItem="hJf-zC-PhL" secondAttribute="bottom" id="EP7-hw-k5C"/>
-                                                <constraint firstItem="hJf-zC-PhL" firstAttribute="top" secondItem="v4G-mz-afz" secondAttribute="top" id="I9H-RU-cCi"/>
-                                                <constraint firstAttribute="trailing" secondItem="hJf-zC-PhL" secondAttribute="trailing" id="shT-Wp-ydI"/>
+                                                <constraint firstItem="hJf-zC-PhL" firstAttribute="leading" secondItem="v4G-mz-afz" secondAttribute="leading" constant="8" id="9gb-bN-JXV"/>
+                                                <constraint firstAttribute="bottom" secondItem="hJf-zC-PhL" secondAttribute="bottom" constant="8" id="BUm-fo-eEi"/>
+                                                <constraint firstItem="hJf-zC-PhL" firstAttribute="top" secondItem="v4G-mz-afz" secondAttribute="top" constant="8" id="Ku0-gB-Zaa"/>
+                                                <constraint firstAttribute="trailing" secondItem="hJf-zC-PhL" secondAttribute="trailing" constant="8" id="tWn-Pn-pwc"/>
                                             </constraints>
                                         </view>
                                     </subviews>
                                 </view>
                                 <color key="backgroundColor" red="0.094117647060000004" green="0.50588235290000005" blue="0.51764705879999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstItem="v4G-mz-afz" firstAttribute="leading" secondItem="1hI-Cb-BlQ" secondAttribute="leading" constant="8" id="9xn-Us-Yl9"/>
-                                    <constraint firstItem="v4G-mz-afz" firstAttribute="top" secondItem="1hI-Cb-BlQ" secondAttribute="top" constant="8" id="FnM-EN-E7B"/>
-                                    <constraint firstAttribute="trailing" secondItem="v4G-mz-afz" secondAttribute="trailing" constant="8" id="JA3-7B-Hnc"/>
-                                    <constraint firstAttribute="bottom" secondItem="v4G-mz-afz" secondAttribute="bottom" constant="8" id="bCZ-ei-31v"/>
+                                    <constraint firstItem="v4G-mz-afz" firstAttribute="leading" secondItem="1hI-Cb-BlQ" secondAttribute="leading" id="9xn-Us-Yl9"/>
+                                    <constraint firstItem="v4G-mz-afz" firstAttribute="top" secondItem="1hI-Cb-BlQ" secondAttribute="top" id="FnM-EN-E7B"/>
+                                    <constraint firstAttribute="trailing" secondItem="v4G-mz-afz" secondAttribute="trailing" id="JA3-7B-Hnc"/>
+                                    <constraint firstAttribute="bottom" secondItem="v4G-mz-afz" secondAttribute="bottom" id="bCZ-ei-31v"/>
                                 </constraints>
                                 <connections>
                                     <outlet property="avatarImageView" destination="hJf-zC-PhL" id="Lim-VR-ity"/>

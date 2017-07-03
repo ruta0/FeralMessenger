@@ -32,7 +32,7 @@ class MPCDetailViewContrller: UIViewController, UITableViewDelegate, UITableView
             } else{
                 let alert = UIAlertController(title: "", message: "\(fromPeer.displayName) ended this chat", preferredStyle: UIAlertControllerStyle.alert)
                 let ok = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { (action: UIAlertAction) in
-                    self.appDelegate.mpcManager.session.disconnect()
+                    self.appDelegate.mpcManager.session?.disconnect()
                     self.popViewController()
                 })
                 alert.addAction(ok)
@@ -91,7 +91,7 @@ class MPCDetailViewContrller: UIViewController, UITableViewDelegate, UITableView
     @IBAction func sendButton_tapped(_ sender: UIButton) {
         inputTextField.resignFirstResponder()
         let messageDictionary: [String : String] = ["message": inputTextField.text!]
-        if appDelegate.mpcManager.sendData(dictionaryWithData: messageDictionary, toPeer: appDelegate.mpcManager.session.connectedPeers[0] as MCPeerID) {
+        if appDelegate.mpcManager.sendData(dictionaryWithData: messageDictionary, toPeer: appDelegate.mpcManager.session?.connectedPeers[0] as! MCPeerID) {
             let dictionary: [String : String] = ["sender": appDelegate.mpcManager.myPeerId.displayName, "message": inputTextField.text!]
             messagesArray.append(dictionary)
             self.reloadTableView()
@@ -107,8 +107,8 @@ class MPCDetailViewContrller: UIViewController, UITableViewDelegate, UITableView
     
     @IBAction func exitButton_tapped(_ sender: UIBarButtonItem) {
         let messageDictionary: [String : String] = ["message": "_end_chat_"]
-        if appDelegate.mpcManager.sendData(dictionaryWithData: messageDictionary, toPeer: appDelegate.mpcManager.session.connectedPeers[0]) {
-            self.appDelegate.mpcManager.session.disconnect()
+        if appDelegate.mpcManager.sendData(dictionaryWithData: messageDictionary, toPeer: (appDelegate.mpcManager.session?.connectedPeers[0])!) {
+            self.appDelegate.mpcManager.session?.disconnect()
             DispatchQueue.main.async(execute: {
                 self.navigationController?.popViewController(animated: true)
             })

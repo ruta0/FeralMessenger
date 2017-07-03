@@ -55,13 +55,13 @@ class GroupViewController: UITableViewController {
     func enableEditMode() {
         DispatchQueue.main.async {
             self.editButton.title = "Save"
-            UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                self.bioTextView.textColor = UIColor.orange
-            }) { (completed: Bool) in
-                if completed {
-                    self.bioTextView.isSelectable = true
-                    self.bioTextView.isEditable = true
-                }
+        }
+        UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+            self.bioTextView.textColor = UIColor.orange
+        }) { (completed: Bool) in
+            if completed {
+                self.bioTextView.isSelectable = true
+                self.bioTextView.isEditable = true
             }
         }
     }
@@ -69,13 +69,13 @@ class GroupViewController: UITableViewController {
     func disableEditMode() {
         DispatchQueue.main.async {
             self.editButton.title = "Edit"
-            UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                self.bioTextView.textColor = UIColor.candyWhite()
-            }) { (completed: Bool) in
-                if completed {
-                    self.bioTextView.isSelectable = false
-                    self.bioTextView.isEditable = false
-                }
+        }
+        UIView.animate(withDuration: 1.0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+            self.bioTextView.textColor = UIColor.candyWhite()
+        }) { (completed: Bool) in
+            if completed {
+                self.bioTextView.isSelectable = false
+                self.bioTextView.isEditable = false
             }
         }
     }
@@ -228,6 +228,14 @@ class GroupViewController: UITableViewController {
     }
     
     // MARK: - UITableViewDelegate
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
+    }
+    
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 44
+    }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // bad bad idea, I must fix this later

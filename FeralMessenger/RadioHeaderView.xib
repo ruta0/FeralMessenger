@@ -10,7 +10,14 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RadioHeaderView" customModule="FeralMessenger" customModuleProvider="target">
+            <connections>
+                <outlet property="radioImageView" destination="2cB-gp-wB2" id="aNK-MD-DXt"/>
+                <outlet property="radioSwitch" destination="LV5-J2-13I" id="RdL-09-8Hl"/>
+                <outlet property="titleLabel" destination="z1b-ov-Kg9" id="IfZ-7p-env"/>
+                <outlet property="view" destination="iN0-l3-epB" id="HKc-6s-PGb"/>
+            </connections>
+        </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
             <rect key="frame" x="0.0" y="0.0" width="378" height="64"/>
@@ -19,7 +26,7 @@
                 <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="L0o-7l-IuR">
                     <rect key="frame" x="16" y="8" width="346" height="48"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Radar" translatesAutoresizingMaskIntoConstraints="NO" id="2cB-gp-wB2">
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Radar" translatesAutoresizingMaskIntoConstraints="NO" id="2cB-gp-wB2">
                             <rect key="frame" x="0.0" y="8" width="32" height="32"/>
                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
@@ -34,7 +41,7 @@
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LV5-J2-13I">
+                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="LV5-J2-13I">
                             <rect key="frame" x="297" y="8.5" width="51" height="31"/>
                         </switch>
                     </subviews>

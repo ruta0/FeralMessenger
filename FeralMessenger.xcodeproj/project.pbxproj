@@ -60,6 +60,8 @@
 		C5C9AFA11EEFE9DF005A905F /* KeyboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C9AFA01EEFE9DF005A905F /* KeyboardManager.swift */; };
 		C5CCB7261F0973A20036DA9A /* MPCChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5CCB7251F0973A20036DA9A /* MPCChatsViewController.swift */; };
 		C5CCB7281F0989FF0036DA9A /* RadioHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C5CCB7271F0989FF0036DA9A /* RadioHeaderView.xib */; };
+		C5CCB72A1F09948E0036DA9A /* RadioHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5CCB7291F09948E0036DA9A /* RadioHeaderView.swift */; };
+		C5CCB72C1F09B6C40036DA9A /* MPCMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5CCB72B1F09B6C40036DA9A /* MPCMessageViewController.swift */; };
 		C5D33B8A1EE610B50078ED01 /* MasterDetail.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5D33B891EE610B50078ED01 /* MasterDetail.storyboard */; };
 		C5D33B8E1EE61C1E0078ED01 /* MPCMasterMPCDetail.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5D33B8D1EE61C1E0078ED01 /* MPCMasterMPCDetail.storyboard */; };
 		C5D33B901EE61C550078ED01 /* GroupDisclosure.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5D33B8F1EE61C550078ED01 /* GroupDisclosure.storyboard */; };
@@ -156,6 +158,8 @@
 		C5C9AFA01EEFE9DF005A905F /* KeyboardManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardManager.swift; sourceTree = "<group>"; };
 		C5CCB7251F0973A20036DA9A /* MPCChatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPCChatsViewController.swift; sourceTree = "<group>"; };
 		C5CCB7271F0989FF0036DA9A /* RadioHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RadioHeaderView.xib; sourceTree = "<group>"; };
+		C5CCB7291F09948E0036DA9A /* RadioHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadioHeaderView.swift; sourceTree = "<group>"; };
+		C5CCB72B1F09B6C40036DA9A /* MPCMessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPCMessageViewController.swift; sourceTree = "<group>"; };
 		C5D33B891EE610B50078ED01 /* MasterDetail.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MasterDetail.storyboard; sourceTree = "<group>"; };
 		C5D33B8D1EE61C1E0078ED01 /* MPCMasterMPCDetail.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MPCMasterMPCDetail.storyboard; sourceTree = "<group>"; };
 		C5D33B8F1EE61C550078ED01 /* GroupDisclosure.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = GroupDisclosure.storyboard; sourceTree = "<group>"; };
@@ -327,6 +331,7 @@
 				C5FD16F61F057EBB00E0F08E /* PhotoCell.swift */,
 				C5D75BD01F04AD2F00F3C141 /* InputContainerView.swift */,
 				C5D33B911EE624930078ED01 /* MPCMasterCell.swift */,
+				C5CCB7291F09948E0036DA9A /* RadioHeaderView.swift */,
 				C537FB921EE8B99F00556AF2 /* MPCDetailCell.swift */,
 				C50C16191EF586D9007CB20D /* NotificationCell.swift */,
 			);
@@ -426,6 +431,7 @@
 				C55D62FE1EE51BDC00AEE16D /* MPCMasterViewController.swift */,
 				C5CCB7251F0973A20036DA9A /* MPCChatsViewController.swift */,
 				C537FB901EE8B82100556AF2 /* MPCDetailViewController.swift */,
+				C5CCB72B1F09B6C40036DA9A /* MPCMessageViewController.swift */,
 			);
 			name = "MPCMaster & MPCDetail";
 			sourceTree = "<group>";
@@ -778,6 +784,7 @@
 				C5C58B981EDD87A4003E19B7 /* MessageViewController.swift in Sources */,
 				C53D0A5C1EDA2BE10048CC44 /* CoreDataManager.swift in Sources */,
 				C53D0A5E1EDA754A0048CC44 /* CoreMessage.swift in Sources */,
+				C5CCB72C1F09B6C40036DA9A /* MPCMessageViewController.swift in Sources */,
 				C5439B7B1ED28B3400FBD7D3 /* User.swift in Sources */,
 				C537FB911EE8B82100556AF2 /* MPCDetailViewController.swift in Sources */,
 				C5CCB7261F0973A20036DA9A /* MPCChatsViewController.swift in Sources */,
@@ -803,6 +810,7 @@
 				C537FB8E1EE8B39B00556AF2 /* MPCGroup.swift in Sources */,
 				C53D0A601EDA75800048CC44 /* CoreUser.swift in Sources */,
 				C537FB8C1EE8619100556AF2 /* MPCManager.swift in Sources */,
+				C5CCB72A1F09948E0036DA9A /* RadioHeaderView.swift in Sources */,
 				C5419C521F073927007122C2 /* AvatarViewController.swift in Sources */,
 				C50E5A591F0878E5005B7B86 /* StaticScrollViewController.swift in Sources */,
 				C55D62EE1EE22E3A00AEE16D /* DisclosureViewController.swift in Sources */,

@@ -19,6 +19,13 @@ protocol MPCManagerDelegate {
     func didConnect(fromPeer: MCPeerID, group: String)
     func didStartAdvertising()
     func didStopAdvertising()
+    
+    
+    // redoing this manager class below
+    func didFindPeer()
+    func didLosePeer(lostPeer peerID: MCPeerID)
+    func didSendMessage()
+    func didReceiveMessage()
 }
 
 extension MPCManagerDelegate {
@@ -28,31 +35,36 @@ extension MPCManagerDelegate {
     func didConnect(fromPeer: MCPeerID, group: String) {}
     func didStartAdvertising() {}
     func didStopAdvertising() {}
+    
+    
+    // redoing this manager class below
+    func didFindPeer() {}
+    func didLosePeer(lostPeer peerID: MCPeerID) {}
+    func didSendMessage() {}
+    func didReceiveMessage() {}
 }
 
 
 /// Implement this class on AppDelegate
 class MPCManager: NSObject {
     
+    var delegate: MPCManagerDelegate?
+    
     let myPeerId = MCPeerID(displayName: UIDevice.current.name)
-    var serviceType = "feral-mpc" // must be all lowercased and shorter than 15 chars!!!
+    var serviceType = "feral-service" // lowercased, > 15 chars
     var serviceBrowser: MCNearbyServiceBrowser
     var serviceAdvertiser: MCNearbyServiceAdvertiser
-    
-    var session: MCSession!
+    var session: MCSession?
     var group: String!
     
-    var initationHandler: ((Bool, MCSession?) -> Void)!
     var invitationHandler: ((Bool, MCSession?) -> Void)!
-    
-    var delegate: MPCManagerDelegate?
     
     var foundPeers = [MCPeerID]()
     
     func sendData(dictionaryWithData dictionary: Dictionary<String, String>, toPeer targetPeer: MCPeerID) -> Bool {
         let dataToSend = NSKeyedArchiver.archivedData(withRootObject: dictionary)
         do {
-            try session.send(dataToSend, toPeers: [targetPeer], with: MCSessionSendDataMode.reliable)
+            try session?.send(dataToSend, toPeers: [targetPeer], with: MCSessionSendDataMode.reliable)
             return true
         } catch let err {
             print(err.localizedDescription)
@@ -76,7 +88,7 @@ class MPCManager: NSObject {
         serviceBrowser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: serviceType)
         serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: nil, serviceType: serviceType)
         super.init()
-        self.session.delegate = self
+        self.session?.delegate = self
         self.serviceBrowser.delegate = self
         self.serviceAdvertiser.delegate = self
         group = "new group"
@@ -142,6 +154,8 @@ extension MPCManager: MCNearbyServiceBrowserDelegate {
             }
         }
         delegate?.lostPeer()
+        
+        delegate?.didLosePeer(lostPeer: peerID)
     }
     
     func browser(_ browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {

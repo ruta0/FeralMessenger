@@ -7,29 +7,50 @@
 //
 
 import UIKit
-import MultipeerConnectivity
 import AudioToolbox
 
 
-class MPCMasterViewController: UITableViewController, MPCManagerDelegate {
+class MPCMasterViewController: UITableViewController {
     
-    // MARK: - RadarView
+    func vibrate() {
+        AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+    }
     
-    @IBOutlet weak var radarView: UIView!
-    @IBOutlet weak var radarImageView: UIImageView!
-    @IBOutlet weak var radarLabel: UILabel!
-    @IBOutlet weak var radarSwitch: UISwitch!
-    
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    
-    @IBAction func radarSwitch_tapped(_ sender: UISwitch) {
-        if sender.isOn {
-            sender.setOn(false, animated: true)
-            appDelegate.mpcManager.stopAdvertise()
-        } else {
-            sender.setOn(true, animated: true)
-            appDelegate.mpcManager.startAdvertise()
+    func presentInvigation(fromPeer: String, group: String) {
+        let alert = UIAlertController(title: "\(group) wants to chat with you", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+        let accept = UIAlertAction(title: "Accept", style: UIAlertActionStyle.default) { (action: UIAlertAction) in
+            self.acceptInvitation()
         }
+        let decline = UIAlertAction(title: "Decline", style: UIAlertActionStyle.default) { (action: UIAlertAction) in
+            self.declineInvitation()
+        }
+        alert.addAction(accept)
+        alert.addAction(decline)
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    func acceptInvitation() {
+        // override this to implement
+    }
+    
+    func declineInvitation() {
+        // override this to implement
+    }
+    
+    // MARK: - RadioHeaderView
+    
+    @IBOutlet weak var radioHeaderView: RadioHeaderView!
+    
+    func radioSwitch_tapped(_ sender: UISwitch) {
+        // override this to implement
+    }
+    
+    private func setupRadioHeaderView() {
+        radioHeaderView.radioSwitch.addTarget(self, action: #selector(self.radioSwitch_tapped(_:)), for: UIControlEvents.touchUpInside)
+        radioHeaderView.titleLabel.text = "Proximity Radio"
+        radioHeaderView.radioSwitch.isOn = false
     }
     
     // MARK: - UITableView
@@ -41,26 +62,10 @@ class MPCMasterViewController: UITableViewController, MPCManagerDelegate {
     }
     
     private func setupViews() {
-        // tableView
         tableView.contentInset = UIEdgeInsets(top: 1, left: 0, bottom: 0, right: 0)
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.backgroundColor = UIColor.midNightBlack()
-        // radarView
-        radarView.backgroundColor = UIColor.mediumBlueGray()
-        // radarImageView
-        let originalImage = UIImage(named: "Radar")
-        let tintedImage = originalImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-        radarImageView.image = tintedImage
-        radarImageView.tintColor = UIColor.white
-        radarImageView.contentMode = UIViewContentMode.scaleAspectFill
-        // radarLabel
-        radarLabel.backgroundColor = UIColor.clear
-        radarLabel.textColor = UIColor.white
-        // radarSwitch
-        radarSwitch.isOn = false
-        radarSwitch.tintColor = UIColor.mandarinOrange()
-        radarSwitch.onTintColor = UIColor.orange
     }
     
     // MARK: - TabBarController
@@ -122,101 +127,20 @@ class MPCMasterViewController: UITableViewController, MPCManagerDelegate {
     
     // MARK: - Lifecycle
     
-    private let mpcChatViewControllerSegue = "SegueToMPCMessageViewController"
-    
-    private func showMPCChatsViewController() {
-        DispatchQueue.main.async {
-            self.performSegue(withIdentifier: self.mpcChatViewControllerSegue, sender: self)
-        }
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         setupNavigationController()
-        setupMPCManagerDelegate()
+        setupRadioHeaderView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        appDelegate.mpcManager.serviceBrowser.startBrowsingForPeers()
         setupTabBar()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        appDelegate.mpcManager.serviceBrowser.stopBrowsingForPeers()
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // implement this
-    }
-    
-    // MARK: - UITableViewDataSource
-        
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return appDelegate.mpcManager.foundPeers.count
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedPeer = appDelegate.mpcManager.foundPeers[indexPath.row]
-        appDelegate.mpcManager.serviceBrowser.invitePeer(selectedPeer, to: appDelegate.mpcManager.session, withContext: nil, timeout: 20)
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: MPCMasterCell.id, for: indexPath) as! MPCMasterCell
-        // implement this
-        cell.groupLabel.text = appDelegate.mpcManager.foundPeers[indexPath.row].displayName
-        let numberOfPeers = appDelegate.mpcManager.foundPeers.count
-        cell.countLabel.text = String(describing: numberOfPeers)
-        cell.titleLabel.text = "hello world"
-        return cell
-    }
-    
-    // MARK: - MPCManagerDelegate
-    
-    func setupMPCManagerDelegate() {
-        appDelegate.mpcManager.delegate = self
-    }
-    
-    func didStartAdvertising() {
-        addNavigationPrompt(message: "Broadcasting")
-    }
-    
-    func didStopAdvertising() {
-        removeNavigationPrompt()
-    }
-    
-    func foundPeer() {
-        tableViewReloadData()
-    }
-    
-    func lostPeer() {
-        tableViewReloadData()
-    }
-    
-    func didReceivedInvitation(fromPeer: String, group: String) {
-        AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-        let alert = UIAlertController(title: "\(group) wants to chat with you", message: nil, preferredStyle: UIAlertControllerStyle.alert)
-        let accept = UIAlertAction(title: "Accept", style: UIAlertActionStyle.default) { (action: UIAlertAction) in
-            self.appDelegate.mpcManager.invitationHandler(true, self.appDelegate.mpcManager.session)
-        }
-        let decline = UIAlertAction(title: "Decline", style: UIAlertActionStyle.default) { (action: UIAlertAction) in
-            self.appDelegate.mpcManager.invitationHandler(false, nil)
-        }
-        alert.addAction(accept)
-        alert.addAction(decline)
-        DispatchQueue.main.async {
-            self.present(alert, animated: true, completion: nil)
-        }
-    }
-    
-    func didConnect(fromPeer: MCPeerID, group: String) {
-        // perform some cool anime as well
     }
 
 }

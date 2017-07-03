@@ -14,58 +14,19 @@
         <!--Proximity-->
         <scene sceneID="2I5-TJ-biI">
             <objects>
-                <tableViewController id="J8f-74-AeK" customClass="MPCMasterViewController" customModule="FeralMessenger" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="J8f-74-AeK" customClass="MPCChatsViewController" customModule="FeralMessenger" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="103" sectionHeaderHeight="28" sectionFooterHeight="28" id="2XW-YF-Ueb">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" id="pXB-Vb-gdg" userLabel="Radar View">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="64"/>
+                        <view key="tableHeaderView" contentMode="scaleToFill" id="R4W-Zx-rpc" customClass="RadioHeaderView" customModule="FeralMessenger" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="75"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <subviews>
-                                <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="mFk-22-sNL">
-                                    <rect key="frame" x="8" y="8" width="359" height="48"/>
-                                    <subviews>
-                                        <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="9yT-Bb-OBw">
-                                            <rect key="frame" x="0.0" y="8" width="302" height="32"/>
-                                            <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Radar" translatesAutoresizingMaskIntoConstraints="NO" id="pDb-S8-GcW">
-                                                    <rect key="frame" x="0.0" y="0.0" width="32" height="32"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="32" id="1P7-CE-HoE"/>
-                                                        <constraint firstAttribute="height" constant="32" id="CuS-EW-3MF"/>
-                                                    </constraints>
-                                                </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Proximity Radio" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YAZ-gY-kDM">
-                                                    <rect key="frame" x="40" y="0.0" width="262" height="32"/>
-                                                    <color key="backgroundColor" red="1" green="1" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                        </stackView>
-                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wYm-D8-OJq">
-                                            <rect key="frame" x="310" y="8.5" width="51" height="31"/>
-                                            <color key="onTintColor" red="0.094117647060000004" green="0.50588235290000005" blue="0.51764705879999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <connections>
-                                                <action selector="radarSwitch_tapped:" destination="J8f-74-AeK" eventType="valueChanged" id="UBX-4S-8CJ"/>
-                                            </connections>
-                                        </switch>
-                                    </subviews>
-                                </stackView>
-                            </subviews>
-                            <color key="backgroundColor" red="1" green="0.5966554798" blue="0.36645119920000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <constraints>
-                                <constraint firstItem="mFk-22-sNL" firstAttribute="leading" secondItem="pXB-Vb-gdg" secondAttribute="leading" constant="8" id="ETd-Xo-eN1"/>
-                                <constraint firstAttribute="trailing" secondItem="mFk-22-sNL" secondAttribute="trailing" constant="8" id="L3o-E4-EwV"/>
-                                <constraint firstItem="mFk-22-sNL" firstAttribute="top" secondItem="pXB-Vb-gdg" secondAttribute="top" constant="8" id="RNV-O6-44r"/>
-                                <constraint firstAttribute="bottom" secondItem="mFk-22-sNL" secondAttribute="bottom" constant="8" id="Zf9-bZ-1pt"/>
-                            </constraints>
+                            <color key="backgroundColor" red="0.094117647060000004" green="0.50588235290000005" blue="0.51764705879999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         </view>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MPCMasterCell" rowHeight="103" id="80a-nn-Mj5" customClass="MPCMasterCell" customModule="FeralMessenger" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="92" width="375" height="103"/>
+                                <rect key="frame" x="0.0" y="103" width="375" height="103"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="80a-nn-Mj5" id="5k2-p2-8XK">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="103"/>
@@ -144,15 +105,12 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Proximity" id="POy-Zd-ptP"/>
                     <connections>
-                        <outlet property="radarImageView" destination="pDb-S8-GcW" id="KJs-ga-JJM"/>
-                        <outlet property="radarLabel" destination="YAZ-gY-kDM" id="CpF-y8-xFf"/>
-                        <outlet property="radarSwitch" destination="wYm-D8-OJq" id="9ip-23-aKg"/>
-                        <outlet property="radarView" destination="pXB-Vb-gdg" id="fgl-Na-R2J"/>
+                        <outlet property="radioHeaderView" destination="R4W-Zx-rpc" id="p7c-hR-hpi"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CSy-zC-ZqF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5695" y="-99"/>
+            <point key="canvasLocation" x="5693.6000000000004" y="-99.400299850074973"/>
         </scene>
         <!--Detail View Contrller-->
         <scene sceneID="3Sh-1e-ZFw">
@@ -328,7 +286,6 @@
     </scenes>
     <resources>
         <image name="Proximity" width="25" height="25"/>
-        <image name="Radar" width="25" height="25"/>
         <image name="Send" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
