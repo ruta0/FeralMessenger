@@ -42,11 +42,11 @@ class MasterCell: UITableViewCell {
     
     private func setupViews() {
         // tableViewCell
-        backgroundColor = UIColor.clear
+        backgroundColor = UIColor.midNightBlack
         // dividerView
-        dividerView.backgroundColor = UIColor.midNightBlack()
+        dividerView.backgroundColor = UIColor.midNightBlack
         // contentView
-        contentView.backgroundColor = UIColor.mediumBlueGray()
+        contentView.backgroundColor = UIColor.mediumBlueGray
         // avatarImageView
         avatarImageView.layer.cornerRadius = 32
         avatarImageView.layer.borderColor = UIColor.white.cgColor
@@ -55,15 +55,15 @@ class MasterCell: UITableViewCell {
         titleLabel.textColor = UIColor.white
         titleLabel.backgroundColor = UIColor.clear
         // subtitleLabel
-        subtitleLabel.textColor = UIColor.candyWhite()
+        subtitleLabel.textColor = UIColor.candyWhite
         subtitleLabel.backgroundColor = UIColor.clear
     }
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted == true {
-            contentView.backgroundColor = UIColor.miamiBlue()
+            contentView.backgroundColor = UIColor.miamiBlue
         } else {
-            contentView.backgroundColor = UIColor.mediumBlueGray()
+            contentView.backgroundColor = UIColor.mediumBlueGray
         }
     }
     

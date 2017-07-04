@@ -91,7 +91,13 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet weak var inputContainerView: InputContainerView!
     
     func sendButton_tapped(_ sender: UIButton) {
-        // override this
+        guard let message = inputContainerView.inputTextField.text, !message.isEmpty else { return }
+        clearMessageTextField()
+        sendMessage(with: message)
+    }
+    
+    func sendMessage(with message: String) {
+        // override this to implement
     }
     
     func playSound() {
@@ -148,7 +154,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     private func setupTableView() {
-        tableView.backgroundColor = UIColor.midNightBlack()
+        tableView.backgroundColor = UIColor.midNightBlack
         let gesture = UITapGestureRecognizer(target: self, action: #selector(tableViewTapped(recognizer:)))
         tableView.addGestureRecognizer(gesture)
     }

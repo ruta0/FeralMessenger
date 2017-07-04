@@ -13,10 +13,10 @@ class WalletViewController: UIViewController {
     
     // MARK: - TabBarController
     
-    fileprivate func setupTabBar() {
+    private func setupTabBar() {
         guard let tabBar = tabBarController?.tabBar else { return }
-        tabBar.tintColor = UIColor.candyWhite()
-        tabBar.barTintColor = UIColor.midNightBlack()
+        tabBar.tintColor = UIColor.candyWhite
+        tabBar.barTintColor = UIColor.midNightBlack
         tabBar.isHidden = false
         tabBar.isTranslucent = false
     }
@@ -31,10 +31,10 @@ class WalletViewController: UIViewController {
         return button
     }()
     
-    fileprivate func setupNavigationController() {
+    private func setupNavigationController() {
         guard let navigationController = navigationController else { return }
         navigationController.navigationBar.isTranslucent = false
-        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
+        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray
         navigationController.navigationBar.tintColor = UIColor.white
         navigationItem.rightBarButtonItem?.tintColor = UIColor.white
         navigationItem.titleView = titleButton
@@ -56,10 +56,10 @@ class WalletViewController: UIViewController {
         }
     }
     
-    fileprivate func setupTableView() {
+    private func setupTableView() {
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.backgroundColor = UIColor.midNightBlack()
+        tableView.backgroundColor = UIColor.midNightBlack
     }
     
     // MARK: - Lifecycle

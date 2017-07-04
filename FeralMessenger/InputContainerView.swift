@@ -22,9 +22,9 @@ class InputContainerView: UIView {
         self.addSubview(view)
         view.frame = self.bounds
         // contentView
-        contentView.backgroundColor = UIColor.midNightBlack()
+        contentView.backgroundColor = UIColor.midNightBlack
         // dividerView
-        dividerView.backgroundColor = UIColor.mediumBlueGray()
+        dividerView.backgroundColor = UIColor.mediumBlueGray
         // inputTextFied
         inputTextField.backgroundColor = UIColor.clear
         inputTextField.textColor = UIColor.white

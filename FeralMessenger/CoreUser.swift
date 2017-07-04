@@ -11,9 +11,10 @@ import Parse
 
 
 class CoreUser: NSManagedObject {
-    
+
     static let entityName = String(describing: CoreUser.self)
-    static let usernameSortDescriptor = NSSortDescriptor(key: "username", ascending: true, selector: nil)
+    static let usernameSortDescriptor = NSSortDescriptor(key: "username", ascending: true, selector: #selector(NSString.localizedStandardCompare(_:)))
+    static let bioSortDescriptor = NSSortDescriptor(key: "bio", ascending: true, selector: nil)
     static let createdSortDescriptor = NSSortDescriptor(key: "created_at", ascending: false, selector: #selector(NSString.localizedCompare(_:)))
     
     class func defaultFetchRequest(with predicate: NSPredicate?) -> NSFetchRequest<CoreUser> {

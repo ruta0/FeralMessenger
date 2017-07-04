@@ -72,7 +72,7 @@ class GroupViewController: UITableViewController, UITextViewDelegate {
             self.editButton.title = "Edit"
         }
         UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-            self.bioTextView.textColor = UIColor.candyWhite()
+            self.bioTextView.textColor = UIColor.candyWhite
         }) { (completed: Bool) in
             if completed {
                 self.bioTextView.isSelectable = false
@@ -107,7 +107,7 @@ class GroupViewController: UITableViewController, UITextViewDelegate {
     private func setupNavigationController() {
         guard let navigationController = navigationController else { return }
         navigationController.navigationBar.isTranslucent = false
-        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
+        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray
         navigationController.navigationBar.tintColor = UIColor.white
         navigationItem.titleView = titleButton
         editButton.tintColor = UIColor.orange
@@ -124,7 +124,7 @@ class GroupViewController: UITableViewController, UITextViewDelegate {
     
     private func setupProfileSection() {
         // profileCell
-        profileCell.backgroundColor = UIColor.mediumBlueGray()
+        profileCell.backgroundColor = UIColor.mediumBlueGray
         // avatarButton
         avatarButton.layer.cornerRadius = 36
         avatarButton.layer.borderColor = UIColor.white.cgColor
@@ -139,7 +139,7 @@ class GroupViewController: UITableViewController, UITextViewDelegate {
         bioTextView.backgroundColor = UIColor.clear
         bioTextView.isEditable = false
         bioTextView.isSelectable = false
-        bioTextView.textColor = UIColor.candyWhite()
+        bioTextView.textColor = UIColor.candyWhite
         bioTextView.textContainerInset = UIEdgeInsets.zero
         bioTextView.textContainer.lineFragmentPadding = 0
     }
@@ -198,16 +198,16 @@ class GroupViewController: UITableViewController, UITextViewDelegate {
     // MARK: - UITableView
     
     private func setupTableView() {
-        tableView.backgroundColor = UIColor.midNightBlack()
-        tableView.sectionIndexColor = UIColor.mediumBlueGray()
+        tableView.backgroundColor = UIColor.midNightBlack
+        tableView.sectionIndexColor = UIColor.mediumBlueGray
     }
     
     // MARK: - TabBarController
     
     private func setupTabBar() {
         guard let tabBar = tabBarController?.tabBar else { return }
-        tabBar.tintColor = UIColor.candyWhite()
-        tabBar.barTintColor = UIColor.midNightBlack()
+        tabBar.tintColor = UIColor.candyWhite
+        tabBar.barTintColor = UIColor.midNightBlack
         tabBar.isHidden = false
         tabBar.isTranslucent = false
     }
@@ -251,7 +251,7 @@ class GroupViewController: UITableViewController, UITextViewDelegate {
         if indexPath.section == 0 {
             // ignore
         } else {
-            tableView.cellForRow(at: indexPath)?.backgroundColor = UIColor.miamiBlue()
+            tableView.cellForRow(at: indexPath)?.backgroundColor = UIColor.miamiBlue
         }
     }
     

@@ -65,9 +65,9 @@ class MPCDetailViewContrller: UIViewController, UITableViewDelegate, UITableView
         // tableView
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = UIColor.midNightBlack()
+        tableView.backgroundColor = UIColor.midNightBlack
         // inputContainerView
-        inputContainerView.backgroundColor = UIColor.mediumBlueGray()
+        inputContainerView.backgroundColor = UIColor.mediumBlueGray
         // inputTextField
         inputTextField.backgroundColor = UIColor.clear
         inputTextField.attributedPlaceholder = NSAttributedString(string: "Message", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
@@ -117,7 +117,7 @@ class MPCDetailViewContrller: UIViewController, UITableViewDelegate, UITableView
     
     // MARK: - Lifecycle
     
-    fileprivate func popViewController() {
+    private func popViewController() {
         if let nav = self.navigationController {
             nav.popViewController(animated: true)
         }
@@ -167,14 +167,13 @@ class MPCDetailViewContrller: UIViewController, UITableViewDelegate, UITableView
     }
     
     func setupTableViewGesture() {
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(tableViewTapped(recognizer:)))
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(tableView_tapped(recognizer:)))
         tableView.addGestureRecognizer(gesture)
     }
     
-    func tableViewTapped(recognizer: UIGestureRecognizer) {
+    func tableView_tapped(recognizer: UIGestureRecognizer) {
         inputTextField.resignFirstResponder()
     }
-    
     
 }
 

@@ -380,7 +380,7 @@ public extension InternetPasswordSecureStorable {
 public protocol InternetPasswordSecureStorableResultType: AccountBasedSecureStorableResultType, DescribableSecureStorableResultType, CommentableSecureStorableResultType, CreatorDesignatableSecureStorableResultType, TypeDesignatableSecureStorableResultType, IsInvisibleAssignableSecureStorableResultType, IsNegativeAssignableSecureStorableResultType {}
 
 public extension InternetPasswordSecureStorableResultType {
-    private func stringFromResultDictionary(key: CFString) -> String? {
+    fileprivate func stringFromResultDictionary(key: CFString) -> String? {
         return resultDictionary[String(key)] as? String
     }
     

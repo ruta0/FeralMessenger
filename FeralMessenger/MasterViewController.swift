@@ -9,11 +9,11 @@
 import UIKit
 
 
-class MasterViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class MasterViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating {
     
     // MARK: - NavigationController
     
-    @IBOutlet weak var addButton: UIBarButtonItem!
+//    @IBOutlet weak var addButton: UIBarButtonItem!
     
     lazy var activityIndicator: UIActivityIndicatorView = {
         let view = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
@@ -29,8 +29,12 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
         return button
     }()
     
-    @IBAction func addButton_tapped(_ sender: UIBarButtonItem) {
-        print(123)
+//    @IBAction func addButton_tapped(_ sender: UIBarButtonItem) {
+//        performAddUser()
+//    }
+    
+    func performAddUser() {
+        // override this to implement
     }
     
     func beginLoadingAnime() {
@@ -75,9 +79,9 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
             return
         }
         navigationController.navigationBar.isTranslucent = false
-        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
+        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray
         navigationController.navigationBar.tintColor = UIColor.white
-        addButton.tintColor = UIColor.orange
+//        addButton.tintColor = UIColor.orange
     }
     
     // MARK: - TabBarController
@@ -87,8 +91,8 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
             print("tabBarController cannot be nil")
             return
         }
-        tabBar.tintColor = UIColor.candyWhite()
-        tabBar.barTintColor = UIColor.midNightBlack()
+        tabBar.tintColor = UIColor.candyWhite
+        tabBar.barTintColor = UIColor.midNightBlack
         tabBar.isHidden = false
         tabBar.isTranslucent = false
     }
@@ -106,8 +110,34 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
     private func setupTableView() {
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.backgroundColor = UIColor.midNightBlack()
-        tableView.refreshControl?.tintColor = UIColor.candyWhite()
+        tableView.backgroundColor = UIColor.midNightBlack
+        tableView.backgroundView?.backgroundColor = UIColor.midNightBlack
+    }
+    
+    // MARK: - UISearchController + UISearchResultsUpdating
+    
+    let searchController = UISearchController(searchResultsController: nil)
+
+    private func setupSearchController() {
+        searchController.searchResultsUpdater = self
+        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.dimsBackgroundDuringPresentation = true
+        searchController.searchBar.placeholder = "Search for users"
+        searchController.searchBar.backgroundColor = UIColor.mediumBlueGray
+        searchController.searchBar.barTintColor = UIColor.mediumBlueGray
+        let cancelButtonAttributes: [String : AnyObject] = [NSForegroundColorAttributeName : UIColor.candyWhite]
+        UIBarButtonItem.appearance().setTitleTextAttributes(cancelButtonAttributes as [String : AnyObject], for: UIControlState.normal)
+        searchController.searchBar.keyboardAppearance = UIKeyboardAppearance.dark
+        tableView.tableHeaderView = searchController.searchBar
+    }
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let searchText = searchController.searchBar.text else { return }
+        filterContentForSearchText(searchText: searchText)
+    }
+    
+    func filterContentForSearchText(searchText: String) {
+        // override this to implement
     }
     
     // MARK: - Lifecycle
@@ -115,6 +145,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
+        setupSearchController()
         setupNavigationController()
     }
     

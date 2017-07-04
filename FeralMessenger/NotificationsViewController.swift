@@ -25,7 +25,7 @@ class NotificationsViewController: UIViewController, UITableViewDataSource {
     private func setupNavigationController() {
         guard let navigationController = navigationController else { return }
         navigationController.navigationBar.isTranslucent = false
-        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
+        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray
         navigationController.navigationBar.tintColor = UIColor.white
         navigationItem.titleView = titleButton
     }
@@ -49,15 +49,15 @@ class NotificationsViewController: UIViewController, UITableViewDataSource {
     private func setupTableView() {
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.backgroundColor = UIColor.midNightBlack()
+        tableView.backgroundColor = UIColor.midNightBlack
     }
     
     // MARK: - TabBarController
     
     private func setupTabBar() {
         guard let tabBar = tabBarController?.tabBar else { return }
-        tabBar.tintColor = UIColor.candyWhite()
-        tabBar.barTintColor = UIColor.midNightBlack()
+        tabBar.tintColor = UIColor.candyWhite
+        tabBar.barTintColor = UIColor.midNightBlack
         tabBar.isHidden = false
         tabBar.isTranslucent = false
     }

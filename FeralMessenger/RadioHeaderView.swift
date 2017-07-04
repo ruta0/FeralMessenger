@@ -20,7 +20,7 @@ class RadioHeaderView: UIView {
         // view
         self.addSubview(view)
         view.frame = self.bounds
-        view.backgroundColor = UIColor.mediumBlueGray()
+        view.backgroundColor = UIColor.mediumBlueGray
         // radioImageView
         let originalImage = #imageLiteral(resourceName: "Radar")
         let tintedImage = originalImage.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
@@ -33,7 +33,7 @@ class RadioHeaderView: UIView {
         titleLabel.textColor = UIColor.white
         // radioSwitch
         radioSwitch.isOn = false
-        radioSwitch.tintColor = UIColor.mandarinOrange()
+        radioSwitch.tintColor = UIColor.mandarinOrange
         radioSwitch.onTintColor = UIColor.orange
     }
     

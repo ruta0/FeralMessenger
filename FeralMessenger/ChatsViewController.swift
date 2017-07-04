@@ -13,6 +13,28 @@ import CoreData
 
 final class ChatsViewController: MasterViewController, ParseUsersManagerDelegate, NSFetchedResultsControllerDelegate {
     
+    // MARK: - NavigationController + UISearchController
+    
+    override func filterContentForSearchText(searchText: String) {
+        if searchText.isEmpty {
+            fetchedResultsController.fetchRequest.predicate = nil
+            performFetchFromCoreData()
+        } else {
+            let predicate = NSPredicate(format: "username contains[c] %@ OR bio contains[c] %@", searchText, searchText)
+            fetchedResultsController.fetchRequest.predicate = predicate
+            do {
+                try fetchedResultsController.performFetch()
+            } catch let err {
+                scheduleNavigationPrompt(with: err.localizedDescription, duration: 4)
+            }
+            tableViewReload()
+        }
+    }
+    
+    override func performAddUser() {
+        print("override this to implement")
+    }
+    
     // MARK: - ParseManager + ParseUsersManagerDelegate
     
     var parseUsers: [PFObject]?

@@ -27,27 +27,27 @@ class MPCMasterCell: UITableViewCell {
         
     }
     
-    fileprivate func setupViews() {
+    private func setupViews() {
         // cell
         self.backgroundColor = UIColor.clear
         // contentView
         self.contentView.backgroundColor = UIColor.clear
         // wrapperView
-        wrapperView.backgroundColor = UIColor.mediumBlueGray()
+        wrapperView.backgroundColor = UIColor.mediumBlueGray
         // groupLabel
         groupLabel.backgroundColor = UIColor.clear
         groupLabel.textColor = UIColor.white
         // countLabel
         countLabel.backgroundColor = UIColor.clear
-        countLabel.textColor = UIColor.candyWhite()
+        countLabel.textColor = UIColor.candyWhite
         // titleLabel
         titleLabel.backgroundColor = UIColor.clear
-        titleLabel.textColor = UIColor.candyWhite()
+        titleLabel.textColor = UIColor.candyWhite
     }
     
     override var isHighlighted: Bool {
         didSet {
-            wrapperView.backgroundColor = isHighlighted ? UIColor.miamiBlue() : UIColor.mediumBlueGray()
+            wrapperView.backgroundColor = isHighlighted ? UIColor.miamiBlue : UIColor.mediumBlueGray
         }
     }
     

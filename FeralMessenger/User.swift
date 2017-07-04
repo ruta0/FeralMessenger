@@ -17,7 +17,7 @@ final class User: PFUser {
     class func defaultQuery(with predicate: NSPredicate?) -> PFQuery<PFObject>? {        
         // query for users
         let query = PFQuery(className: User.parseClassName(), predicate: predicate)
-        let usernameSortDescriptor = NSSortDescriptor(key: "username", ascending: true, selector: nil)
+        let usernameSortDescriptor = NSSortDescriptor(key: "username", ascending: true, selector: #selector(NSString.localizedCompare(_:)))
         query.order(by: [usernameSortDescriptor])
         return query
     }

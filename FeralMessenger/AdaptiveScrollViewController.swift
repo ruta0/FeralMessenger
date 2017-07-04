@@ -106,7 +106,7 @@ class AdaptiveScrollViewController: UIViewController, UITextFieldDelegate, UIScr
     private func setupViews() {
         // scrollView
         scrollView.isScrollEnabled = false
-        scrollView.backgroundColor = UIColor.midNightBlack()
+        scrollView.backgroundColor = UIColor.midNightBlack
         // contentView
         contentView.backgroundColor = UIColor.clear
         // errorLabel
@@ -133,7 +133,7 @@ class AdaptiveScrollViewController: UIViewController, UITextFieldDelegate, UIScr
         passTextField.attributedPlaceholder = NSAttributedString(string: "pass", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
         // authButton
         authButton.layer.cornerRadius = 25 // height is set to 50 in storyboard
-        authButton.backgroundColor = UIColor.mandarinOrange()
+        authButton.backgroundColor = UIColor.mandarinOrange
         authButton.setTitle(AuthButtonType.login.rawValue, for: UIControlState.normal)
         // termsButton
         termsButton.backgroundColor = UIColor.clear
@@ -146,6 +146,7 @@ class AdaptiveScrollViewController: UIViewController, UITextFieldDelegate, UIScr
     
     @IBOutlet weak var logoImageView: UIImageView!
     
+    /// need to refactor this method later
     private func isLogoImageViewEnabled() -> Bool {
         let date = Date()
         let dateFormatter = DateFormatter()

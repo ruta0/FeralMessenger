@@ -79,8 +79,8 @@ class WebViewController: UIViewController, UIWebViewDelegate {
     
     private func setupViews() {
         webView.delegate = self
-        webView.backgroundColor = UIColor.midNightBlack()
-        webView.tintColor = UIColor.midNightBlack()
+        webView.backgroundColor = UIColor.midNightBlack
+        webView.tintColor = UIColor.midNightBlack
     }
     
     // MARK: - Lifecycle

@@ -59,7 +59,7 @@ class StaticScrollViewController: UIViewController, UIScrollViewDelegate, UIText
         master_keyTextField.attributedPlaceholder = NSAttributedString(string: "master_key", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
         // saveButton
         saveButton.layer.cornerRadius = 25 // height is set to 50 in storyboard
-        saveButton.backgroundColor = UIColor.metallicGold()
+        saveButton.backgroundColor = UIColor.metallicGold
         // defaultButton
         defaultButton.backgroundColor = UIColor.clear
         // returnButton

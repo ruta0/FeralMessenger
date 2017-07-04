@@ -101,7 +101,7 @@ class DisclosureViewController: UICollectionViewController, UICollectionViewDele
     
     private func setupCollectionView() {
         guard let collectionView = collectionView else { return }
-        collectionView.backgroundColor = UIColor.midNightBlack()
+        collectionView.backgroundColor = UIColor.midNightBlack
     }
     
     // MARK: - Lifecycle

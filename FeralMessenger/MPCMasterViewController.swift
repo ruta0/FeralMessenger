@@ -65,15 +65,15 @@ class MPCMasterViewController: UITableViewController {
         tableView.contentInset = UIEdgeInsets(top: 1, left: 0, bottom: 0, right: 0)
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.backgroundColor = UIColor.midNightBlack()
+        tableView.backgroundColor = UIColor.midNightBlack
     }
     
     // MARK: - TabBarController
     
     private func setupTabBar() {
         guard let tabBar = tabBarController?.tabBar else { return }
-        tabBar.tintColor = UIColor.candyWhite()
-        tabBar.barTintColor = UIColor.midNightBlack()
+        tabBar.tintColor = UIColor.candyWhite
+        tabBar.barTintColor = UIColor.midNightBlack
         tabBar.isHidden = false
         tabBar.isTranslucent = false
     }
@@ -119,7 +119,7 @@ class MPCMasterViewController: UITableViewController {
     private func setupNavigationController() {
         guard let navigationController = navigationController else { return }
         navigationController.navigationBar.isTranslucent = false
-        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray()
+        navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray
         navigationController.navigationBar.tintColor = UIColor.white
         navigationItem.titleView = titleButton
         navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.orange]

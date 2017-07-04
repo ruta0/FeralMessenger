@@ -47,7 +47,7 @@ class AuthViewController: AdaptiveScrollViewController, ParseUsersManagerDelegat
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        //
+        // implement this
     }
     
     // MARK: - Parse

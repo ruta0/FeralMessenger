@@ -14,14 +14,14 @@ import CloudKit
 
 final class MessageViewController: DetailViewController, NSFetchedResultsControllerDelegate, ParseMessengerManagerDelegate, CloudKitManagerDelegate {
     
+    // MARK: - InputContainerView
+    
     var receiverID: String?
     
-    override func sendButton_tapped(_ sender: UIButton) {
-        let message = inputContainerView.inputTextField.text
-        clearMessageTextField() // 2
-        if let sms = message, !sms.isEmpty, let receiverID = receiverID, let senderID = currentUser.objectId {
+    override func sendMessage(with message: String) {
+        if let receiverID = receiverID, let senderID = currentUser.objectId {
             beginLoadingAnime()
-            parseManager?.sendMessage(with: sms, receiverID: receiverID, senderID: senderID, completion: { [weak self] (completed: Bool, err: Error?) in
+            parseManager?.sendMessage(with: message, receiverID: receiverID, senderID: senderID, completion: { [weak self] (completed: Bool, err: Error?) in
                 self?.playSound()
                 self?.endLoadingAnime()
             })
@@ -46,7 +46,7 @@ final class MessageViewController: DetailViewController, NSFetchedResultsControl
     
     var selectedCoreUser: CoreUser?
     
-    fileprivate var fetchedResultsController: NSFetchedResultsController<CoreMessage>?
+    private var fetchedResultsController: NSFetchedResultsController<CoreMessage>?
     
     func insertToCoreMessage(with pfObject: Message) {
         if let context = container?.viewContext {
@@ -194,11 +194,11 @@ final class MessageViewController: DetailViewController, NSFetchedResultsControl
                 let estimatedFrame = NSString(string: coreMessage.sms!).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
                 // outgoing message
                 if coreMessage.senderID == currentUser.objectId {
-                    cell.messageTextView.backgroundColor = UIColor.miamiBlue()
+                    cell.messageTextView.backgroundColor = UIColor.miamiBlue
                     cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedFrame.width - 16 - 8, y: 8, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
                 } else if coreMessage.receiverID == currentUser.objectId {
                     // incoming message
-                    cell.messageTextView.backgroundColor = UIColor.mediumBlueGray()
+                    cell.messageTextView.backgroundColor = UIColor.mediumBlueGray
                     cell.messageTextView.frame = CGRect(x: 8, y: 8, width: estimatedFrame.width + 16, height: estimatedFrame.height + 16)
                 }
             }

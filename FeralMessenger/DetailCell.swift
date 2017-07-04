@@ -38,7 +38,7 @@ class DetailCell: UITableViewCell {
         wrapperView.backgroundColor = UIColor.clear
         // messageTextView
         messageTextView.textColor = UIColor.white // deafult
-        messageTextView.backgroundColor = UIColor.miamiBlue() // default
+        messageTextView.backgroundColor = UIColor.miamiBlue // default
         messageTextView.font = UIFont.systemFont(ofSize: 14)
         messageTextView.layer.cornerRadius = 10
         messageTextView.textContainerInset.left = 3
