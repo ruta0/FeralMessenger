@@ -13,8 +13,8 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
     
     // MARK: - NavigationController
     
-//    @IBOutlet weak var addButton: UIBarButtonItem!
-    
+    @IBOutlet weak var addButton: UIBarButtonItem!
+
     lazy var activityIndicator: UIActivityIndicatorView = {
         let view = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
         view.hidesWhenStopped = true
@@ -29,10 +29,10 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
         return button
     }()
     
-//    @IBAction func addButton_tapped(_ sender: UIBarButtonItem) {
-//        performAddUser()
-//    }
-    
+    @IBAction func addButton_tapped(_ sender: UIBarButtonItem) {
+        performAddUser()
+    }
+
     func performAddUser() {
         // override this to implement
     }
@@ -74,14 +74,11 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     private func setupNavigationController() {
-        guard let navigationController = navigationController else {
-            print("navigationController cannot be nil")
-            return
-        }
+        guard let navigationController = navigationController else { return }
         navigationController.navigationBar.isTranslucent = false
         navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray
         navigationController.navigationBar.tintColor = UIColor.white
-//        addButton.tintColor = UIColor.orange
+        addButton.tintColor = UIColor.orange
     }
     
     // MARK: - TabBarController
@@ -122,8 +119,8 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
         searchController.searchResultsUpdater = self
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.dimsBackgroundDuringPresentation = true
+        searchController.searchBar.barStyle = UIBarStyle.default
         searchController.searchBar.placeholder = "Search for users"
-        searchController.searchBar.backgroundColor = UIColor.mediumBlueGray
         searchController.searchBar.barTintColor = UIColor.mediumBlueGray
         let cancelButtonAttributes: [String : AnyObject] = [NSForegroundColorAttributeName : UIColor.candyWhite]
         UIBarButtonItem.appearance().setTitleTextAttributes(cancelButtonAttributes as [String : AnyObject], for: UIControlState.normal)

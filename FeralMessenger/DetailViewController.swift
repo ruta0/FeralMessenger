@@ -7,9 +7,7 @@
 //
 
 import UIKit
-import Parse
 import AVFoundation
-import CloudKit
 
 
 class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, KeyboardDockableDelegate {

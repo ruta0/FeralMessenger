@@ -22,15 +22,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <searchBar contentMode="redraw" barStyle="black" searchBarStyle="minimal" placeholder="Enter email" translatesAutoresizingMaskIntoConstraints="NO" id="zs1-ff-nac">
-                                <rect key="frame" x="0.0" y="64" width="375" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="yMJ-k4-Tby"/>
-                                </constraints>
-                                <textInputTraits key="textInputTraits"/>
-                            </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="80" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="FDp-dl-C10">
-                                <rect key="frame" x="0.0" y="108" width="375" height="559"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SearchResultCell" rowHeight="80" id="B5E-rB-T0N" customClass="SearchResultCell" customModule="FeralMessenger" customModuleProvider="target">
@@ -83,16 +76,14 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="XiO-RZ-Ybp" firstAttribute="top" secondItem="FDp-dl-C10" secondAttribute="bottom" id="HYq-sF-dc0"/>
-                            <constraint firstItem="FDp-dl-C10" firstAttribute="top" secondItem="zs1-ff-nac" secondAttribute="bottom" id="ITn-zO-nZw"/>
-                            <constraint firstAttribute="trailing" secondItem="zs1-ff-nac" secondAttribute="trailing" id="NFY-CS-S8a"/>
-                            <constraint firstItem="zs1-ff-nac" firstAttribute="leading" secondItem="Epf-Sn-9jG" secondAttribute="leading" id="PEB-NK-RnC"/>
-                            <constraint firstItem="zs1-ff-nac" firstAttribute="top" secondItem="HZV-JM-OLf" secondAttribute="bottom" id="ZqR-R6-bBS"/>
                             <constraint firstAttribute="trailing" secondItem="FDp-dl-C10" secondAttribute="trailing" id="iUr-4N-Slx"/>
+                            <constraint firstItem="FDp-dl-C10" firstAttribute="top" secondItem="HZV-JM-OLf" secondAttribute="bottom" id="r6l-pw-r8w"/>
                             <constraint firstItem="FDp-dl-C10" firstAttribute="leading" secondItem="Epf-Sn-9jG" secondAttribute="leading" id="tdg-Cg-y0F"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Add Friend" id="FJn-hU-r6z">
-                        <barButtonItem key="rightBarButtonItem" systemItem="cancel" id="2CJ-eS-8Al">
+                        <barButtonItem key="rightBarButtonItem" image="Cancel" style="done" id="2CJ-eS-8Al">
+                            <color key="tintColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="cancelButton_tapped:" destination="aHp-mh-1Ka" id="zqT-SY-fbK"/>
                             </connections>
@@ -100,22 +91,12 @@
                     </navigationItem>
                     <connections>
                         <outlet property="cancelButton" destination="2CJ-eS-8Al" id="Yyh-ui-t6j"/>
-                        <outlet property="searchBar" destination="zs1-ff-nac" id="lff-K0-GY9"/>
-                        <outlet property="searchDisplayController" destination="KXg-AP-OD1" id="6ZU-IV-Dfj"/>
                         <outlet property="tableView" destination="FDp-dl-C10" id="afs-Yz-WMj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lq7-gx-UGw" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <searchDisplayController searchResultsTitle="qweqwe" id="KXg-AP-OD1">
-                    <connections>
-                        <outlet property="delegate" destination="aHp-mh-1Ka" id="qk8-Ie-WTx"/>
-                        <outlet property="searchContentsController" destination="aHp-mh-1Ka" id="BDR-7W-Y2z"/>
-                        <outlet property="searchResultsDataSource" destination="aHp-mh-1Ka" id="71F-gx-kn3"/>
-                        <outlet property="searchResultsDelegate" destination="aHp-mh-1Ka" id="Nbu-ag-xGX"/>
-                    </connections>
-                </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="6672.8000000000002" y="-1398.3508245877063"/>
+            <point key="canvasLocation" x="6722" y="-1369"/>
         </scene>
         <!--Chats-->
         <scene sceneID="Mi5-fa-c5R">
@@ -216,8 +197,17 @@
                             <constraint firstItem="sbv-Wk-Leg" firstAttribute="top" secondItem="y5p-zZ-wCy" secondAttribute="bottom" id="PdN-vT-mPB"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Chats" id="oId-ET-KaT"/>
+                    <navigationItem key="navigationItem" title="Chats" id="oId-ET-KaT">
+                        <barButtonItem key="rightBarButtonItem" image="Add" id="Su9-ZR-rpM">
+                            <color key="tintColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="addButton_tapped:" destination="Lgi-FC-ons" id="7Qt-X4-WvE"/>
+                                <segue destination="sNW-vM-QUo" kind="presentation" id="dcc-hJ-3Ps"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="addButton" destination="Su9-ZR-rpM" id="YYv-kb-P2P"/>
                         <outlet property="tableView" destination="y5p-zZ-wCy" id="CPD-tD-sfk"/>
                     </connections>
                 </viewController>
@@ -343,25 +333,27 @@
             <point key="canvasLocation" x="3761" y="-1006"/>
         </scene>
         <!--Navigation Controller-->
-        <scene sceneID="rl4-uA-QqA">
+        <scene sceneID="4yT-7m-nkf">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Aev-lo-k7e" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="sNW-vM-QUo" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="AGy-HQ-wf2">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="tjW-uM-Lf3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="aHp-mh-1Ka" kind="relationship" relationship="rootViewController" id="oY4-Ln-G3a"/>
+                        <segue destination="aHp-mh-1Ka" kind="relationship" relationship="rootViewController" id="Obg-dU-Hfw"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="y15-Ww-B8d" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YJd-Ss-2Fh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5825" y="-1398"/>
+            <point key="canvasLocation" x="5825" y="-1369"/>
         </scene>
     </scenes>
     <resources>
+        <image name="Add" width="25" height="25"/>
+        <image name="Cancel" width="25" height="25"/>
         <image name="Cat" width="64" height="64"/>
         <image name="Chats" width="25" height="25"/>
     </resources>
