@@ -6,98 +6,11 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Segues with Peek and Pop" minToolsVersion="7.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Add Friend-->
-        <scene sceneID="RQg-h8-p6k">
-            <objects>
-                <viewController id="aHp-mh-1Ka" customClass="AddFriendViewController" customModule="FeralMessenger" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="HZV-JM-OLf"/>
-                        <viewControllerLayoutGuide type="bottom" id="XiO-RZ-Ybp"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Epf-Sn-9jG">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="80" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="FDp-dl-C10">
-                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SearchResultCell" rowHeight="80" id="B5E-rB-T0N" customClass="SearchResultCell" customModule="FeralMessenger" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="80"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="B5E-rB-T0N" id="RHy-SE-TYy">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <stackView opaque="NO" contentMode="scaleToFill" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="kNe-SZ-zlT">
-                                                    <rect key="frame" x="16" y="8" width="343" height="63.5"/>
-                                                    <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="titleLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eGI-6l-7xA">
-                                                            <rect key="frame" x="0.0" y="0.0" width="263" height="63.5"/>
-                                                            <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <nil key="textColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bmc-hf-LTe">
-                                                            <rect key="frame" x="279" y="0.0" width="64" height="63.5"/>
-                                                            <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="width" constant="64" id="oJ9-Vw-5IK"/>
-                                                            </constraints>
-                                                            <state key="normal" title="Add"/>
-                                                            <connections>
-                                                                <action selector="addButton_tapped:" destination="B5E-rB-T0N" eventType="touchUpInside" id="A0z-nC-J0D"/>
-                                                            </connections>
-                                                        </button>
-                                                    </subviews>
-                                                </stackView>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="kNe-SZ-zlT" firstAttribute="top" secondItem="RHy-SE-TYy" secondAttribute="top" constant="8" id="2VT-6x-hH2"/>
-                                                <constraint firstItem="kNe-SZ-zlT" firstAttribute="leading" secondItem="RHy-SE-TYy" secondAttribute="leading" constant="16" id="8lX-uf-MPh"/>
-                                                <constraint firstAttribute="trailing" secondItem="kNe-SZ-zlT" secondAttribute="trailing" constant="16" id="9vf-ck-nq9"/>
-                                                <constraint firstAttribute="bottom" secondItem="kNe-SZ-zlT" secondAttribute="bottom" constant="8" id="ygL-LW-0Dr"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                        <color key="backgroundColor" red="0.31372549020000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="calibratedRGB"/>
-                                        <connections>
-                                            <outlet property="addButton" destination="bmc-hf-LTe" id="Wcc-8M-uZm"/>
-                                            <outlet property="titleLabel" destination="eGI-6l-7xA" id="nJA-XQ-dst"/>
-                                        </connections>
-                                    </tableViewCell>
-                                </prototypes>
-                            </tableView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="XiO-RZ-Ybp" firstAttribute="top" secondItem="FDp-dl-C10" secondAttribute="bottom" id="HYq-sF-dc0"/>
-                            <constraint firstAttribute="trailing" secondItem="FDp-dl-C10" secondAttribute="trailing" id="iUr-4N-Slx"/>
-                            <constraint firstItem="FDp-dl-C10" firstAttribute="top" secondItem="HZV-JM-OLf" secondAttribute="bottom" id="r6l-pw-r8w"/>
-                            <constraint firstItem="FDp-dl-C10" firstAttribute="leading" secondItem="Epf-Sn-9jG" secondAttribute="leading" id="tdg-Cg-y0F"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" title="Add Friend" id="FJn-hU-r6z">
-                        <barButtonItem key="rightBarButtonItem" image="Cancel" style="done" id="2CJ-eS-8Al">
-                            <color key="tintColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <action selector="cancelButton_tapped:" destination="aHp-mh-1Ka" id="zqT-SY-fbK"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <connections>
-                        <outlet property="cancelButton" destination="2CJ-eS-8Al" id="Yyh-ui-t6j"/>
-                        <outlet property="tableView" destination="FDp-dl-C10" id="afs-Yz-WMj"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="lq7-gx-UGw" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="6722" y="-1369"/>
-        </scene>
         <!--Chats-->
         <scene sceneID="Mi5-fa-c5R">
             <objects>
@@ -129,7 +42,7 @@
                                                     </constraints>
                                                 </view>
                                                 <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="RNn-wG-dAr">
-                                                    <rect key="frame" x="16" y="8" width="343" height="111.5"/>
+                                                    <rect key="frame" x="16" y="8" width="343" height="112"/>
                                                     <subviews>
                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Cat" translatesAutoresizingMaskIntoConstraints="NO" id="f2Y-Yb-J0l">
                                                             <rect key="frame" x="0.0" y="0.0" width="64" height="64"/>
@@ -188,26 +101,28 @@
                                     <outlet property="delegate" destination="Lgi-FC-ons" id="3fo-Xz-hl7"/>
                                 </connections>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BkI-f2-aOb" customClass="AddFriendView" customModule="FeralMessenger" customModuleProvider="target">
+                                <rect key="frame" x="46.5" y="214" width="281" height="128"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="128" id="QbE-GG-Wme"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.15686274509803921" green="0.15686274509803921" blue="0.15686274509803921" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="BkI-f2-aOb" firstAttribute="width" secondItem="ULI-e4-x6v" secondAttribute="width" multiplier="0.75" id="9jJ-9g-hVB"/>
                             <constraint firstAttribute="trailing" secondItem="y5p-zZ-wCy" secondAttribute="trailing" id="Ik1-S0-c34"/>
                             <constraint firstItem="y5p-zZ-wCy" firstAttribute="leading" secondItem="ULI-e4-x6v" secondAttribute="leading" id="IoH-r1-aIa"/>
                             <constraint firstItem="y5p-zZ-wCy" firstAttribute="top" secondItem="cgC-Em-SYj" secondAttribute="bottom" id="LO6-zo-9S6"/>
                             <constraint firstItem="sbv-Wk-Leg" firstAttribute="top" secondItem="y5p-zZ-wCy" secondAttribute="bottom" id="PdN-vT-mPB"/>
+                            <constraint firstItem="BkI-f2-aOb" firstAttribute="centerX" secondItem="ULI-e4-x6v" secondAttribute="centerX" id="Tvl-Mw-shC"/>
+                            <constraint firstItem="BkI-f2-aOb" firstAttribute="centerY" secondItem="ULI-e4-x6v" secondAttribute="centerY" multiplier="1:1.2" id="tKf-mr-KJO"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Chats" id="oId-ET-KaT">
-                        <barButtonItem key="rightBarButtonItem" image="Add" id="Su9-ZR-rpM">
-                            <color key="tintColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <action selector="addButton_tapped:" destination="Lgi-FC-ons" id="7Qt-X4-WvE"/>
-                                <segue destination="sNW-vM-QUo" kind="presentation" id="dcc-hJ-3Ps"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Chats" id="oId-ET-KaT"/>
                     <connections>
-                        <outlet property="addButton" destination="Su9-ZR-rpM" id="YYv-kb-P2P"/>
+                        <outlet property="addFriendView" destination="BkI-f2-aOb" id="A27-WU-IAD"/>
                         <outlet property="tableView" destination="y5p-zZ-wCy" id="CPD-tD-sfk"/>
                     </connections>
                 </viewController>
@@ -332,28 +247,8 @@
             </objects>
             <point key="canvasLocation" x="3761" y="-1006"/>
         </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="4yT-7m-nkf">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="sNW-vM-QUo" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="tjW-uM-Lf3">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="aHp-mh-1Ka" kind="relationship" relationship="rootViewController" id="Obg-dU-Hfw"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="YJd-Ss-2Fh" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="5825" y="-1369"/>
-        </scene>
     </scenes>
     <resources>
-        <image name="Add" width="25" height="25"/>
-        <image name="Cancel" width="25" height="25"/>
         <image name="Cat" width="64" height="64"/>
         <image name="Chats" width="25" height="25"/>
     </resources>

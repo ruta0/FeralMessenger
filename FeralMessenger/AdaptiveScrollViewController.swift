@@ -22,7 +22,8 @@ class AdaptiveScrollViewController: UIViewController, UITextFieldDelegate, UIScr
     }
     
     @IBOutlet weak var contentView: UIView!
-    @IBOutlet weak var errorLabel: UILabel!    
+    @IBOutlet weak var backgroundImageView: UIImageView!
+    @IBOutlet weak var errorLabel: UILabel!
     @IBOutlet weak var dividerViewOne: UIView!
     @IBOutlet weak var authButton: UIButton!
     @IBOutlet weak var termsButton: UIButton!
@@ -78,7 +79,7 @@ class AdaptiveScrollViewController: UIViewController, UITextFieldDelegate, UIScr
         let alert = UIAlertController(title: nil, message: "Redirect to Terms?", preferredStyle: UIAlertControllerStyle.alert)
         let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
         let action = UIAlertAction(title: "Redirect", style: UIAlertActionStyle.default) { (action: UIAlertAction) in
-            self.redirectToBrowserForTerms()
+            self.redirectToTerms()
         }
         alert.addAction(cancel)
         alert.addAction(action)
@@ -104,11 +105,15 @@ class AdaptiveScrollViewController: UIViewController, UITextFieldDelegate, UIScr
     }
     
     private func setupViews() {
+        let foreGroundMagnitude: Float = 20
+        let backgroundMagnitude: Float = -15
         // scrollView
         scrollView.isScrollEnabled = false
         scrollView.backgroundColor = UIColor.midNightBlack
         // contentView
         contentView.backgroundColor = UIColor.clear
+        // backgroundImage
+        backgroundImageView.enableParallaxMotion(magnitude: backgroundMagnitude)
         // errorLabel
         errorLabel.alpha = 0
         // logoImageView
@@ -119,26 +124,33 @@ class AdaptiveScrollViewController: UIViewController, UITextFieldDelegate, UIScr
         if UIScreen.main.bounds.size == CGSize(width: 414, height: 736) {
             logoImageView.frame.size.height = 64
         }
+        logoImageView.enableParallaxMotion(magnitude: foreGroundMagnitude)
         // nameTF
         nameTextField.borderStyle = UITextBorderStyle.none
         nameTextField.attributedPlaceholder = NSAttributedString(string: "name", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
+        nameTextField.enableParallaxMotion(magnitude: foreGroundMagnitude)
         // dividerViewOne
         dividerViewOne.alpha = 0
         // emailTF
         emailTextField.alpha = 0
+        emailTextField.enableParallaxMotion(magnitude: foreGroundMagnitude)
         emailTextField.borderStyle = UITextBorderStyle.none
         emailTextField.attributedPlaceholder = NSAttributedString(string: "email", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
         // passTF
         passTextField.borderStyle = UITextBorderStyle.none
         passTextField.attributedPlaceholder = NSAttributedString(string: "pass", attributes: [NSForegroundColorAttributeName: UIColor.lightGray])
+        passTextField.enableParallaxMotion(magnitude: foreGroundMagnitude)
         // authButton
         authButton.layer.cornerRadius = 25 // height is set to 50 in storyboard
         authButton.backgroundColor = UIColor.mandarinOrange
         authButton.setTitle(AuthButtonType.login.rawValue, for: UIControlState.normal)
+        authButton.enableParallaxMotion(magnitude: foreGroundMagnitude)
         // termsButton
         termsButton.backgroundColor = UIColor.clear
+        termsButton.enableParallaxMotion(magnitude: foreGroundMagnitude)
         // toggleButton
         toggleButton.backgroundColor = UIColor.clear
+        toggleButton.enableParallaxMotion(magnitude: foreGroundMagnitude)
         toggleButton.setTitle(ToggleButtonType.createAnAccount.rawValue, for: UIControlState.normal)
     }
     
@@ -173,7 +185,7 @@ class AdaptiveScrollViewController: UIViewController, UITextFieldDelegate, UIScr
     
     // MARK: - Lifecycle
     
-    func redirectToBrowserForTerms() {
+    func redirectToTerms() {
         // override this to implement
     }
     
@@ -265,8 +277,7 @@ class AdaptiveScrollViewController: UIViewController, UITextFieldDelegate, UIScr
     func scrollViewTapped(recognizer: UIGestureRecognizer) {
         scrollView.endEditing(true)
     }
-    
-    
+
 }
 
 

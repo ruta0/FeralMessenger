@@ -14,6 +14,10 @@ import CoreData
 final class ChatsViewController: MasterViewController, ParseUsersManagerDelegate, NSFetchedResultsControllerDelegate {
     
     // MARK: - NavigationController + UISearchController
+
+    override func rightBarButton_tapped(_ sender: UIButton) {
+        showAddFriendView(sender)
+    }
     
     override func filterContentForSearchText(searchText: String) {
         if searchText.isEmpty {
@@ -29,10 +33,6 @@ final class ChatsViewController: MasterViewController, ParseUsersManagerDelegate
             }
             tableViewReload()
         }
-    }
-    
-    override func performAddUser() {
-        print("override this to implement")
     }
     
     // MARK: - ParseManager + ParseUsersManagerDelegate

@@ -10,10 +10,23 @@ import UIKit
 
 
 class MasterViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating {
-    
+
+    // MARK: - AddFriendView
+
+    @IBOutlet var addFriendView: AddFriendView!
+
+    private func setupAddFriendView() {
+        addFriendView.alpha = 0
+        addFriendView.enableParallaxMotion(magnitude: 20)
+    }
+
+    func showAddFriendView(_ sender: UIButton) {
+        DispatchQueue.main.async {
+            self.addFriendView.alpha = 1.0
+        }
+    }
+
     // MARK: - NavigationController
-    
-    @IBOutlet weak var addButton: UIBarButtonItem!
 
     lazy var activityIndicator: UIActivityIndicatorView = {
         let view = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
@@ -28,12 +41,21 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
         button.frame = CGRect(x: 0, y: 0, width: 35, height: 25)
         return button
     }()
-    
-    @IBAction func addButton_tapped(_ sender: UIBarButtonItem) {
-        performAddUser()
-    }
 
-    func performAddUser() {
+    lazy var rightBarButton: UIButton = {
+        let button = UIButton()
+        let originalImage = #imageLiteral(resourceName: "Add")
+        let tintedImage = originalImage.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        button.setBackgroundImage(tintedImage, for: UIControlState.normal)
+        button.contentMode = UIViewContentMode.scaleAspectFill
+        button.tintColor = UIColor.orange
+        button.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+        button.addTarget(self, action: #selector(rightBarButton_tapped(_:)), for: UIControlEvents.touchUpInside)
+        return button
+    }()
+
+    func rightBarButton_tapped(_ sender: UIButton) {
+
         // override this to implement
     }
     
@@ -78,7 +100,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
         navigationController.navigationBar.isTranslucent = false
         navigationController.navigationBar.barTintColor = UIColor.mediumBlueGray
         navigationController.navigationBar.tintColor = UIColor.white
-        addButton.tintColor = UIColor.orange
+        navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: rightBarButton)]
     }
     
     // MARK: - TabBarController
@@ -142,6 +164,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
+        setupAddFriendView()
         setupSearchController()
         setupNavigationController()
     }
@@ -152,7 +175,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     // MARK: - UITableViewDelegate
-    
+
     // MARK: - UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

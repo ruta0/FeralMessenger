@@ -78,6 +78,18 @@ extension UILabel {
 
 
 extension UIView {
+
+    func enableParallaxMotion(magnitude: Float) {
+        let xMotion = UIInterpolatingMotionEffect(keyPath: "center.x", type: UIInterpolatingMotionEffectType.tiltAlongHorizontalAxis)
+        xMotion.minimumRelativeValue = -magnitude
+        xMotion.maximumRelativeValue = magnitude
+        let yMotion = UIInterpolatingMotionEffect(keyPath: "center.y", type: UIInterpolatingMotionEffectType.tiltAlongVerticalAxis)
+        yMotion.minimumRelativeValue = -magnitude
+        yMotion.maximumRelativeValue = magnitude
+        let group = UIMotionEffectGroup()
+        group.motionEffects = [xMotion, yMotion]
+        addMotionEffect(group)
+    }
     
     func jitter(repeatCount: Float, duration: TimeInterval) {
         let animation = CABasicAnimation(keyPath: "position")

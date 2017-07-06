@@ -29,6 +29,10 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8de-pX-FQT" userLabel="Content View">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                                         <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="DXI-mF-Vje">
+                                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                                                <color key="backgroundColor" red="0.31372549020000001" green="0.17254901959999999" blue="0.23137254900000001" alpha="1" colorSpace="calibratedRGB"/>
+                                            </imageView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="XDK-hf-8JW" userLabel="Button Stack View">
                                                 <rect key="frame" x="64" y="568" width="286" height="136"/>
                                                 <subviews>
@@ -619,6 +623,7 @@
                                             <constraint firstItem="6h1-1C-kVP" firstAttribute="width" secondItem="8de-pX-FQT" secondAttribute="width" multiplier="1:2" id="Ewa-Du-Cyq">
                                                 <variation key="heightClass=compact-widthClass=compact" constant="0.0"/>
                                             </constraint>
+                                            <constraint firstItem="DXI-mF-Vje" firstAttribute="leading" secondItem="8de-pX-FQT" secondAttribute="leading" id="F6S-L1-V8G"/>
                                             <constraint firstItem="OLH-wu-Mec" firstAttribute="top" secondItem="UE3-Ru-9Xm" secondAttribute="bottom" constant="8" id="GoY-co-Iia">
                                                 <variation key="heightClass=compact-widthClass=regular" constant="8"/>
                                             </constraint>
@@ -649,11 +654,13 @@
                                                 <variation key="heightClass=compact-widthClass=compact" constant="16"/>
                                             </constraint>
                                             <constraint firstAttribute="bottom" secondItem="XDK-hf-8JW" secondAttribute="bottom" constant="64" id="e5s-qY-IaA"/>
+                                            <constraint firstAttribute="bottom" secondItem="DXI-mF-Vje" secondAttribute="bottom" id="eId-az-OtI"/>
                                             <constraint firstItem="6h1-1C-kVP" firstAttribute="width" secondItem="8de-pX-FQT" secondAttribute="width" multiplier="1:2" id="f1E-2t-IWa"/>
                                             <constraint firstItem="XDK-hf-8JW" firstAttribute="leading" secondItem="6h1-1C-kVP" secondAttribute="trailing" constant="64" id="gqT-FK-1EZ"/>
                                             <constraint firstItem="XDK-hf-8JW" firstAttribute="top" secondItem="UCg-AI-ZqB" secondAttribute="bottom" constant="32" id="jTN-32-2b9"/>
                                             <constraint firstItem="UE3-Ru-9Xm" firstAttribute="centerX" secondItem="8de-pX-FQT" secondAttribute="centerX" id="jyG-fe-YhF"/>
                                             <constraint firstItem="XDK-hf-8JW" firstAttribute="top" secondItem="UCg-AI-ZqB" secondAttribute="bottom" constant="16" id="lGH-oV-X2h"/>
+                                            <constraint firstAttribute="trailing" secondItem="DXI-mF-Vje" secondAttribute="trailing" id="lSx-94-7jC"/>
                                             <constraint firstAttribute="bottom" secondItem="XDK-hf-8JW" secondAttribute="bottom" constant="16" id="ouL-uO-IDc">
                                                 <variation key="heightClass=compact-widthClass=compact" constant="16"/>
                                             </constraint>
@@ -663,6 +670,7 @@
                                             </constraint>
                                             <constraint firstAttribute="trailing" secondItem="XDK-hf-8JW" secondAttribute="trailing" constant="64" id="sYm-Ix-8jB"/>
                                             <constraint firstItem="6h1-1C-kVP" firstAttribute="leading" secondItem="8de-pX-FQT" secondAttribute="leading" constant="64" id="tSK-k6-jlv"/>
+                                            <constraint firstItem="DXI-mF-Vje" firstAttribute="top" secondItem="8de-pX-FQT" secondAttribute="top" id="tl9-82-V7H"/>
                                             <constraint firstItem="UCg-AI-ZqB" firstAttribute="centerX" secondItem="XDK-hf-8JW" secondAttribute="centerX" id="uIl-py-4Ef"/>
                                             <constraint firstAttribute="trailing" secondItem="XDK-hf-8JW" secondAttribute="trailing" constant="16" id="vcj-lc-2Z3">
                                                 <variation key="heightClass=compact-widthClass=compact" constant="16"/>
@@ -982,6 +990,7 @@
                     <connections>
                         <outlet property="activityIndicator" destination="UE3-Ru-9Xm" id="OAN-dI-XGp"/>
                         <outlet property="authButton" destination="L7X-aO-d13" id="yhu-bq-PMC"/>
+                        <outlet property="backgroundImageView" destination="DXI-mF-Vje" id="o2c-RQ-MOA"/>
                         <outlet property="contentView" destination="8de-pX-FQT" id="HfN-G5-zKo"/>
                         <outlet property="dividerViewOne" destination="04B-iv-SdU" id="T4s-gS-oNo"/>
                         <outlet property="emailTextField" destination="Anb-Sd-27S" id="ZMN-2x-elc"/>
@@ -998,7 +1007,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yoW-lY-Jam" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1875" y="-228"/>
+            <point key="canvasLocation" x="1873.913043478261" y="-228.2608695652174"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="VPl-Vu-wvR">
@@ -1643,13 +1652,13 @@
                                                 </variation>
                                             </stackView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$ printf &quot;%s\n&quot; &quot;Great power comes with great responsibility&quot;" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1mn-8Q-486">
-                                                <rect key="frame" x="36" y="273.66666666666674" width="342" height="31.333333333333314"/>
+                                                <rect key="frame" x="36" y="273" width="342" height="32"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <color key="textColor" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="e2j-w2-F41">
-                                                <rect key="frame" x="197" y="237.66666666666669" width="20" height="20.000000000000057"/>
+                                                <rect key="frame" x="197" y="237" width="20" height="20"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="20" id="1QY-lk-fHV"/>
                                                     <constraint firstAttribute="width" secondItem="e2j-w2-F41" secondAttribute="height" multiplier="1:1" id="gkD-kZ-Zza"/>
@@ -2125,5 +2134,6 @@
         <image name="Proximity" width="25" height="25"/>
         <image name="Settings" width="25" height="25"/>
         <image name="Wallet" width="25" height="25"/>
+        <image name="background" width="960" height="640"/>
     </resources>
 </document>

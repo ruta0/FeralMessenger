@@ -32,7 +32,7 @@ class AuthViewController: AdaptiveScrollViewController, ParseUsersManagerDelegat
         }
     }
     
-    override func redirectToBrowserForTerms() {
+    override func redirectToTerms() {
         if #available(iOS 10.0, *) {
             UIApplication.shared.open(URL.termsUrl!, options: [:], completionHandler: nil)
         } else {
