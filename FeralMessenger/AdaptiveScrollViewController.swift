@@ -105,11 +105,11 @@ class AdaptiveScrollViewController: UIViewController, UITextFieldDelegate, UIScr
     }
     
     private func setupViews() {
-        let foreGroundMagnitude: Float = 20
+        let foreGroundMagnitude: Float = 15
         let backgroundMagnitude: Float = -15
         // scrollView
         scrollView.isScrollEnabled = false
-        scrollView.backgroundColor = UIColor.midNightBlack
+        scrollView.backgroundColor = UIColor.black
         // contentView
         contentView.backgroundColor = UIColor.clear
         // backgroundImage
@@ -117,8 +117,8 @@ class AdaptiveScrollViewController: UIViewController, UITextFieldDelegate, UIScr
         // errorLabel
         errorLabel.alpha = 0
         // logoImageView
-        let originalImage = UIImage(named: "AppLogo")
-        let tinitedImage = originalImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        let originalImage = #imageLiteral(resourceName: "AppLogo")
+        let tinitedImage = originalImage.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         logoImageView.image = tinitedImage
         logoImageView.tintColor = UIColor.white
         if UIScreen.main.bounds.size == CGSize(width: 414, height: 736) {

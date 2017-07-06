@@ -44,13 +44,23 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="RNn-wG-dAr">
                                                     <rect key="frame" x="16" y="8" width="343" height="112"/>
                                                     <subviews>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Cat" translatesAutoresizingMaskIntoConstraints="NO" id="f2Y-Yb-J0l">
+                                                        <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="isJ-We-aQ9">
                                                             <rect key="frame" x="0.0" y="0.0" width="64" height="64"/>
+                                                            <subviews>
+                                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Cat" translatesAutoresizingMaskIntoConstraints="NO" id="f2Y-Yb-J0l">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="64" height="64"/>
+                                                                </imageView>
+                                                            </subviews>
+                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="width" constant="64" id="YjU-FS-P8Y"/>
-                                                                <constraint firstAttribute="height" constant="64" id="mGs-HM-qDb"/>
+                                                                <constraint firstAttribute="height" constant="64" id="0IW-IQ-Pjn"/>
+                                                                <constraint firstAttribute="trailing" secondItem="f2Y-Yb-J0l" secondAttribute="trailing" id="Drh-dU-ivg"/>
+                                                                <constraint firstAttribute="width" constant="64" id="OO0-Yi-thR"/>
+                                                                <constraint firstAttribute="bottom" secondItem="f2Y-Yb-J0l" secondAttribute="bottom" id="TdX-G0-ZEX"/>
+                                                                <constraint firstItem="f2Y-Yb-J0l" firstAttribute="leading" secondItem="isJ-We-aQ9" secondAttribute="leading" id="fy5-0p-Hv2"/>
+                                                                <constraint firstItem="f2Y-Yb-J0l" firstAttribute="top" secondItem="isJ-We-aQ9" secondAttribute="top" id="sn5-4P-jME"/>
                                                             </constraints>
-                                                        </imageView>
+                                                        </view>
                                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="wlY-GD-7pK">
                                                             <rect key="frame" x="80" y="0.0" width="263" height="44.5"/>
                                                             <subviews>
@@ -85,6 +95,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="avatarContainerView" destination="isJ-We-aQ9" id="ce9-hk-ykk"/>
                                             <outlet property="avatarImageView" destination="f2Y-Yb-J0l" id="Dnr-Cd-I5U"/>
                                             <outlet property="dividerView" destination="906-Gf-wzV" id="ouX-z1-fnb"/>
                                             <outlet property="subtitleLabel" destination="Qa5-Dh-J1d" id="u2u-S0-fYg"/>

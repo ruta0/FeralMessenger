@@ -28,7 +28,7 @@ class InputContainerView: UIView {
         // inputTextFied
         inputTextField.backgroundColor = UIColor.clear
         inputTextField.textColor = UIColor.white
-        inputTextField.attributedPlaceholder = NSAttributedString(string: "Message", attributes: [NSForegroundColorAttributeName: UIColor.darkGray])
+        inputTextField.attributedPlaceholder = NSAttributedString(string: "Enter message", attributes: [NSForegroundColorAttributeName: UIColor.darkGray])
         // sendButton
         sendButton.backgroundColor = UIColor.clear
         sendButton.tintColor = UIColor.white

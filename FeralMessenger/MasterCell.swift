@@ -12,6 +12,7 @@ import UIKit
 class MasterCell: UITableViewCell {
     
     @IBOutlet weak var dividerView: UIView!
+    @IBOutlet weak var avatarContainerView: UIView!
     @IBOutlet weak var avatarImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
@@ -47,10 +48,15 @@ class MasterCell: UITableViewCell {
         dividerView.backgroundColor = UIColor.midNightBlack
         // contentView
         contentView.backgroundColor = UIColor.mediumBlueGray
+        // avatarContainerView
+        avatarContainerView.layer.cornerRadius = 32
+        avatarContainerView.backgroundColor = UIColor.black
+        avatarContainerView.contentMode = UIViewContentMode.scaleAspectFill
+        avatarContainerView.layer.borderColor = UIColor.white.cgColor
+        avatarContainerView.layer.borderWidth = 2
         // avatarImageView
-        avatarImageView.layer.cornerRadius = 32
-        avatarImageView.layer.borderColor = UIColor.white.cgColor
-        avatarImageView.layer.borderWidth = 2
+        avatarContainerView.contentMode = UIViewContentMode.center
+        avatarImageView.enableParallaxMotion(magnitude: 10)
         // titleLabel
         titleLabel.textColor = UIColor.white
         titleLabel.backgroundColor = UIColor.clear

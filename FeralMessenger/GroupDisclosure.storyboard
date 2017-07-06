@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Segues with Peek and Pop" minToolsVersion="7.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -23,29 +22,39 @@
                             <tableViewSection headerTitle="Profile" id="Qoj-iR-sa5">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="213" id="2hc-CQ-7zp">
-                                        <rect key="frame" x="0.0" y="55" width="375" height="214"/>
+                                        <rect key="frame" x="0.0" y="56" width="375" height="213"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2hc-CQ-7zp" id="aLL-or-ZDC">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="212.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="212"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="HDd-my-Mib">
                                                     <rect key="frame" x="16" y="16" width="343" height="180.5"/>
                                                     <subviews>
-                                                        <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Df5-Z0-ATa">
+                                                        <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="J5j-HF-JFu">
                                                             <rect key="frame" x="0.0" y="0.0" width="72" height="72"/>
+                                                            <subviews>
+                                                                <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Df5-Z0-ATa">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="72" height="72"/>
+                                                                    <state key="normal" backgroundImage="Cat"/>
+                                                                    <connections>
+                                                                        <segue destination="esW-8p-mff" kind="show" identifier="SegueToAvatarViewController" id="fGo-Yf-wQH">
+                                                                            <segue key="commit" inheritsFrom="parent" id="TqI-q9-ZW7"/>
+                                                                            <segue key="preview" inheritsFrom="commit" id="o0y-1D-VGK"/>
+                                                                        </segue>
+                                                                    </connections>
+                                                                </button>
+                                                            </subviews>
+                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="width" constant="72" id="337-ao-C2P"/>
-                                                                <constraint firstAttribute="width" secondItem="Df5-Z0-ATa" secondAttribute="height" multiplier="1:1" id="8Yl-q2-0u9"/>
+                                                                <constraint firstAttribute="width" constant="72" id="Tb9-kN-aRr"/>
+                                                                <constraint firstAttribute="height" constant="72" id="aD8-i1-noy"/>
+                                                                <constraint firstItem="Df5-Z0-ATa" firstAttribute="leading" secondItem="J5j-HF-JFu" secondAttribute="leading" id="grJ-v5-6HH"/>
+                                                                <constraint firstItem="Df5-Z0-ATa" firstAttribute="top" secondItem="J5j-HF-JFu" secondAttribute="top" id="jb1-yd-LeB"/>
+                                                                <constraint firstAttribute="trailing" secondItem="Df5-Z0-ATa" secondAttribute="trailing" id="psV-Ni-Wt0"/>
+                                                                <constraint firstAttribute="bottom" secondItem="Df5-Z0-ATa" secondAttribute="bottom" id="ulE-PJ-LSR"/>
                                                             </constraints>
-                                                            <state key="normal" backgroundImage="Cat"/>
-                                                            <connections>
-                                                                <segue destination="esW-8p-mff" kind="show" identifier="SegueToAvatarViewController" id="fGo-Yf-wQH">
-                                                                    <segue key="commit" inheritsFrom="parent" id="TqI-q9-ZW7"/>
-                                                                    <segue key="preview" inheritsFrom="commit" id="o0y-1D-VGK"/>
-                                                                </segue>
-                                                            </connections>
-                                                        </button>
+                                                        </view>
                                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="BVv-2k-iah">
                                                             <rect key="frame" x="88" y="0.0" width="255" height="119.5"/>
                                                             <subviews>
@@ -96,7 +105,7 @@
                                         <rect key="frame" x="0.0" y="325" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2sc-0H-agJ" id="umh-eL-SpU">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Terms of Service" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CxP-Kq-WTg">
@@ -126,7 +135,7 @@
                                         <rect key="frame" x="0.0" y="369" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fdi-v9-i3n" id="DjD-1i-HVu">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy Policy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dxI-lr-cU1">
@@ -160,7 +169,7 @@
                                         <rect key="frame" x="0.0" y="449" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="YUd-CC-Mqy" id="zOa-FU-3rH">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Logout" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PiR-sl-7md">
@@ -201,6 +210,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="avatarButton" destination="Df5-Z0-ATa" id="cPF-sa-9Vb"/>
+                        <outlet property="avatarContainerView" destination="J5j-HF-JFu" id="yOy-3e-XoU"/>
                         <outlet property="bioTextView" destination="4ns-RF-C6A" id="89N-1N-4Mh"/>
                         <outlet property="dividerView" destination="Ih6-Gm-2xo" id="bPy-EV-Jmr"/>
                         <outlet property="editButton" destination="9xp-9J-3vP" id="aHg-Bn-6Rg"/>

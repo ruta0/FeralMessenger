@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 
 class MasterViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating {
@@ -15,15 +16,51 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
 
     @IBOutlet var addFriendView: AddFriendView!
 
-    private func setupAddFriendView() {
-        addFriendView.alpha = 0
-        addFriendView.enableParallaxMotion(magnitude: 20)
-    }
-
     func showAddFriendView(_ sender: UIButton) {
         DispatchQueue.main.async {
             self.addFriendView.alpha = 1.0
         }
+    }
+
+    func addButton_tapped(_ sender: UIButton) {
+        guard let username = addFriendView.userTextField.text, !username.isEmpty else { return }
+        clearTextField(textField: addFriendView.userTextField)
+        sendInvite(username: username)
+    }
+
+    func clearTextField(textField: UITextField) {
+        DispatchQueue.main.async {
+            textField.text?.removeAll()
+        }
+    }
+
+    func sendInvite(username: String) {
+        // override this to implement
+    }
+
+    var player: AVAudioPlayer?
+
+    func playSound() {
+        guard let sound = NSDataAsset(name: "sent") else {
+            print("sound file not found")
+            return
+        }
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            try AVAudioSession.sharedInstance().setActive(true)
+            player = try AVAudioPlayer(data: sound.data, fileTypeHint: AVFileTypeWAVE)
+            DispatchQueue.main.async {
+                guard let player = self.player else { return }
+                player.play() // schwoof
+            }
+        } catch let err {
+            print(err.localizedDescription)
+        }
+    }
+
+    private func setupAddFriendView() {
+        addFriendView.alpha = 0
+        addFriendView.enableParallaxMotion(magnitude: 15)
     }
 
     // MARK: - NavigationController

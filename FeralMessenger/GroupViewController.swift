@@ -117,6 +117,7 @@ class GroupViewController: UITableViewController, UITextViewDelegate {
     // MARK: - Profile section
     
     @IBOutlet weak var profileCell: UITableViewCell!
+    @IBOutlet weak var avatarContainerView: UIView!
     @IBOutlet weak var avatarButton: UIButton!
     @IBOutlet weak var userLabel: UILabel!
     @IBOutlet weak var dividerView: UIView!
@@ -125,10 +126,15 @@ class GroupViewController: UITableViewController, UITextViewDelegate {
     private func setupProfileSection() {
         // profileCell
         profileCell.backgroundColor = UIColor.mediumBlueGray
+        // avatarContainerView
+        avatarContainerView.layer.cornerRadius = 36
+        avatarContainerView.layer.borderColor = UIColor.white.cgColor
+        avatarContainerView.layer.borderWidth = 2
+        avatarContainerView.backgroundColor = UIColor.black
+        avatarContainerView.contentMode = UIViewContentMode.scaleAspectFill
         // avatarButton
-        avatarButton.layer.cornerRadius = 36
-        avatarButton.layer.borderColor = UIColor.white.cgColor
-        avatarButton.layer.borderWidth = 2
+        avatarButton.contentMode = UIViewContentMode.center
+        avatarButton.enableParallaxMotion(magnitude: 10)
         // usernameLabel
         userLabel.backgroundColor = UIColor.clear
         userLabel.textColor = UIColor.white
